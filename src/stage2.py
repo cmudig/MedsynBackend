@@ -1130,7 +1130,7 @@ class Trainer(object):
             if ".npy" in img_dir:
                 train_files.append({"image": os.path.join(folder, img_dir),
                                     'text': os.path.join(
-                                        text_embed_folder, "extensive_consolidation_v2.npy")})
+                                        text_embed_folder, "extensive_consolidation_v2.npy")}) # this file is really needed otherwise there is a monai error!!
 
         self.ds = cache_transformed_train_data(shape=[image_size, image_size, image_size], train_files=train_files)  # Dataset(folder, image_size, channels = channels, num_frames = num_frames)
 
@@ -1302,7 +1302,7 @@ def run_diffusion_2(input_folder,
                       save_folder=output_folder,
                       num_sample_rows=1,
                       max_grad_norm=1.0,
-                      text_embed_folder="/jet/home/wartmann/MedSyn/results/text_embed_example") # "/media/volume/ai-model-store/MedSyn/results/text_embed"
+                          text_embed_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed") 
 
 
     print("loading model...")
