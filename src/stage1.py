@@ -1194,7 +1194,7 @@ class Trainer(object):
 
         self.ds = cache_transformed_text(train_files=train_files)
 
-        print(f'found {len(self.ds)} videos as gif files at {folder}')
+        print(f'found {len(self.ds)} text embedding files at {folder}')
         assert len(self.ds) > 0, 'need to have at least 1 video to start training (although 1 is not great, try 100k)'
 
         self.dl = data.DataLoader(self.ds, batch_size=train_batch_size, shuffle=True, pin_memory=True)
@@ -1240,13 +1240,13 @@ class Trainer(object):
     def load(self, milestone, **kwargs):
         if milestone == -1:
             dirs = os.listdir(self.results_folder)
-            print(dirs)
+            #print(dirs)
             dirs = [d for d in dirs if d.endswith("ckpt")]
             dirs = sorted(dirs, key=lambda x: int(x.split("_")[0]))
             path = dirs[-1]
 
         self.step = int(path.split("_")[0]) * self.save_and_sample_every + 1
-        print("Accelerator load:{}".format(os.path.join(self.results_folder, path)))
+        #print("Accelerator load:{}".format(os.path.join(self.results_folder, path)))
         #self.accelerator.load_state(os.path.join(self.results_folder, path), strict=False)# we already loaded the model
         #try:
         #    if milestone == -1:
