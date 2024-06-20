@@ -92,8 +92,8 @@ def make_ddim_timesteps(ddim_discr_method, num_ddim_timesteps, num_ddpm_timestep
     # assert ddim_timesteps.shape[0] == num_ddim_timesteps
     # add one to get the final alpha values right (the ones from first scale to data during sampling)
     steps_out = ddim_timesteps + 1
-    if verbose:
-        print(f'Selected timesteps for ddim sampler: {steps_out}')
+    # if verbose:
+    #     print(f'Selected timesteps for ddim sampler: {steps_out}')
     return steps_out
 
 
@@ -1151,7 +1151,7 @@ class Trainer(object):
         super().__init__()
         self.model = diffusion_model
         map_location = 'cuda' if torch.cuda.is_available() else 'cpu'
-        print(results_folder)
+        #print(results_folder)
         model_path = os.path.join(results_folder,"1000_ckpt/pytorch_model.bin")
         self.model.load_state_dict(torch.load(model_path, map_location=map_location), strict=False)
         self.ema = EMA(ema_decay)
@@ -1371,8 +1371,8 @@ def run_diffusion_1(input_folder,
                       num_sample=num_sample,
                       max_grad_norm=1.0)
 
-    print("loading model...")
+    print("loading low-res model...")
     trainer.load(-1)
-    print("training model...")
+    #print("training model...")
     trainer.train()
 
