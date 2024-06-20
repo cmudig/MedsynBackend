@@ -1302,7 +1302,7 @@ def run_diffusion_2(input_folder,
                       save_folder=output_folder,
                       num_sample_rows=1,
                       max_grad_norm=1.0,
-                      text_embed_folder="/jet/home/wartmann/MedSyn/results/text_embed_example")
+                      text_embed_folder="/jet/home/wartmann/MedSyn/results/text_embed_example") # "/media/volume/ai-model-store/MedSyn/results/text_embed"
 
 
     print("loading model...")
