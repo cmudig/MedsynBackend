@@ -74,10 +74,10 @@ def make_ddim_sampling_parameters(alphacums, ddim_timesteps, eta, verbose=True):
 
     # according the the formula provided in https://arxiv.org/abs/2010.02502
     sigmas = eta * np.sqrt((1 - alphas_prev) / (1 - alphas) * (1 - alphas / alphas_prev))
-    if verbose:
-        print(f'Selected alphas for ddim sampler: a_t: {alphas}; a_(t-1): {alphas_prev}')
-        print(f'For the chosen value of eta, which is {eta}, '
-              f'this results in the following sigma_t schedule for ddim sampler {sigmas}')
+    # if verbose:
+    #     print(f'Selected alphas for ddim sampler: a_t: {alphas}; a_(t-1): {alphas_prev}')
+    #     print(f'For the chosen value of eta, which is {eta}, '
+    #           f'this results in the following sigma_t schedule for ddim sampler {sigmas}')
     return sigmas, alphas, alphas_prev
 
 def make_ddim_timesteps(ddim_discr_method, num_ddim_timesteps, num_ddpm_timesteps, verbose=True):
@@ -1332,7 +1332,7 @@ def run_diffusion_1(input_folder,
     )
 
     total_params = sum(p.numel() for p in model.parameters())
-    print(f"Number of parameters: {total_params}")
+    #print(f"Number of parameters: {total_params}")
 
     diffusion_model = GaussianDiffusion(
         denoise_fn=model,
