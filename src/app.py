@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory, abort, Response, render_template_string
+from flask import Flask, request, jsonify, send_from_directory, abort, Response, render_template_string, send_file
 import os
 from extract_text import TextExtractor
 from stage1 import run_diffusion_1
@@ -8,6 +8,9 @@ import time
 import io
 import sys
 from flask_cors import CORS
+import pydicom
+from dicom_helpers import nifti_to_dicom
+
 
 app = Flask(__name__)
 
@@ -38,55 +41,77 @@ def api_post():
 # lists all files in a folder
 @app.route('/files/<foldername>', methods=['GET'])
 def list_files(foldername):
+
     try:
-        folder = os.path.join(FILES_FOLDER,"img_256_standard",foldername)
+        foldername = foldername+"_sample_0"
+        folder = os.path.join(FILES_FOLDER,"dicom",foldername)
         files = os.listdir(folder)
         files = [f for f in files if os.path.isfile(os.path.join(folder, f))]
         return jsonify(files)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# returns a certain file
-@app.route('/files/<foldername>/<filename>', methods=['GET'])
+# returns a dicom certain file
+@app.route('/files/<foldername>/<filename>', methods=['POST'])
 def get_file(foldername, filename):
     try:
+        foldername = foldername+"_sample_0"
         # Build the path to the subfolder
         folder = os.path.join(FILES_FOLDER, foldername)
         print(f"Accessing folder: {folder}")
         print(f"Requested filename: {filename}")
         
-        # Ensure the file exists in the specified folder
-        file_path = os.path.join(folder, filename)
-        if os.path.isfile(file_path):
-            return send_from_directory(folder, filename)
+
+
+        dicom_file_path = os.path.join(FILES_FOLDER,"dicom",foldername, filename)
+        print(dicom_file_path)
+        if os.path.isfile(dicom_file_path):
+            dicom_data = pydicom.dcmread(dicom_file_path)
+
+            # Convert the DICOM data to a byte stream
+            dicom_bytes = io.BytesIO()
+            dicom_data.save_as(dicom_bytes)
+            dicom_bytes.seek(0)
+
+            return send_file(dicom_bytes, mimetype='application/dicom', as_attachment=False)
         else:
             # Return a 404 error if the file is not found
             print(f"File {filename} not found in folder {folder}")
-            abort(404)
+            return jsonify({"error": str(e)}), 500
+        
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": str(e)}), 500
 
 
 # run model
-@app.route('/files/<filename>', methods=['POST'])
-def process_text(filename):
+@app.route('/files/<fileID>', methods=['POST'])
+def process_text(fileID):
     try:
         # Get the prompt from the POST request
         data = request.get_json()
         prompt = data.get('prompt')
+        description = data.get('description')
+        studyInstanceUID = data.get('studyInstanceUID')
+        filename = data.get('filename')
         print(f"promt: {prompt}")
+        print(f"description: {description}")
+        print(f"studyInstanceUID: {studyInstanceUID}")
+        print(f"filename: {filename}")
         
         if not prompt:
-            return jsonify({"error": "Prompt is required"}), 400
-
+            return jsonify({"error": "Prompt is empty."}), 400
+        if not description:
+            return jsonify({"error": "Description is empty."}), 400
+        if not studyInstanceUID:
+            return jsonify({"error": "studyInstanceUID is empty."}), 400
+        
         output_folder = os.path.join(FILES_FOLDER,"text_embed")
         print(f"outputfolder: {output_folder}")
-        filename = filename+'.npy'
-        print(f"filename: {filename}")
+
 
         # Start the process in a separate thread
-        threading.Thread(target=run_text_extractor_and_models, args=(prompt, output_folder, filename)).start()
+        threading.Thread(target=run_text_extractor_and_models, args=(studyInstanceUID, description, prompt, output_folder, filename)).start()
 
         return jsonify({"message": "Process started", "filename": filename}), 200
     except Exception as e:
@@ -94,22 +119,21 @@ def process_text(filename):
 
 @app.route('/progress')
 def progress():
-    def generate():
-        with open('log.txt') as f:
-            f.seek(0, os.SEEK_END)  # Move the file pointer to the end of the file
-            while True:
-                line = f.readline()
-                if line:
-                    yield f"{line.strip()}\n"
-                #time.sleep(1)  # Sleep briefly to avoid busy-waiting
-    return Response(generate(), content_type='text/event-stream')
+    last_line = "Empty Log."
+    with open('log.txt') as f:
+        lines = f.readlines()
+        if lines:  # Check if lines list is not empty
+            last_line = lines[-1]
+    
+    return last_line
 
-@app.route('/running', methods=['POST'])
+@app.route('/status', methods=['GET'])
 def check_running():
     global process_is_running
     return jsonify({"process_is_running": process_is_running})
 
-def run_text_extractor_and_models(prompt, output_folder, filename):
+def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_folder, filename):
+    # filename: e.g. test.npy
     global process_is_running
     old_stdout = sys.stdout
     sys.stdout = StreamToFile()
@@ -133,10 +157,24 @@ def run_text_extractor_and_models(prompt, output_folder, filename):
         #                 model_folder=STAGE1_MODEL_FOLDER)
 
         # fake some progress for now
-        for i in range(100):
-            time.sleep(5)
+
+        # convert nifti to dicom
+        nifti_file = os.path.join(FILES_FOLDER,"img_256_standard",filename[:-4]+"_sample_0.nii.gz")
+        output_folder = os.path.join(FILES_FOLDER,"dicom",filename[:-4]+"_sample_0")
+        serties_instance_uid = pydicom.uid.generate_uid()
+        print(serties_instance_uid)
+        print(nifti_file)
+        nifti_to_dicom(nifti_file=nifti_file,
+                       series_description=description,
+                       study_instance_uid=studyInstanceUID,
+                       output_folder=output_folder,
+                       series_instance_uid=serties_instance_uid)
+
+        for i in range(5):
+            time.sleep(1)
             print(f"progress: {i}")
     finally:
+        print("")
         sys.stdout = old_stdout
         process_is_running=False
 
