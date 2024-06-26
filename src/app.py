@@ -94,10 +94,15 @@ def process_text(fileID):
         description = data.get('description')
         studyInstanceUID = data.get('studyInstanceUID')
         filename = data.get('filename')
+        patient_name = data.get('patient_name')
+        patient_id = data.get('patient_id')
         print(f"promt: {prompt}")
         print(f"description: {description}")
         print(f"studyInstanceUID: {studyInstanceUID}")
         print(f"filename: {filename}")
+        print(f"patient_name: {patient_name}")
+        print(f"patient_id: {patient_id}")
+        series_instance_uid = pydicom.uid.generate_uid()
         
         if not prompt:
             return jsonify({"error": "Prompt is empty."}), 400
@@ -111,9 +116,12 @@ def process_text(fileID):
 
 
         # Start the process in a separate thread
-        threading.Thread(target=run_text_extractor_and_models, args=(studyInstanceUID, description, prompt, output_folder, filename)).start()
+        threading.Thread(target=run_text_extractor_and_models, args=(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid)).start()
 
-        return jsonify({"message": "Process started", "filename": filename}), 200
+        return jsonify({"message": "Process started", 
+                        "filename": filename,
+                        "prompt":prompt,
+                        "seriesInstanceUID":series_instance_uid}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -132,7 +140,7 @@ def check_running():
     global process_is_running
     return jsonify({"process_is_running": process_is_running})
 
-def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_folder, filename):
+def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid):
     # filename: e.g. test.npy
     global process_is_running
     old_stdout = sys.stdout
@@ -161,14 +169,16 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         # convert nifti to dicom
         nifti_file = os.path.join(FILES_FOLDER,"img_256_standard",filename[:-4]+"_sample_0.nii.gz")
         output_folder = os.path.join(FILES_FOLDER,"dicom",filename[:-4]+"_sample_0")
-        serties_instance_uid = pydicom.uid.generate_uid()
-        print(serties_instance_uid)
+        
+        print(series_instance_uid)
         print(nifti_file)
         nifti_to_dicom(nifti_file=nifti_file,
-                       series_description=description,
-                       study_instance_uid=studyInstanceUID,
-                       output_folder=output_folder,
-                       series_instance_uid=serties_instance_uid)
+                        output_folder=output_folder,
+                        series_description=description,                      
+                        series_instance_uid=series_instance_uid,
+                        study_instance_uid=studyInstanceUID,
+                        patient_name=patient_name,
+                        patient_id=patient_id)
 
         for i in range(5):
             time.sleep(1)

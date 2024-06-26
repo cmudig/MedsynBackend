@@ -13,16 +13,18 @@ from pydicom.uid import generate_uid
 
 
 def nifti_to_dicom(nifti_file,
-    series_description,
     output_folder,
+    series_description,
     series_instance_uid, # should be different for each image
-    study_instance_uid = '1', # should be the same for each study (for AI/non-AI)
+    study_instance_uid, # should be the same for each study (for AI/non-AI)
+    patient_name,
+    patient_id,
+   
     reference_dicom_file = "/media/volume/gen-ai-volume/MedSyn/results/dicom/test_dicom/slice_000.dcm",
     modality='AI',
    
     study_id='1', # should be the same for AI/non-AI
-    patient_name="Generative AI Patient",
-    patient_id="MedSyn",
+
     description="",
 
     ):
