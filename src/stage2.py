@@ -29,6 +29,7 @@ from text import tokenize, bert_embed, BERT_MODEL_DIM
 from accelerate import Accelerator
 import monai
 
+import sys
 
 def get_alpha_cum(t):
     return torch.where(t >= 0, torch.cos((t + 0.008) / 1.008 * math.pi / 2).clamp(min=0.0, max=1.0)**2, 1.0)
@@ -929,8 +930,8 @@ class GaussianDiffusion(nn.Module):
             indexes.append(torch.from_numpy(index))
         indexes = torch.stack(indexes, dim=0).long().to(device)
         batch_images_inputs_lr = torch.cat(batch_images_inputs_lr, dim=0)
-        for i, t in enumerate(tqdm(reversed(time_steps), desc='sampling loop time step',
-                                   total=len(time_steps))):
+        for i, t in enumerate(tqdm(reversed(time_steps), desc='High Resolution',
+                                   total=len(time_steps), file=sys.stdout)):
             time = torch.full((bsz,), t, device=device, dtype=torch.float32)
 
             if use_ddim:
@@ -1130,7 +1131,7 @@ class Trainer(object):
             if ".npy" in img_dir:
                 train_files.append({"image": os.path.join(folder, img_dir),
                                     'text': os.path.join(
-                                        text_embed_folder, "extensive_consolidation_v2.npy")}) # this file is really needed otherwise there is a monai error!!
+                                        text_embed_folder, "dont_delete.npy")}) # this file is really needed otherwise there is a monai error!!
 
         self.ds = cache_transformed_train_data(shape=[image_size, image_size, image_size], train_files=train_files)  # Dataset(folder, image_size, channels = channels, num_frames = num_frames)
 
@@ -1232,15 +1233,15 @@ class Trainer(object):
                     #input_saver.save(frames)
 
                     frames_lobe = all_videos_list_lobe.squeeze().cpu().numpy()
-                    save_nii(frames_lobe, output_dir=self.save_folder, output_postfix=str(f'{file_name}_lobe'))
+                    #save_nii(frames_lobe, output_dir=self.save_folder, output_postfix=str(f'{file_name}_lobe')) #uncomment to store lobe
                     #input_saver.save(frames_lobe)
 
                     frames_airway = all_videos_list_airway.squeeze().cpu().numpy()
-                    save_nii(frames_airway, output_dir=self.save_folder, output_postfix=str(f'{file_name}_airway'))
+                    #save_nii(frames_airway, output_dir=self.save_folder, output_postfix=str(f'{file_name}_airway')) #uncomment to store airway
                     #input_saver.save(frames_airway)
 
                     frames_vessel = all_videos_list_vessel.squeeze(dim=0).cpu().numpy()
-                    save_nii(frames_vessel, output_dir=self.save_folder, output_postfix=str(f'{file_name}_vessel'))
+                    #save_nii(frames_vessel, output_dir=self.save_folder, output_postfix=str(f'{file_name}_vessel')) #uncomment to store vessels
                     #input_saver.save(frames_vessel)
                 else:
                     print("File already exists: {}".format(save_path))

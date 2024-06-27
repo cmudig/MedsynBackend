@@ -31,6 +31,8 @@ from diffusers import DDIMScheduler, DDPMScheduler
 
 import xformers, xformers.ops
 
+import sys
+
 
 def get_alpha_cum(t):
     return torch.where(t >= 0, torch.cos((t + 0.008) / 1.008 * math.pi / 2).clamp(min=0.0, max=1.0)**2, 1.0)
@@ -946,8 +948,9 @@ class GaussianDiffusion(nn.Module):
             index = np.arange(self.num_frames)
             indexes.append(torch.from_numpy(index))
         indexes = torch.stack(indexes, dim=0).long().to(device)
-        for i, t in enumerate(tqdm(reversed(time_steps), desc='sampling loop time step',
-                                   total=len(time_steps))):
+        for i, t in enumerate(tqdm(reversed(time_steps), desc='Low Resolution: ',
+                                   total=len(time_steps), file=sys.stdout)):
+            
             time = torch.full((bsz,), t, device=device, dtype=torch.float32)
 
             if use_ddim:
@@ -1194,7 +1197,7 @@ class Trainer(object):
 
         self.ds = cache_transformed_text(train_files=train_files)
 
-        print(f'found {len(self.ds)} text embedding files at {folder}')
+        #print(f'found {len(self.ds)} text embedding files at {folder}')
         assert len(self.ds) > 0, 'need to have at least 1 video to start training (although 1 is not great, try 100k)'
 
         self.dl = data.DataLoader(self.ds, batch_size=train_batch_size, shuffle=True, pin_memory=True)

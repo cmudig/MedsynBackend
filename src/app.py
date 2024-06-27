@@ -10,6 +10,7 @@ import sys
 from flask_cors import CORS
 import pydicom
 from dicom_helpers import nifti_to_dicom
+import accelerate
 
 
 app = Flask(__name__)
@@ -148,21 +149,25 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
     process_is_running = True
 
     try:
-        # # Run the text extractor
-        # text_extractor = TextExtractor(resume_model=TEXTEXTRACTOR_MODEL_FOLDER)
-        # text_extractor.run(prompt, output_folder, filename)
-        # print(f"Textembedding stored in: {output_folder}")
+        # Run the text extractor
+        text_extractor = TextExtractor(resume_model=TEXTEXTRACTOR_MODEL_FOLDER)
+        text_extractor.run(prompt, output_folder, filename)
+        print(f"Textembedding stored in: {output_folder}")
+        _save_text_to_file(folder_path=FILES_FOLDER+"/prompts", file_name=filename[:-4]+".txt", text_content=prompt)
+        
 
-        # # Run low-res model
-        # run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
-        #                 output_folder=FILES_FOLDER +"/img_64_standard", 
-        #                 model_folder=STAGE1_MODEL_FOLDER, 
-        #                 num_sample=1)
+        # Run low-res model
+        run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
+                        output_folder=FILES_FOLDER +"/img_64_standard", 
+                        model_folder=STAGE1_MODEL_FOLDER, 
+                        num_sample=1)
 
-        # # Run high-res model
-        # run_diffusion_2(input_folder=FILES_FOLDER+ "/img_64_standard", 
-        #                 output_folder=FILES_FOLDER +"/img_256_standard", 
-        #                 model_folder=STAGE1_MODEL_FOLDER)
+        accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
+
+        # Run high-res model
+        run_diffusion_2(input_folder=FILES_FOLDER+ "/img_64_standard", 
+                        output_folder=FILES_FOLDER +"/img_256_standard", 
+                        model_folder=STAGE2_MODEL_FOLDER)
 
         # fake some progress for now
 
@@ -180,11 +185,9 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                         patient_name=patient_name,
                         patient_id=patient_id)
 
-        for i in range(5):
-            time.sleep(1)
-            print(f"progress: {i}")
+
     finally:
-        print("")
+        print("Uploading Data to Orthanc...")
         sys.stdout = old_stdout
         process_is_running=False
 
@@ -201,7 +204,27 @@ class StreamToFile(io.StringIO):
     def close(self):
         self.file.close()
         super().close()
+def _save_text_to_file(folder_path, file_name, text_content):
+    """
+    Save the given text content to a .txt file with the specified file name in the specified folder.
 
+    Parameters:
+    folder_path (str): The path to the folder where the file will be saved.
+    file_name (str): The name of the file (should include .txt extension).
+    text_content (str): The text content to be written to the file.
+    """
+    # Ensure the folder exists, create if it doesn't
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    
+    # Construct the full file path
+    file_path = os.path.join(folder_path, file_name)
+    
+    # Write the text content to the file
+    with open(file_path, 'w') as file:
+        file.write(text_content)
+    
+    print(f"File '{file_name}' saved in '{folder_path}' with the provided content.")
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
 

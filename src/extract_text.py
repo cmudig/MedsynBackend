@@ -27,7 +27,7 @@ class TextExtractor:
 
         # init model
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        print(self.device)
+        #print(self.device)
 
         self.model = CXRBertModel.from_pretrained(self.base_model_name)
         # extend embeddings
