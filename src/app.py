@@ -1,16 +1,16 @@
-from flask import Flask, request, jsonify, send_from_directory, abort, Response, render_template_string, send_file
+from flask import Flask, request, jsonify, send_file
 import os
 from extract_text import TextExtractor
 from stage1 import run_diffusion_1
 from stage2 import run_diffusion_2
 import threading
-import time
 import io
 import sys
 from flask_cors import CORS
 import pydicom
 from dicom_helpers import nifti_to_dicom
 import accelerate
+import torch
 
 
 app = Flask(__name__)
@@ -149,12 +149,15 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
     process_is_running = True
 
     try:
+        torch.cuda.empty_cache()
         # Run the text extractor
         text_extractor = TextExtractor(resume_model=TEXTEXTRACTOR_MODEL_FOLDER)
         text_extractor.run(prompt, output_folder, filename)
         print(f"Textembedding stored in: {output_folder}")
         _save_text_to_file(folder_path=FILES_FOLDER+"/prompts", file_name=filename[:-4]+".txt", text_content=prompt)
         
+        torch.cuda.empty_cache()
+        accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
 
         # Run low-res model
         run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
@@ -162,6 +165,7 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                         model_folder=STAGE1_MODEL_FOLDER, 
                         num_sample=1)
 
+        torch.cuda.empty_cache()
         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
 
         # Run high-res model
@@ -169,7 +173,6 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                         output_folder=FILES_FOLDER +"/img_256_standard", 
                         model_folder=STAGE2_MODEL_FOLDER)
 
-        # fake some progress for now
 
         # convert nifti to dicom
         nifti_file = os.path.join(FILES_FOLDER,"img_256_standard",filename[:-4]+"_sample_0.nii.gz")

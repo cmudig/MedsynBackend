@@ -88,11 +88,16 @@ def nifti_to_dicom(nifti_file,
     
 
     # Scale pixel data if necessary (e.g., to avoid issues with pixel value ranges)
-    #data = data - np.min(data)
-    #data = data / np.max(data) * (3000)
-    
-    # norm the HUE data between -2000, and 2000
-    data = (data - np.min(data)) / (np.max(data) - np.min(data)) * 4000 - 2000
+    if modality=='AI':
+        # set window preset for ai generated imgags
+        ds.WindowWidth = 1500
+        ds.WindowCenter = 0
+        data = (data - np.min(data)) / (np.max(data) - np.min(data)) * 1624 -1024 # from MedSyn Paper
+    else:
+        # set window preset for original imges
+        ds.WindowWidth = 200
+        ds.WindowCenter = 0
+        data = (data - np.min(data)) / (np.max(data) - np.min(data)) * 2000 -1000 # tried out
     data = data.astype('int16')
 
     # reverse in 3rd axis
