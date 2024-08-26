@@ -149,15 +149,15 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
     process_is_running = True
 
     # clear output folder textembedding
-    for filename in os.listdir(FILES_FOLDER+"/text_embed"):
-        file_path = os.path.join(FILES_FOLDER+"/text_embed", filename)
-        if os.path.isfile(file_path) and "dont_delete" not in filename:
+    for fn in os.listdir(FILES_FOLDER+"/text_embed"):
+        file_path = os.path.join(FILES_FOLDER+"/text_embed", fn)
+        if os.path.isfile(file_path) and "dont_delete" not in fn:
             os.remove(file_path)
 
     # clear output folder low-resolution
-    for filename in os.listdir(FILES_FOLDER +"/img_64_standard"):
-        file_path = os.path.join(FILES_FOLDER +"/img_64_standard", filename)
-        if os.path.isfile(file_path) and "dont_delete" not in filename:
+    for fn in os.listdir(FILES_FOLDER +"/img_64_standard"):
+        file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
+        if os.path.isfile(file_path) and "dont_delete" not in fn:
             os.remove(file_path)
 
     try:
