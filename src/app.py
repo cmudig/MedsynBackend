@@ -148,6 +148,18 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
     sys.stdout = StreamToFile()
     process_is_running = True
 
+    # clear output folder textembedding
+    for filename in os.listdir(FILES_FOLDER+"/text_embed"):
+        file_path = os.path.join(FILES_FOLDER+"/text_embed", filename)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+
+    # clear output folder low-resolution
+    for filename in os.listdir(FILES_FOLDER +"/img_64_standard"):
+        file_path = os.path.join(FILES_FOLDER +"/img_64_standard", filename)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+
     try:
         torch.cuda.empty_cache()
         # Run the text extractor
