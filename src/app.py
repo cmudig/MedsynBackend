@@ -40,11 +40,12 @@ def api_post():
     return jsonify(data), 200
 
 # lists all files in a folder
-@app.route('/files/<foldername>', methods=['GET'])
-def list_files(foldername):
-
+@app.route('/files/<foldername>/<int:sample_number>', methods=['GET'])
+def list_files(foldername, sample_number):
+    print("OUR SAMPLE NUMBER IS ", sample_number)
     try:
-        foldername = foldername+"_sample_0"
+        # foldername = f"{foldername}_sample_{sample_number}"
+        foldername = f"{foldername}_sample_0"
         folder = os.path.join(FILES_FOLDER,"dicom",foldername)
         files = os.listdir(folder)
         files = [f for f in files if os.path.isfile(os.path.join(folder, f))]
@@ -53,16 +54,17 @@ def list_files(foldername):
         return jsonify({"error": str(e)}), 500
 
 # returns a dicom certain file
-@app.route('/files/<foldername>/<filename>', methods=['POST'])
-def get_file(foldername, filename):
+@app.route('/files/<foldername>/<filename>/<int:sample_number>', methods=['POST'])
+def get_file(foldername, filename, sample_number):
+    print("OUR SAMPLE NUMBER IS ", sample_number)
     try:
-        foldername = foldername+"_sample_0"
+        # foldername = f"{foldername}_sample_{sample_number}"
+        foldername = f"{foldername}_sample_0"
         # Build the path to the subfolder
         folder = os.path.join(FILES_FOLDER, foldername)
+        print(f"Checking folder: {folder}")
         print(f"Accessing folder: {folder}")
         print(f"Requested filename: {filename}")
-        
-
 
         dicom_file_path = os.path.join(FILES_FOLDER,"dicom",foldername, filename)
         print(dicom_file_path)
@@ -97,12 +99,15 @@ def process_text(fileID):
         filename = data.get('filename')
         patient_name = data.get('patient_name')
         patient_id = data.get('patient_id')
+        read_img_flag = data.get('read_img_flag')
+        num_series_exists = data.get('num_series_in_study')
         print(f"promt: {prompt}")
         print(f"description: {description}")
         print(f"studyInstanceUID: {studyInstanceUID}")
         print(f"filename: {filename}")
         print(f"patient_name: {patient_name}")
         print(f"patient_id: {patient_id}")
+        print(f"num_Series: {num_series_exists}")
         series_instance_uid = pydicom.uid.generate_uid()
         
         if not prompt:
@@ -115,9 +120,9 @@ def process_text(fileID):
         output_folder = os.path.join(FILES_FOLDER,"text_embed")
         print(f"outputfolder: {output_folder}")
 
-
+        print
         # Start the process in a separate thread
-        threading.Thread(target=run_text_extractor_and_models, args=(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid)).start()
+        threading.Thread(target=run_text_extractor_and_models, args=(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag, num_series_exists)).start()
 
         return jsonify({"message": "Process started", 
                         "filename": filename,
@@ -141,7 +146,7 @@ def check_running():
     global process_is_running
     return jsonify({"process_is_running": process_is_running})
 
-def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid):
+def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag, num_series_exists=0):
     # filename: e.g. test.npy
     global process_is_running
     old_stdout = sys.stdout
@@ -154,11 +159,12 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         if os.path.isfile(file_path) and "dont_delete" not in fn:
             os.remove(file_path)
 
-    # clear output folder low-resolution
-    for fn in os.listdir(FILES_FOLDER +"/img_64_standard"):
-        file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
-        if os.path.isfile(file_path) and "dont_delete" not in fn:
-            os.remove(file_path)
+    if read_img_flag == False:
+        # clear output folder low-resolution
+        for fn in os.listdir(FILES_FOLDER +"/img_64_standard"):
+            file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
+            if os.path.isfile(file_path) and "dont_delete" not in fn:
+                os.remove(file_path)
 
     try:
         torch.cuda.empty_cache()
@@ -171,7 +177,23 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         torch.cuda.empty_cache()
         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
 
+        # if not read_img_flag:
         # Run low-res model
+        # run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
+        #                 output_folder=FILES_FOLDER +"/img_64_standard/" + studyInstanceUID,
+        #                 model_folder=STAGE1_MODEL_FOLDER, 
+        #                 num_sample=1)
+
+        # torch.cuda.empty_cache()
+        # accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
+
+        # # Run high-res model
+        # run_diffusion_2(input_folder=FILES_FOLDER+ "/img_64_standard/" + studyInstanceUID, 
+        #             output_folder=FILES_FOLDER +"/img_256_standard", 
+        #             model_folder=STAGE2_MODEL_FOLDER,
+        #             filename=filename,
+        #             num_series_exists=num_series_exists
+        #             )
         run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
                         output_folder=FILES_FOLDER +"/img_64_standard", 
                         model_folder=STAGE1_MODEL_FOLDER, 
@@ -187,8 +209,8 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
 
 
         # convert nifti to dicom
-        nifti_file = os.path.join(FILES_FOLDER,"img_256_standard",filename[:-4]+"_sample_0.nii.gz")
-        output_folder = os.path.join(FILES_FOLDER,"dicom",filename[:-4]+"_sample_0")
+        nifti_file = os.path.join(FILES_FOLDER,"img_256_standard",filename[:-4]+"_sample_" + str(num_series_exists) + ".nii.gz")
+        output_folder = os.path.join(FILES_FOLDER,"dicom",filename[:-4]+"_sample_" + str(num_series_exists))
         
         print(series_instance_uid)
         print(nifti_file)
@@ -243,6 +265,24 @@ def _save_text_to_file(folder_path, file_name, text_content):
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
 
+
+    # # studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag
+    # description="Calcification, Atelectasis, Opacity, Consolidation"
+
+    # run_text_extractor_and_models(
+    #     studyInstanceUID="alvaro",
+    #     description=description, 
+    #     prompt="right pleural effusion",
+    #     # prompt="left pleural effusion",
+    #     output_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed",
+    #     filename="20250202174321rightple.npy",
+    #     # filename="20250202173128largepanco.npy",
+    #     patient_name="kate",
+    #     patient_id="test_w_alvaro",
+    #     series_instance_uid="12323alvaro",
+    #     read_img_flag=True,
+    #     num_series_exists=1
+    # )
 
 
 """

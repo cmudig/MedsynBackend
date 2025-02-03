@@ -1378,4 +1378,3 @@ def run_diffusion_1(input_folder,
     trainer.load(-1)
     #print("training model...")
     trainer.train()
-

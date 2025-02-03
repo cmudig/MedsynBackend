@@ -1316,4 +1316,3 @@ run_diffusion_2(input_folder="/jet/home/wartmann/MedSyn/results/img_64_standard_
                 output_folder='/jet/home/wartmann/MedSyn/results/img_256_standard_bulk/', 
                 model_folder='/ocean/projects/cis210093p/wartmann/MedSyn/models/medsyn_params/stage2')
 """
-
