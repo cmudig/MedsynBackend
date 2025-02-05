@@ -11,6 +11,9 @@ import pydicom
 from dicom_helpers import nifti_to_dicom
 import accelerate
 import torch
+import signal
+import subprocess
+import time
 
 
 app = Flask(__name__)
@@ -141,6 +144,35 @@ def progress():
     
     return last_line
 
+def get_gpu_process():
+    """Finds running GPU processes that are using CUDA."""
+    try:
+        result = subprocess.run(
+            ["nvidia-smi", "--query-compute-apps=pid,name", "--format=csv,noheader"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        )
+        if result.returncode == 0:
+            processes = result.stdout.strip().split("\n")
+            gpu_processes = [line.split(",")[0].strip() for line in processes if "python" in line]
+            return gpu_processes if gpu_processes else None
+        else:
+            print("Failed to retrieve GPU processes:", result.stderr)
+            return None
+    except Exception as e:
+        print(f"Error retrieving GPU processes: {e}")
+        return None
+
+def kill_gpu_process():
+    """Kills all detected GPU processes (except this script)."""
+    gpu_processes = get_gpu_process()
+    if gpu_processes:
+        for pid in gpu_processes:
+            if str(os.getpid()) not in pid:  # Avoid killing this process
+                print(f"Killing GPU process: {pid}")
+                os.kill(int(pid), signal.SIGKILL)
+    else:
+        print("[INFO] No active GPU processes found.")
+
 @app.route('/status', methods=['GET'])
 def check_running():
     global process_is_running
@@ -212,7 +244,6 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                         filename=filename,
                         num_series_exists=num_series_exists)
 
-
         # convert nifti to dicom
         nifti_file = os.path.join(FILES_FOLDER,"img_256_standard",filename[:-4]+"_sample_" + str(num_series_exists) + ".nii.gz")
         output_folder = os.path.join(FILES_FOLDER,"dicom",filename[:-4]+"_sample_" + str(num_series_exists))
@@ -232,6 +263,10 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         print("Uploading Data to Orthanc...")
         sys.stdout = old_stdout
         process_is_running=False
+         # After diffusion completes, check and kill GPU processes
+        print("Checking for any lingering GPU processes...")
+        time.sleep(5)  # Ensure processes have updated
+        kill_gpu_process()  # Kill GPU processes
 
 class StreamToFile(io.StringIO):
     def __init__(self):

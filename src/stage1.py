@@ -993,7 +993,7 @@ class GaussianDiffusion(nn.Module):
         else: #read_img_flag is false or the path doesn't exist (but that should never happen)
             # Generate random noise as usual and save that
             print("Pre-saved noise not found! Generating new fixed noise instead.")
-            # torch.manual_seed(42)  # Ensures reproducibility
+            torch.manual_seed(42)  # Ensures reproducibility
             noise = torch.randn(shape, device=device)
             torch.save(noise, noise_path)  # Save for future use
         
