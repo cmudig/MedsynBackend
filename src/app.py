@@ -208,7 +208,9 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         # Run high-res model
         run_diffusion_2(input_folder=FILES_FOLDER+ "/img_64_standard", 
                         output_folder=FILES_FOLDER +"/img_256_standard", 
-                        model_folder=STAGE2_MODEL_FOLDER)
+                        model_folder=STAGE2_MODEL_FOLDER,
+                        filename=filename,
+                        num_series_exists=num_series_exists)
 
 
         # convert nifti to dicom

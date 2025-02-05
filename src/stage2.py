@@ -1095,6 +1095,8 @@ class Trainer(object):
             save_and_sample_every=1000,
             results_folder='./results',
             save_folder='',
+            num_series_exists=0,
+            filename="",
             num_sample_rows=4,
             max_grad_norm=None,
             text_embed_folder=''
@@ -1123,6 +1125,8 @@ class Trainer(object):
         channels = diffusion_model.channels
         self.num_frames = diffusion_model.num_frames
         self.save_folder = save_folder
+        self.num_series_exists=num_series_exists
+        self.filename=filename
 
         train_files = []
 
@@ -1198,7 +1202,7 @@ class Trainer(object):
         if not os.path.exists(self.save_folder):
             os.mkdir(self.save_folder)
 
-        for data in self.dl:
+        for idx, data in enumerate(self.dl):
             img, text = data["image"], None#data["text"]
             img_lr = img.to(self.accelerator.device).squeeze(dim=1)
             img_lr = F.interpolate(img_lr, scale_factor=4, mode='nearest')
@@ -1208,7 +1212,11 @@ class Trainer(object):
             # text = text.to(self.accelerator.device).squeeze(dim=1)
 
             with torch.no_grad():
-                file_name = data['image_meta_dict']['filename_or_obj'][0].split('/')[-1].split('.')[0]
+                if idx == 0:
+                    file_name = f"{self.filename[:-4]}_sample_{self.num_series_exists}"
+                else:
+                    file_name = data['image_meta_dict']['filename_or_obj'][0].split('/')[-1].split('.')[0]
+
                 save_path = os.path.join(self.save_folder, str(f'{file_name}.nii.gz'))
                 num_samples = self.num_sample_rows ** 2
                 
@@ -1254,7 +1262,9 @@ def save_nii(img, output_dir, output_postfix):
     
 def run_diffusion_2(input_folder,
                     output_folder,
-                    model_folder):
+                    model_folder,
+                    filename="",
+                    num_series_exists=0):
     model_high = Unet3D(
         dim=56,
         cond_dim=768,
@@ -1301,6 +1311,8 @@ def run_diffusion_2(input_folder,
                       save_and_sample_every=1000,
                       results_folder=model_folder,
                       save_folder=output_folder,
+                      num_series_exists=num_series_exists,
+                      filename=filename,
                       num_sample_rows=1,
                       max_grad_norm=1.0,
                           text_embed_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed") 
