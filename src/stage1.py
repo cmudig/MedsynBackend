@@ -752,6 +752,8 @@ class GaussianDiffusion(nn.Module):
             dynamic_thres_percentile=0.9,
             volume_depth=128,
             ddim_timesteps=50,
+            read_img_flag=False,
+            noise_folder=None
     ):
         super().__init__()
         self.channels = channels
@@ -759,6 +761,8 @@ class GaussianDiffusion(nn.Module):
         self.num_frames = num_frames
         self.denoise_fn = denoise_fn
         self.volume_depth = volume_depth
+        self.read_img_flag = read_img_flag
+        self.noise_folder = noise_folder
 
         betas = cosine_beta_schedule(timesteps)
 
@@ -932,7 +936,7 @@ class GaussianDiffusion(nn.Module):
         return x
 
     @torch.inference_mode()
-    def p_sample_loop(self, shape, cond=None, cond_scale=1., use_ddim=True):
+    def p_sample_loop(self, shape, cond=None, cond_scale=1., use_ddim=True, init_noise=None):
         device = self.betas.device
 
         bsz = shape[0]
@@ -942,12 +946,14 @@ class GaussianDiffusion(nn.Module):
         else:
             time_steps = range(0, self.num_timesteps)
 
-        img = torch.randn(shape, device=device)
+        img = init_noise if init_noise is not None else torch.randn(shape, device=device)
+
         indexes = []
         for b in range(bsz):
             index = np.arange(self.num_frames)
             indexes.append(torch.from_numpy(index))
         indexes = torch.stack(indexes, dim=0).long().to(device)
+        
         for i, t in enumerate(tqdm(reversed(time_steps), desc='Low Resolution: ',
                                    total=len(time_steps), file=sys.stdout)):
             
@@ -973,8 +979,25 @@ class GaussianDiffusion(nn.Module):
         image_size = self.image_size
         channels = self.channels
         num_frames = self.num_frames
-        return self.p_sample_loop((batch_size, channels, num_frames, image_size, image_size), cond=cond,
-                                      cond_scale=cond_scale, use_ddim=DDIM)
+
+        shape = (batch_size, channels, num_frames, image_size, image_size)
+
+        if not os.path.exists(self.noise_folder):
+            os.makedirs(self.noise_folder, exist_ok=True)
+
+        noise_path = self.noise_folder+"/pre_saved_noise.pth"  # Set your noise file path
+        # Check if read_img_flag is set to load pre-saved noise
+        if self.read_img_flag and os.path.exists(noise_path): #this is when we want to use the saved noise
+                print(f"Loading pre-saved noise from {noise_path}")
+                noise = torch.load(noise_path, map_location=device)
+        else: #read_img_flag is false or the path doesn't exist (but that should never happen)
+            # Generate random noise as usual and save that
+            print("Pre-saved noise not found! Generating new fixed noise instead.")
+            # torch.manual_seed(42)  # Ensures reproducibility
+            noise = torch.randn(shape, device=device)
+            torch.save(noise, noise_path)  # Save for future use
+        
+        return self.p_sample_loop(shape, cond=cond, cond_scale=cond_scale, use_ddim=DDIM, init_noise=noise)
 
     @torch.inference_mode()
     def interpolate(self, x1, x2, t=None, lam=0.5):
@@ -1316,8 +1339,10 @@ class Trainer(object):
 
 def run_diffusion_1(input_folder,
                     output_folder,
+                    noise_folder,
                     model_folder,
-                    num_sample=1):
+                    num_sample=1,
+                    read_img_flag=False):
     
     model = Unet3D(
         dim=160,
@@ -1349,6 +1374,8 @@ def run_diffusion_1(input_folder,
         dynamic_thres_percentile=0.995,
         volume_depth=64,
         ddim_timesteps=50,
+        read_img_flag=read_img_flag,
+        noise_folder=noise_folder
     )
 
                       #folder="/ocean/projects/asc170022p/lisun/r3/results/text_embed_example",

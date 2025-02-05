@@ -44,8 +44,8 @@ def api_post():
 def list_files(foldername, sample_number):
     print("OUR SAMPLE NUMBER IS ", sample_number)
     try:
-        # foldername = f"{foldername}_sample_{sample_number}"
-        foldername = f"{foldername}_sample_0"
+        foldername = f"{foldername}_sample_{sample_number}"
+        # foldername = f"{foldername}_sample_0"
         folder = os.path.join(FILES_FOLDER,"dicom",foldername)
         files = os.listdir(folder)
         files = [f for f in files if os.path.isfile(os.path.join(folder, f))]
@@ -58,8 +58,8 @@ def list_files(foldername, sample_number):
 def get_file(foldername, filename, sample_number):
     print("OUR SAMPLE NUMBER IS ", sample_number)
     try:
-        # foldername = f"{foldername}_sample_{sample_number}"
-        foldername = f"{foldername}_sample_0"
+        foldername = f"{foldername}_sample_{sample_number}"
+        # foldername = f"{foldername}_sample_0"
         # Build the path to the subfolder
         folder = os.path.join(FILES_FOLDER, foldername)
         print(f"Checking folder: {folder}")
@@ -159,11 +159,12 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         if os.path.isfile(file_path) and "dont_delete" not in fn:
             os.remove(file_path)
 
-    if read_img_flag == False:
-        # clear output folder low-resolution
-        for fn in os.listdir(FILES_FOLDER +"/img_64_standard"):
-            file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
-            if os.path.isfile(file_path) and "dont_delete" not in fn:
+    
+    # clear output folder low-resolution
+    for fn in os.listdir(FILES_FOLDER +"/img_64_standard"):
+        file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
+        if os.path.isfile(file_path) and "dont_delete" not in fn:
+            if "saved_noise" not in fn:
                 os.remove(file_path)
 
     try:
@@ -196,8 +197,10 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         #             )
         run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
                         output_folder=FILES_FOLDER +"/img_64_standard", 
+                        noise_folder=FILES_FOLDER+"/img_64_standard/saved_noise/" + studyInstanceUID,
                         model_folder=STAGE1_MODEL_FOLDER, 
-                        num_sample=1)
+                        num_sample=1,
+                        read_img_flag=read_img_flag)
 
         torch.cuda.empty_cache()
         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
@@ -266,22 +269,22 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
 
 
-    # # studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag
+    # studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag
     # description="Calcification, Atelectasis, Opacity, Consolidation"
 
     # run_text_extractor_and_models(
-    #     studyInstanceUID="alvaro",
+    #     studyInstanceUID="kate",
     #     description=description, 
     #     prompt="right pleural effusion",
     #     # prompt="left pleural effusion",
     #     output_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed",
-    #     filename="20250202174321rightple.npy",
+    #     filename="20250202174321rightkate.npy",
     #     # filename="20250202173128largepanco.npy",
-    #     patient_name="kate",
+    #     patient_name="kate2",
     #     patient_id="test_w_alvaro",
-    #     series_instance_uid="12323alvaro",
-    #     read_img_flag=True,
-    #     num_series_exists=1
+    #     series_instance_uid="123alvaro",
+    #     read_img_flag=False,
+    #     num_series_exists=0
     # )
 
 
