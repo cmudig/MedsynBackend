@@ -893,7 +893,7 @@ class GaussianDiffusion(nn.Module):
 
     def p_mean_variance(self, x, t, clip_denoised: bool, indexes=None, cond=None, cond_scale=1.):
 
-        x_recon = self.denoise_fn.forward_with_cond_scale(x, t, indexes=indexes, cond=cond, cond_scale=cond_scale)
+        x_recon, *_ = self.denoise_fn.forward_with_cond_scale(x, t, indexes=indexes, cond=cond, cond_scale=cond_scale)
             # self.predict_start_from_noise(x, t=t, noise=self.denoise_fn.forward_with_cond_scale(x, t, indexes=indexes, cond=cond, cond_scale=cond_scale))
 
         if clip_denoised:
@@ -933,7 +933,7 @@ class GaussianDiffusion(nn.Module):
     def p_sample_ddim(self, x, t, t_minus, indexes=None, cond=None, cond_scale=1., clip_denoised=True):
         b, *_, device = *x.shape, x.device
 
-        x_recon = self.denoise_fn.forward_with_cond_scale(x, t, indexes=indexes, cond=cond, cond_scale=cond_scale)
+        x_recon, *_ = self.denoise_fn.forward_with_cond_scale(x, t, indexes=indexes, cond=cond, cond_scale=cond_scale)
 
         if clip_denoised:
             s = 1.
@@ -954,7 +954,9 @@ class GaussianDiffusion(nn.Module):
         else:
             t_minus = torch.clip(t_minus, min=0.0)
             x = ddim_sample(x_recon, x, (t_minus * 1.0) / (self.num_timesteps), (t * 1.0) / (self.num_timesteps))
-        return x
+
+        attention_maps = self.denoise_fn.attention_maps
+        return x, attention_maps
 
     @torch.inference_mode()
     def p_sample_loop(self, shape, cond=None, cond_scale=1., use_ddim=True, init_noise=None):
@@ -993,7 +995,7 @@ class GaussianDiffusion(nn.Module):
                                     cond_scale=cond_scale)
                 
         #unnormalize image before returning
-        unnormalized_img = unnormalize_img(img)
+        unnormalized_img = unnormalize_img(img).to(img.device)
         return img, unnormalized_img, attention_maps
 
     @torch.inference_mode()
@@ -1061,7 +1063,7 @@ class GaussianDiffusion(nn.Module):
             cond = bert_embed(tokenize(cond), return_cls_repr=self.text_use_bert_cls)
             cond = cond.to(device)
 
-        x_recon = self.denoise_fn(x_noisy, t*(self.num_timesteps-1), indexes=indexes, cond=cond, **kwargs)
+        x_recon, *_ = self.denoise_fn(x_noisy, t*(self.num_timesteps-1), indexes=indexes, cond=cond, **kwargs)
 
         if self.loss_type == 'l1':
             loss = F.l1_loss(x_start, x_recon)
@@ -1359,8 +1361,15 @@ class Trainer(object):
                             all_videos_list.append(unnormalized_img)  # Use unnormalized for visualization
                             all_attention_maps.append(attention_maps)
 
-                        np.save(save_path,
-                                all_videos_list.cpu().numpy())
+                        # np.save(save_path,
+                        #         all_videos_list.cpu().numpy())
+                        np.save(save_path, torch.stack(all_videos_list).cpu().numpy())  # Convert list to tensor
+
+                       
+                        attention_save_path = os.path.join(self.save_folder, file_name.replace(".npy", "_attention.npy"))
+                        print("ATTENTION PATH: ", attention_save_path)
+                        flattened_maps = [torch.tensor(m).to("cpu") for maps in all_attention_maps for m in maps]
+                        np.save(attention_save_path, torch.stack(flattened_maps).cpu().numpy())
                     else:
                         print("File already exists: {}".format(save_path))
                 #all_videos_list, all_videos_list_lobe, all_videos_list_airway, all_videos_list_vessel = all_videos_list.chunk(
