@@ -543,6 +543,8 @@ class Unet3D(nn.Module):
     ):
         super().__init__()
 
+        self.attention_maps = []
+
         self.channels = channels
         init_dim = default(init_dim, dim)
         assert is_odd(init_kernel_size)
@@ -637,18 +639,32 @@ class Unet3D(nn.Module):
             nn.Conv3d(dim, channels, 1)
         )
 
+    def extract_attention_hook(self, module, input, output):
+        """Hook function to capture attention maps."""
+        if isinstance(output, tuple):
+            output = output[0]
+        self.attention_maps.append(output.detach().cpu()) #store attention maps
+
+    def register_attention_hooks(self):
+        """Register hooks on all CrossAttention layers."""
+        for name, module in self.named_modules():
+            if isinstance(module, CrossAttention):
+                module.register_forward_hook(self.extract_attention_hook)
+
     def forward_with_cond_scale(
             self,
             *args,
             cond_scale=2.,
             **kwargs
     ):
-        logits = self.forward(*args, null_cond_prob=0., **kwargs)
+        logits, attention_maps = self.forward(*args, null_cond_prob=0., **kwargs)
         if cond_scale == 1 or not self.has_cond:
-            return logits
+            return logits, attention_maps
 
         null_logits = self.forward(*args, null_cond_prob=1., **kwargs)
-        return null_logits + (logits - null_logits) * cond_scale
+        scaled_logits = null_logits + (logits - null_logits) * cond_scale
+
+        return scaled_logits, attention_maps
 
     def forward(
             self,
@@ -662,6 +678,8 @@ class Unet3D(nn.Module):
             # probability at which a given batch sample will focus on the present (0. is all off, 1. is completely arrested attention across time)
     ):
         assert not (self.has_cond and not exists(cond)), 'cond must be passed in if cond_dim specified'
+
+        self.attention_maps = []
 
         x = self.init_conv(x)
 
@@ -713,7 +731,10 @@ class Unet3D(nn.Module):
             x = upsample(x)
 
         x = torch.cat((x, r), dim=1)
-        return self.final_conv(x)
+
+        final_output = self.final_conv(x)
+
+        return final_output, self.attention_maps
 
 
 # gaussian diffusion trainer class
@@ -941,6 +962,10 @@ class GaussianDiffusion(nn.Module):
 
         bsz = shape[0]
 
+        # Register attention hooks before sampling
+        self.denoise_fn.register_attention_hooks()  # Ensure hooks are active
+        self.denoise_fn.attention_maps = []  # Reset stored attention
+
         if use_ddim:
             time_steps = range(0, self.num_timesteps+1, int(self.num_timesteps/self.ddim_timesteps))
         else:
@@ -961,12 +986,15 @@ class GaussianDiffusion(nn.Module):
 
             if use_ddim:
                 time_minus = time - int(self.num_timesteps / self.ddim_timesteps)
-                img = self.p_sample_ddim(img, time, time_minus, indexes=indexes, cond=cond,
+                img, attention_maps = self.p_sample_ddim(img, time, time_minus, indexes=indexes, cond=cond,
                                          cond_scale=cond_scale)
             else:
-                img = self.p_sample(img, time, indexes=indexes, cond=cond,
+                img, attention_maps = self.p_sample(img, time, indexes=indexes, cond=cond,
                                     cond_scale=cond_scale)
-        return unnormalize_img(img)
+                
+        #unnormalize image before returning
+        unnormalized_img = unnormalize_img(img)
+        return img, unnormalized_img, attention_maps
 
     @torch.inference_mode()
     def sample(self, cond=None, cond_scale=1., batch_size=16, DDIM=True):
@@ -996,8 +1024,9 @@ class GaussianDiffusion(nn.Module):
             torch.manual_seed(42)  # Ensures reproducibility
             noise = torch.randn(shape, device=device)
             torch.save(noise, noise_path)  # Save for future use
-        
-        return self.p_sample_loop(shape, cond=cond, cond_scale=cond_scale, use_ddim=DDIM, init_noise=noise)
+
+        raw_img, unnormalized_img, attention_maps = self.p_sample_loop(shape, cond=cond, cond_scale=cond_scale, use_ddim=DDIM, init_noise=noise)
+        return raw_img, unnormalized_img, attention_maps
 
     @torch.inference_mode()
     def interpolate(self, x1, x2, t=None, lam=0.5):
@@ -1318,9 +1347,18 @@ class Trainer(object):
 
                         num_samples = self.num_sample_rows ** 2
                         batches = num_to_groups(num_samples, self.batch_size)
-                        all_videos_list = list(
-                            map(lambda n: self.ema_model.sample(batch_size=n, cond=text), batches))
-                        all_videos_list = torch.cat(all_videos_list, dim=0)
+                        # all_videos_list = list(
+                        #     map(lambda n: self.ema_model.sample(batch_size=n, cond=text), batches))
+                        # all_videos_list = torch.cat(all_videos_list, dim=0)
+
+                        all_videos_list = []
+                        all_attention_maps = []
+
+                        for n in batches:
+                            raw_img, unnormalized_img, attention_maps = self.ema_model.sample(batch_size=n, cond=text)
+                            all_videos_list.append(unnormalized_img)  # Use unnormalized for visualization
+                            all_attention_maps.append(attention_maps)
+
                         np.save(save_path,
                                 all_videos_list.cpu().numpy())
                     else:
