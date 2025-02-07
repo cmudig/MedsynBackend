@@ -193,7 +193,7 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
 
     
     # clear output folder low-resolution
-    for fn in os.listdir(FILES_FOLDER +"/img_64_standard"):
+    for fn in os.listdir(FILES_FOLDER +"/img_64_standard/" + studyInstanceUID):
         file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
         if os.path.isfile(file_path) and "dont_delete" not in fn:
             if "saved_noise" not in fn:
@@ -211,9 +211,11 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
 
         run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
-                        output_folder=FILES_FOLDER +"/img_64_standard", 
+                        output_folder=FILES_FOLDER +"/img_64_standard" + studyInstanceUID, 
                         noise_folder=FILES_FOLDER+"/img_64_standard/saved_noise/" + studyInstanceUID,
                         model_folder=STAGE1_MODEL_FOLDER, 
+                        dont_delete_path=FILES_FOLDER+"/img_64_standard",
+                        attention_folder=FILES_FOLDER+"saliency_maps/"+studyInstanceUID,
                         num_sample=1,
                         read_img_flag=read_img_flag)
 
@@ -221,7 +223,7 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
 
         # Run high-res model
-        run_diffusion_2(input_folder=FILES_FOLDER+ "/img_64_standard", 
+        run_diffusion_2(input_folder=FILES_FOLDER+ "/img_64_standard/"+studyInstanceUID, 
                         output_folder=FILES_FOLDER +"/img_256_standard", 
                         model_folder=STAGE2_MODEL_FOLDER,
                         filename=filename,

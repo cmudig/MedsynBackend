@@ -1201,6 +1201,8 @@ class Trainer(object):
             save_and_sample_every=1000,
             results_folder='./results',
             save_folder='',
+            attention_folder='',
+            dont_delete_folder='',
             num_sample_rows=4,
             num_sample=16,
             max_grad_norm=None
@@ -1227,6 +1229,8 @@ class Trainer(object):
         channels = diffusion_model.channels
         self.num_frames = diffusion_model.num_frames
         self.save_folder = save_folder
+        self.attention_folder = attention_folder
+        self.dont_delete_folder = dont_delete_folder
         self.num_sample = num_sample
 
         train_files = []
@@ -1234,20 +1238,6 @@ class Trainer(object):
         for img_dir in os.listdir(folder):
             if img_dir[-3:] == 'npy':
                 train_files.append({'text': os.path.join(folder, img_dir)})
-
-        # for img_dir in os.listdir("/ocean/projects/asc170022p/lisun/r3/results/moved_img_nii_seg_lobe_256_v2"):
-        #     train_files.append({"image": os.path.join(folder, img_dir),
-        #                         "lobe": os.path.join(
-        #                             "/ocean/projects/asc170022p/lisun/r3/results/moved_img_nii_seg_lobe_256_v2",
-        #                             img_dir),
-        #                         "airway": os.path.join(
-        #                             "/ocean/projects/asc170022p/lisun/r3/results/moved_img_nii_seg_airway_256_label",
-        #                             img_dir),
-        #                         "vessel": os.path.join(
-        #                             "/ocean/projects/asc170022p/lisun/r3/results/moved_img_nii_seg_vessels_256_label",
-        #                             img_dir),
-        #                         'text': os.path.join("/ocean/projects/asc170022p/lisun/r3/results/text_embedding_192",
-        #                                              img_dir)})
 
         self.ds = cache_transformed_text(train_files=train_files)
 
@@ -1303,26 +1293,6 @@ class Trainer(object):
             path = dirs[-1]
 
         self.step = int(path.split("_")[0]) * self.save_and_sample_every + 1
-        #print("Accelerator load:{}".format(os.path.join(self.results_folder, path)))
-        #self.accelerator.load_state(os.path.join(self.results_folder, path), strict=False)# we already loaded the model
-        #try:
-        #    if milestone == -1:
-        #        dirs = os.listdir(self.results_folder)
-        #        dirs = [d for d in dirs if d.endswith("ckpt")]
-        #        dirs = sorted(dirs, key=lambda x: int(x.split("_")[0]))
-        #        path = dirs[-1]
-        #        self.accelerator.load_state(os.path.join(self.results_folder, path), strict=False)
-        #        self.step = int(path.split("_")[0]) * self.save_and_sample_every + 1
-        #except Exception as e:
-        #    print("Failed to load complete checkpoint due to:", e)
-        #    print("Attempting to load model only...")
-        #    model_path = os.path.join(self.results_folder, "pytorch_model.bin")
-        #    print(model_path)
-        #    if os.path.exists(model_path):
-        #        map_location = 'cuda' if torch.cuda.is_available() else 'cpu'
-        #        self.model.load_state_dict(torch.load(model_path, map_location=map_location), strict=False)
-        #    else:
-        #        print("Model file not found. Ensure you have the correct path.")
 
     def train(
             self,
@@ -1335,6 +1305,11 @@ class Trainer(object):
         self.results_folder = os.path.join(str(self.results_folder), "given_text_ddim_eval")
         if not os.path.exists(self.results_folder):
             os.mkdir(self.results_folder)
+        if not os.path.exists(self.attention_folder):
+            os.makedirs(self.attention_folder, exist_ok=True)
+        if not os.path.exists(self.save_folder):
+            os.makedirs(self.save_folder, exist_ok=True)
+
         for i, data in enumerate(self.dl):
 
             text = data["text"].squeeze(dim=1)
@@ -1345,50 +1320,60 @@ class Trainer(object):
 
                     file_name = data['text_meta_dict']['filename_or_obj'][0].split('/')[-1].split('.')[0]+"_sample_"+str(idx)+".npy"
                     save_path = os.path.join(self.save_folder, str(f'{file_name}'))
-                    if not os.path.exists(save_path):
 
-                        num_samples = self.num_sample_rows ** 2
-                        batches = num_to_groups(num_samples, self.batch_size)
-                        # all_videos_list = list(
-                        #     map(lambda n: self.ema_model.sample(batch_size=n, cond=text), batches))
-                        # all_videos_list = torch.cat(all_videos_list, dim=0)
+                    if "dont_delete" not in file_name:
+                        if not os.path.exists(save_path):
 
-                        all_videos_list = []
-                        all_attention_maps = []
+                            num_samples = self.num_sample_rows ** 2
+                            batches = num_to_groups(num_samples, self.batch_size)
 
-                        for n in batches:
-                            raw_img, unnormalized_img, attention_maps = self.ema_model.sample(batch_size=n, cond=text)
-                            all_videos_list.append(unnormalized_img)  # Use unnormalized for visualization
-                            all_attention_maps.append(attention_maps)
+                            all_videos_list = []
+                            all_attention_maps = []
 
-                        # np.save(save_path,
-                        #         all_videos_list.cpu().numpy())
-                        np.save(save_path, torch.stack(all_videos_list).cpu().numpy())  # Convert list to tensor
+                            for n in batches:
+                                raw_img, unnormalized_img, attention_maps = self.ema_model.sample(batch_size=n, cond=text)
+                                all_videos_list.append(unnormalized_img)  # Use unnormalized for visualization
+                                all_attention_maps.append(attention_maps)
 
-                       
-                        attention_save_path = os.path.join(self.save_folder, file_name.replace(".npy", "_attention.npy"))
-                        print("ATTENTION PATH: ", attention_save_path)
-                        flattened_maps = [torch.tensor(m).to("cpu") for maps in all_attention_maps for m in maps]
-                        np.save(attention_save_path, torch.stack(flattened_maps).cpu().numpy())
+                            np.save(save_path, torch.stack(all_videos_list).cpu().numpy())  # Convert list to tensor
+
+                        
+                            attention_save_path = os.path.join(self.attention_folder, file_name.replace(".npy", "_attention.npy"))
+                            print("ATTENTION PATH: ", attention_save_path)
+                            flattened_maps = [torch.tensor(m).to("cpu") for maps in all_attention_maps for m in maps]
+                            np.save(attention_save_path, torch.stack(flattened_maps).cpu().numpy())
                     else:
-                        print("File already exists: {}".format(save_path))
-                #all_videos_list, all_videos_list_lobe, all_videos_list_airway, all_videos_list_vessel = all_videos_list.chunk(
-                #    4, dim=1)
-                #all_videos_list = torch.cat(
-                #    [all_videos_list, all_videos_list_lobe, all_videos_list_airway, all_videos_list_vessel], dim=0)
+                        #check that don't delete exists in the dont delete folder
+                        dont_delete_path = os.path.join(self.dont_delete_folder, str(f'{file_name}'))
+                        if not os.path.exists(dont_delete_path):
+                            num_samples = self.num_sample_rows ** 2
+                            batches = num_to_groups(num_samples, self.batch_size)
 
-                #all_videos_list = F.pad(all_videos_list, (2, 2, 2, 2))
+                            all_videos_list = []
+                            all_attention_maps = []
 
-                #one_gif = rearrange(all_videos_list, '(i j) c f h w -> c f (i h) (j w)',
-                #                    i=self.num_sample_rows)
-                #video_path = os.path.join(self.results_folder, str(f'{file_name}.gif')).replace(".npy", "")
-                #video_tensor_to_gif(one_gif, video_path)
+                            for n in batches:
+                                raw_img, unnormalized_img, attention_maps = self.ema_model.sample(batch_size=n, cond=text)
+                                all_videos_list.append(unnormalized_img)  # Use unnormalized for visualization
+                                all_attention_maps.append(attention_maps)
 
+                            np.save(save_path, torch.stack(all_videos_list).cpu().numpy())  # Convert list to tensor
+
+                        
+                            attention_save_path = os.path.join(self.attention_folder, file_name.replace(".npy", "_attention.npy"))
+                            print("ATTENTION PATH: ", attention_save_path)
+                            flattened_maps = [torch.tensor(m).to("cpu") for maps in all_attention_maps for m in maps]
+                            np.save(attention_save_path, torch.stack(flattened_maps).cpu().numpy())
+                        else:
+                            print("File already exists: {}".format(save_path))
+            
 def run_diffusion_1(input_folder,
                     output_folder,
-                    noise_folder,
+                    dont_delete_folder,
                     model_folder,
-                    num_sample=1,
+                    attention_folder,
+                    num_sample,
+                    noise_folder,
                     read_img_flag=False):
     
     model = Unet3D(
@@ -1444,6 +1429,8 @@ def run_diffusion_1(input_folder,
                       save_and_sample_every=1000,
                       results_folder=model_folder,
                       save_folder=output_folder,
+                      attention_folder=attention_folder,
+                      dont_delete_folder=dont_delete_folder,
                       num_sample_rows=1,
                       num_sample=num_sample,
                       max_grad_norm=1.0)
@@ -1452,3 +1439,12 @@ def run_diffusion_1(input_folder,
     trainer.load(-1)
     #print("training model...")
     trainer.train()
+
+run_diffusion_1(input_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed", 
+                output_folder= "/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/test_rightpleur_noleft", 
+                dont_delete_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard",
+                model_folder="/media/volume/gen-ai-volume/MedSyn/models/stage1", 
+                attention_folder="/media/volume/gen-ai-volume/MedSyn/results/saliency_maps/test_rightpleur_noleft",
+                num_sample=1,
+                noise_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/saved_noise/test_rightpleur_noleft",
+                read_img_flag=False)

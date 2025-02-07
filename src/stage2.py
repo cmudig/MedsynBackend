@@ -1204,7 +1204,12 @@ class Trainer(object):
 
         for idx, data in enumerate(self.dl):
             img, text = data["image"], None#data["text"]
-            img_lr = img.to(self.accelerator.device).squeeze(dim=1)
+            img_lr = img.to(self.accelerator.device).squeeze()
+            # Ensure img_lr is either (batch, channels, height, width) or (batch, channels, depth, height, width)
+            # Ensure it's (batch, channels, depth, height, width)
+            if img_lr.dim() == 4:  # If we only have (C, D, H, W), add batch & channel
+                img_lr = img_lr.unsqueeze(0)  # Convert to (1, C, D, H, W)
+
             img_lr = F.interpolate(img_lr, scale_factor=4, mode='nearest')
             #
             img_lr = (img_lr-0.5)*2.0
@@ -1323,8 +1328,9 @@ def run_diffusion_2(input_folder,
 
     print("training model...")
     trainer_high_res.train()
-"""
-run_diffusion_2(input_folder="/jet/home/wartmann/MedSyn/results/img_64_standard_bulk", 
-                output_folder='/jet/home/wartmann/MedSyn/results/img_256_standard_bulk/', 
-                model_folder='/ocean/projects/cis210093p/wartmann/MedSyn/models/medsyn_params/stage2')
-"""
+
+run_diffusion_2(input_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/test_rightpleur_noleft", 
+                    output_folder="/media/volume/gen-ai-volume/MedSyn/results/img_256_standard", 
+                    model_folder="/media/volume/gen-ai-volume/MedSyn/models/stage2",
+                    filename="test_rightpleur_noleft.npy",
+                    num_series_exists=0)
