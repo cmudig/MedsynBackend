@@ -42,6 +42,26 @@ def api_post():
     data = request.json
     return jsonify(data), 200
 
+# gets the attention map
+@app.route('/attention-maps/<foldername>/<int:sample_number>', methods=['GET'])
+def get_attention_maps(foldername, sample_number):
+    print("OUR SAMPLE NUMBER IS ", sample_number)
+    try:
+        attention_map_fiename = f"{foldername}_sample_{sample_number}_attention.npy"
+        attention_map_path = os.path.join(FILES_FOLDER, "saliency_maps", foldername, attention_map_fiename)
+        print(f"Looking for attention map: {attention_map_path}")
+
+        # 🔹 Check if the file exists
+        if os.path.exists(attention_map_path):
+            print(f"✅ Found attention map: {attention_map_path}")
+            return send_file(attention_map_path, mimetype='application/octet-stream', as_attachment=True)
+        else:
+            print(f"❌ Attention map not found: {attention_map_path}")
+            return jsonify({"error": "Attention map file not found"}), 404
+    except Exception as e:
+        print(f"❌ Error fetching attention map: {e}")
+        return jsonify({"error": str(e)}), 500
+
 # lists all files in a folder
 @app.route('/files/<foldername>/<int:sample_number>', methods=['GET'])
 def list_files(foldername, sample_number):

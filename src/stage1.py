@@ -1440,11 +1440,11 @@ def run_diffusion_1(input_folder,
     #print("training model...")
     trainer.train()
 
-run_diffusion_1(input_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed", 
-                output_folder= "/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/test_rightpleur_noleft", 
-                dont_delete_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard",
-                model_folder="/media/volume/gen-ai-volume/MedSyn/models/stage1", 
-                attention_folder="/media/volume/gen-ai-volume/MedSyn/results/saliency_maps/test_rightpleur_noleft",
-                num_sample=1,
-                noise_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/saved_noise/test_rightpleur_noleft",
-                read_img_flag=False)
+# run_diffusion_1(input_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed", 
+#                 output_folder= "/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/test_rightpleur_noleft", 
+#                 dont_delete_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard",
+#                 model_folder="/media/volume/gen-ai-volume/MedSyn/models/stage1", 
+#                 attention_folder="/media/volume/gen-ai-volume/MedSyn/results/saliency_maps/test_rightpleur_noleft",
+#                 num_sample=1,
+#                 noise_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/saved_noise/test_rightpleur_noleft",
+#                 read_img_flag=False)

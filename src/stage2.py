@@ -1329,8 +1329,8 @@ def run_diffusion_2(input_folder,
     print("training model...")
     trainer_high_res.train()
 
-run_diffusion_2(input_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/test_rightpleur_noleft", 
-                    output_folder="/media/volume/gen-ai-volume/MedSyn/results/img_256_standard", 
-                    model_folder="/media/volume/gen-ai-volume/MedSyn/models/stage2",
-                    filename="test_rightpleur_noleft.npy",
-                    num_series_exists=0)
+# run_diffusion_2(input_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/test_rightpleur_noleft", 
+#                     output_folder="/media/volume/gen-ai-volume/MedSyn/results/img_256_standard", 
+#                     model_folder="/media/volume/gen-ai-volume/MedSyn/models/stage2",
+#                     filename="test_rightpleur_noleft.npy",
+#                     num_series_exists=0)
