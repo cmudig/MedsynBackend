@@ -210,23 +210,6 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         torch.cuda.empty_cache()
         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
 
-        # if not read_img_flag:
-        # Run low-res model
-        # run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
-        #                 output_folder=FILES_FOLDER +"/img_64_standard/" + studyInstanceUID,
-        #                 model_folder=STAGE1_MODEL_FOLDER, 
-        #                 num_sample=1)
-
-        # torch.cuda.empty_cache()
-        # accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
-
-        # # Run high-res model
-        # run_diffusion_2(input_folder=FILES_FOLDER+ "/img_64_standard/" + studyInstanceUID, 
-        #             output_folder=FILES_FOLDER +"/img_256_standard", 
-        #             model_folder=STAGE2_MODEL_FOLDER,
-        #             filename=filename,
-        #             num_series_exists=num_series_exists
-        #             )
         run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
                         output_folder=FILES_FOLDER +"/img_64_standard", 
                         noise_folder=FILES_FOLDER+"/img_64_standard/saved_noise/" + studyInstanceUID,
