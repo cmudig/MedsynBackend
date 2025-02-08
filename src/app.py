@@ -15,10 +15,10 @@ import signal
 import subprocess
 import time
 import numpy as np
+from flask import Flask, jsonify, send_file
 import cv2
 import nibabel as nib
-import base64
-import scipy.ndimage as ndimage
+from scipy.ndimage import zoom
 
 
 app = Flask(__name__)
@@ -47,159 +47,93 @@ def api_post():
     data = request.json
     return jsonify(data), 200
 
-def convert_attention_map_to_nifti(attention_map_path, foldername, sample_number):
+
+def overlay_heatmap_on_ct(ct_scan_folder, heatmap_npy_path, foldername, sample_number):
     """
-    Converts an attention map `.npy` file into a NIfTI (.nii.gz) file and interpolates
-    the processed volume to have 256 slices instead of the original slice count.
+    Overlays a heatmap (stored as .npy) onto a CT scan (DICOM series) and saves the combined images as a new DICOM series.
     """
-    nii_output_folder = os.path.join(FILES_FOLDER, "nii_output")
-    os.makedirs(nii_output_folder, exist_ok=True)
-    nii_filename = f"{foldername}_sample_{sample_number}_attention.nii.gz"
-    nii_path = os.path.join(nii_output_folder, nii_filename)
-
-    print(f"🔄 Converting {attention_map_path} to {nii_path}...")
-
-    # Load the attention map
-    attention_maps = np.load(attention_map_path)
-    print(f"Loaded attention map shape: {attention_maps.shape}")
-
-    # If the second dimension is a singleton, squeeze it out.
-    if attention_maps.shape[1] == 1:
-        attention_maps = np.squeeze(attention_maps, axis=1)
-    print(f"Fixed attention map shape: {attention_maps.shape}")
-    # For example, now attention_maps might be (4, 1280, 64, 8, 8)
-
-    # Set the target output resolution for each slice.
-    target_resolution = (256, 256)  # (width, height)
-
-    # Determine how many slices we will process. In your example, M=64.
-    num_slices = attention_maps.shape[2]
-    print(f"Processing {num_slices} slices (from dimension 2).")
-
-    # Initialize an array to hold the processed slices.
-    processed_volume = np.zeros((num_slices, target_resolution[1], target_resolution[0]), dtype=np.float32)
-
-    # Loop over each slice index.
-    for s in range(num_slices):
-        # Extract a 2D slice: attention_maps[:, 0, s, :, :] -> shape (num_heads, H, W)
-        # Average over the attention heads.
-        slice_array = attention_maps[:, 0, s, :, :].mean(axis=0)
-        # Resize slice to the target resolution.
-        resized_slice = cv2.resize(slice_array, target_resolution, interpolation=cv2.INTER_CUBIC)
-        # Flip vertically.
-        resized_slice = np.flipud(resized_slice)
-        # Normalize the resized slice to the range [0, 1].
-        normalized_slice = (resized_slice - np.min(resized_slice)) / (np.max(resized_slice) - np.min(resized_slice) + 1e-8)
-        processed_volume[s] = normalized_slice
-
-    print(f"✅ Processed volume shape before interpolation: {processed_volume.shape}")
-    # If the number of slices is not 256, interpolate along the slice dimension.
-    if num_slices != 256:
-        zoom_factor = 256 / num_slices  # e.g., 256/64 = 4.0
-        processed_volume = ndimage.zoom(processed_volume, (zoom_factor, 1, 1), order=3)
-        print(f"After interpolation, volume shape: {processed_volume.shape}")
-
-    # Save the 3D volume as a NIfTI file.
-    nii_image = nib.Nifti1Image(processed_volume, affine=np.eye(4))
-    nib.save(nii_image, nii_path)
-    print(f"✅ Saved NIfTI file to: {nii_path}")
-    return nii_path
-
-
-def convert_nifti_to_dicom(nii_path, foldername, sample_number):
-    """
-    Converts a multi-slice NIfTI (.nii.gz) file into a multi-slice DICOM series.
-    """
-    dicom_output_folder = os.path.join(FILES_FOLDER, "dicom_overlays", foldername)
+    dicom_output_folder = os.path.join(FILES_FOLDER, "dicom_overlays", foldername, sample_number)
     os.makedirs(dicom_output_folder, exist_ok=True)
-    dicom_filename = os.path.join(dicom_output_folder, f"{foldername}_sample_{sample_number}_overlay.dcm")
 
-    print(f"🔄 Converting {nii_path} to DICOM at {dicom_filename}...")
+    # Load the heatmap from .npy
+    heatmap_data = np.load(heatmap_npy_path)  # Shape: (num_heads, 1, num_slices, H, W)
+    print(f"✅ Loaded heatmap: {heatmap_data.shape}")
 
-    # Load the NIfTI file
-    img = nib.load(nii_path)
-    data = img.get_fdata()  # Shape: (num_slices, height, width)
-    affine = img.affine
+    # Remove singleton dimension if necessary
+    if heatmap_data.shape[1] == 1:
+        heatmap_data = np.squeeze(heatmap_data, axis=1)  # Shape: (num_heads, num_slices, H, W)
 
-    # Read a reference DICOM file for metadata
-    reference_dicom_file = "/media/volume/gen-ai-volume/MedSyn/results/dicom/test_dicom/slice_000.dcm"
-    ds = pydicom.dcmread(reference_dicom_file)
+    # Average over attention heads
+    heatmap_data = heatmap_data.mean(axis=0)  # Shape: (num_slices, H, W)
 
-    # Set metadata for AI overlay
-    ds.PatientName = "AI"
-    ds.PatientID = "0000"
-    ds.Modality = "AI"
-    ds.SeriesDescription = "Attention Map Overlay"
-    ds.SeriesInstanceUID = pydicom.uid.generate_uid()
-    ds.Rows, ds.Columns = data.shape[1], data.shape[2]
-    ds.SliceThickness = float(abs(affine[2, 2]))
+    # List all CT scan slices
+    dicom_files = sorted([f for f in os.listdir(ct_scan_folder) if f.endswith(".dcm")])
+    num_ct_slices = len(dicom_files)
 
-    ds.SamplesPerPixel = 1  # Grayscale
-    ds.BitsAllocated = 8  # 8-bit overlay
-    ds.BitsStored = 8
-    ds.HighBit = 7
-    ds.PixelRepresentation = 0  # Unsigned integer
-    ds.PhotometricInterpretation = "MONOCHROME2"
+    # Ensure heatmap slices match CT scan slices (from 64 → 256)
+    heatmap_slices = heatmap_data.shape[0]
+    if heatmap_slices != num_ct_slices:
+        zoom_factor = num_ct_slices / heatmap_slices  # 256 / 64 = 4.0
+        heatmap_data = zoom(heatmap_data, (zoom_factor, 1, 1), order=3)  # Interpolating slices
+        print(f"🔄 Resized heatmap from {heatmap_slices} → {heatmap_data.shape[0]} slices")
 
-    # Normalize to 8-bit
-    data = (data - np.min(data)) / (np.max(data) - np.min(data)) * 255
-    data = data.astype(np.uint8)
-
-    # Save multi-slice DICOM
+    # Process each DICOM slice
     dicom_list = []
-    for i in range(data.shape[0]):
-        slice_data = data[i, :, :]
+    for i, dicom_filename in enumerate(dicom_files):
+        dicom_path = os.path.join(ct_scan_folder, dicom_filename)
+        ds = pydicom.dcmread(dicom_path)
 
-        # Set slice-specific metadata
-        ds.InstanceNumber = i + 1
-        ds.ImagePositionPatient = [0, 0, -i]
-        ds.SliceLocation = i * ds.SliceThickness
-        ds.PixelData = slice_data.tobytes()
+        # Read the CT image
+        ct_image = ds.pixel_array.astype(np.float32)
+        ct_image = (ct_image - np.min(ct_image)) / (np.max(ct_image) - np.min(ct_image))  # Normalize
 
-        # Save each slice in DICOM format
-        slice_filename = os.path.join(dicom_output_folder, f"slice_{i:03d}.dcm")
-        ds.save_as(slice_filename)
-        dicom_list.append(slice_filename)
+        # Read the corresponding heatmap slice
+        heatmap_slice = heatmap_data[i, :, :]
+        heatmap_slice = cv2.resize(heatmap_slice, (ct_image.shape[1], ct_image.shape[0]), interpolation=cv2.INTER_CUBIC)
+        heatmap_slice = (heatmap_slice - np.min(heatmap_slice)) / (np.max(heatmap_slice) - np.min(heatmap_slice))  # Normalize
 
-    print(f"✅ DICOM conversion complete. Files saved in {dicom_output_folder}")
+        # Overlay heatmap onto CT scan (blend using transparency)
+        overlayed_image = (ct_image * 0.7 + heatmap_slice * 0.3)  # Adjust blending ratio
+        overlayed_image = (overlayed_image * 255).astype(np.uint8)
+
+        # Update DICOM metadata
+        ds.PixelData = overlayed_image.tobytes()
+        ds.Rows, ds.Columns = overlayed_image.shape
+        ds.SeriesDescription = "CT Scan with Attention Overlay"
+        ds.SeriesInstanceUID = pydicom.uid.generate_uid()
+
+        # Save the new DICOM slice
+        output_dicom_path = os.path.join(dicom_output_folder, f"slice_{i:03d}.dcm")
+        ds.save_as(output_dicom_path)
+        dicom_list.append(output_dicom_path)
+
+    print(f"✅ Overlay process complete. DICOM saved at {dicom_output_folder}")
     return dicom_list
 
 
 # gets the attention map
-@app.route('/attention-maps/<foldername>/<int:sample_number>', methods=['GET'])
-def get_attention_maps(foldername, sample_number):
+@app.route('/attention-maps/<foldername>/<int:sample_number>/<studyInstanceUID>', methods=['GET'])
+def get_attention_maps(foldername, sample_number, studyInstanceUID):
     """
-    Flask API that processes an attention map (.npy) and converts it into a DICOM-compatible .nii.gz file.
+    Flask API endpoint to overlay a heatmap onto a CT scan and return the DICOM files.
     """
-    dcm_list = []
     try:
-        attention_map_filename = f"{foldername}_sample_{sample_number}_attention.npy"
-        attention_map_path = os.path.join(FILES_FOLDER, "saliency_maps", foldername, attention_map_filename)
+        heatmap_npy_path = os.path.join(FILES_FOLDER, "saliency_maps", foldername, f"{foldername}_sample_{sample_number}_attention.npy")
+        dicom_ct_folder = os.path.join(FILES_FOLDER, "dicom", f"{foldername}_sample_{sample_number}")
 
-        if not os.path.exists(attention_map_path):
-            return jsonify({"error": "Attention map file not found"}), 404
+        if not os.path.exists(heatmap_npy_path):
+            return jsonify({"error": "Heatmap NPY file not found"}), 404
+        if not os.path.exists(dicom_ct_folder):
+            return jsonify({"error": "CT scan folder not found"}), 404
 
-        print(f"✅ Found attention map: {attention_map_path}")
+        print(f"✅ Found heatmap: {heatmap_npy_path}")
+        print(f"✅ Found CT scan folder: {dicom_ct_folder}")
 
-        # Convert attention map to a NIfTI file for DICOM processing
-        nii_path = convert_attention_map_to_nifti(attention_map_path, foldername, sample_number)
-        print(f"✅ Saved attention map as NIfTI at: {nii_path}")
-
-        # Convert to DICOM
-        dicom_list = convert_nifti_to_dicom(nii_path, foldername, sample_number)
-
-        # Read the DICOM files and encode as base64
-        dicom_data_list = []
-        for dcm_path in dicom_list:
-            with open(dcm_path, 'rb') as f:
-                encoded = base64.b64encode(f.read()).decode('utf-8')
-            dicom_data_list.append(encoded)
-
-        return jsonify({"dicom_files": dicom_data_list}), 200
-
+        dicom_list = overlay_heatmap_on_ct(dicom_ct_folder, heatmap_npy_path, foldername, sample_number)
+        return jsonify({"dicom_files": dicom_list}), 200
 
     except Exception as e:
-        print(f"❌ Error processing attention map: {str(e)}")
+        print(f"❌ Error processing overlay: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 # lists all files in a folder
@@ -353,11 +287,12 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
 
     
     # clear output folder low-resolution
-    for fn in os.listdir(FILES_FOLDER +"/img_64_standard/" + studyInstanceUID):
-        file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
-        if os.path.isfile(file_path) and "dont_delete" not in fn:
-            if "saved_noise" not in fn:
-                os.remove(file_path)
+    if read_img_flag:
+        for fn in os.listdir(FILES_FOLDER +"/img_64_standard/" + studyInstanceUID):
+            file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
+            if os.path.isfile(file_path) and "dont_delete" not in fn:
+                if "saved_noise" not in fn:
+                    os.remove(file_path)
 
     try:
         torch.cuda.empty_cache()
@@ -374,7 +309,7 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                         output_folder=FILES_FOLDER +"/img_64_standard" + studyInstanceUID, 
                         noise_folder=FILES_FOLDER+"/img_64_standard/saved_noise/" + studyInstanceUID,
                         model_folder=STAGE1_MODEL_FOLDER, 
-                        dont_delete_path=FILES_FOLDER+"/img_64_standard",
+                        dont_delete_folder=FILES_FOLDER+"/img_64_standard",
                         attention_folder=FILES_FOLDER+"saliency_maps/"+studyInstanceUID,
                         num_sample=1,
                         read_img_flag=read_img_flag)
@@ -448,26 +383,26 @@ def _save_text_to_file(folder_path, file_name, text_content):
     
     print(f"File '{file_name}' saved in '{folder_path}' with the provided content.")
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # app.run(host='0.0.0.0', port=5000, debug=True)
 
 
     # studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag
-    # description="Calcification, Atelectasis, Opacity, Consolidation"
+    description="Calcification, Atelectasis, Opacity, Consolidation"
 
-    # run_text_extractor_and_models(
-    #     studyInstanceUID="kate",
-    #     description=description, 
-    #     prompt="right pleural effusion",
-    #     # prompt="left pleural effusion",
-    #     output_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed",
-    #     filename="20250202174321rightkate.npy",
-    #     # filename="20250202173128largepanco.npy",
-    #     patient_name="kate2",
-    #     patient_id="test_w_alvaro",
-    #     series_instance_uid="123alvaro",
-    #     read_img_flag=False,
-    #     num_series_exists=0
-    # )
+    run_text_extractor_and_models(
+        studyInstanceUID="kate",
+        description=description, 
+        prompt="left pleural effusion",
+        # prompt="left pleural effusion",
+        output_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed",
+        filename="leftpleuraleffusion.npy",
+        # filename="20250202173128largepanco.npy",
+        patient_name="k",
+        patient_id="leftpleur",
+        series_instance_uid="leftpleur",
+        read_img_flag=False,
+        num_series_exists=0
+    )
 
 
 """
