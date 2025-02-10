@@ -18,4 +18,4 @@ For model weights see in google drive: ```Generative AI in Radiology > MedSyn Mo
 * This is deplloyed using nginx and flask. 
 * To see the status of the nginx, `sudo systemctl status nginx` and to see the status of the flask app `sudo systemctl status flask_app`
 * To modify the flask app configurations go to `/etc/systemd/system/flask_app.service`
-* To run the gunicorn setup not through flask and nginx, you should first stop the fllask_app `sudo systemctl stop flask_app` then go to `~/MedsynBackend/src/`, activate the medsyn-3-8 conda environment if it's not activated then run this command ``/home/exouser/miniconda3/envs/medsyn-3-8/bin/gunicorn --workers 1 --bind 0.0.0.0:5000 app:app
+* To run the gunicorn setup not through flask and nginx, you should first stop the fllask_app `sudo systemctl stop flask_app` then go to `~/MedsynBackend/src/`, activate the medsyn-3-8 conda environment if it's not activated then run this command `/home/exouser/miniconda3/envs/medsyn-3-8/bin/gunicorn --workers 1 --bind 0.0.0.0:5000 app:app`
