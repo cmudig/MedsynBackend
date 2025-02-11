@@ -112,25 +112,34 @@ def overlay_heatmap_on_ct(ct_scan_folder, heatmap_npy_path, foldername, sample_n
 
 
 # gets the attention map
-@app.route('/attention-maps/<foldername>/<int:sample_number>/<studyInstanceUID>', methods=['GET'])
-def get_attention_maps(foldername, sample_number, studyInstanceUID):
+# @app.route('/attention-maps/<foldername>/<int:sample_number>/<studyInstanceUID>', methods=['GET'])
+
+@app.route('/attention-maps/<foldername>/<int:sample_number>', methods=['GET'])
+def get_attention_maps(foldername, sample_number):
     """
     Flask API endpoint to overlay a heatmap onto a CT scan and return the DICOM files.
     """
     try:
-        heatmap_npy_path = os.path.join(FILES_FOLDER, "saliency_maps", foldername, f"{foldername}_sample_{sample_number}_attention.npy")
-        dicom_ct_folder = os.path.join(FILES_FOLDER, "dicom", f"{foldername}_sample_{sample_number}")
+        # heatmap_npy_path = os.path.join(FILES_FOLDER, "saliency_maps", foldername, f"{foldername}_sample_{sample_number}_attention.npy")
+        # dicom_ct_folder = os.path.join(FILES_FOLDER, "dicom", f"{foldername}_sample_{sample_number}")
 
-        if not os.path.exists(heatmap_npy_path):
-            return jsonify({"error": "Heatmap NPY file not found"}), 404
-        if not os.path.exists(dicom_ct_folder):
-            return jsonify({"error": "CT scan folder not found"}), 404
+        # if not os.path.exists(heatmap_npy_path):
+        #     return jsonify({"error": "Heatmap NPY file not found"}), 404
+        # if not os.path.exists(dicom_ct_folder):
+        #     return jsonify({"error": "CT scan folder not found"}), 404
 
-        print(f"✅ Found heatmap: {heatmap_npy_path}")
-        print(f"✅ Found CT scan folder: {dicom_ct_folder}")
+        # print(f"✅ Found heatmap: {heatmap_npy_path}")
+        # print(f"✅ Found CT scan folder: {dicom_ct_folder}")
 
-        dicom_list = overlay_heatmap_on_ct(dicom_ct_folder, heatmap_npy_path, foldername, sample_number)
-        return jsonify({"dicom_files": dicom_list}), 200
+        # dicom_list = overlay_heatmap_on_ct(dicom_ct_folder, heatmap_npy_path, foldername, sample_number)
+        dicom_output_folder = os.path.join(FILES_FOLDER, "dicom_overlays", foldername+"_sample_"+str(sample_number))
+        print("OUR OUTPUT DICOM FOLDER IS:", dicom_output_folder)
+        files = os.listdir(dicom_output_folder)
+        files = [f for f in files if os.path.isfile(os.path.join(dicom_output_folder, f))]
+        # return jsonify(files)
+        print("our length of folder is: ", len(files))
+
+        return jsonify({"dicom_files": files}), 200
 
     except Exception as e:
         print(f"❌ Error processing overlay: {str(e)}")
