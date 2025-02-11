@@ -333,11 +333,11 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
 
         run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
-                        output_folder=FILES_FOLDER +"/img_64_standard" + studyInstanceUID, 
+                        output_folder=FILES_FOLDER +"/img_64_standard/" + studyInstanceUID, 
                         noise_folder=FILES_FOLDER+"/img_64_standard/saved_noise/" + studyInstanceUID,
                         model_folder=STAGE1_MODEL_FOLDER, 
                         dont_delete_folder=FILES_FOLDER+"/img_64_standard",
-                        attention_folder=FILES_FOLDER+"saliency_maps/"+studyInstanceUID,
+                        attention_folder=FILES_FOLDER+"/saliency_maps/"+studyInstanceUID,
                         num_sample=1,
                         read_img_flag=read_img_flag)
 
@@ -417,16 +417,16 @@ if __name__ == '__main__':
     description="Calcification, Atelectasis, Opacity, Consolidation"
 
     run_text_extractor_and_models(
-        studyInstanceUID="kate",
+        studyInstanceUID="kate3",
         description=description, 
         prompt="left pleural effusion",
         # prompt="left pleural effusion",
         output_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed",
-        filename="leftpleuraleffusion.npy",
+        filename="leftpleuraleffusion2.npy",
         # filename="20250202173128largepanco.npy",
         patient_name="k",
-        patient_id="leftpleur",
-        series_instance_uid="leftpleur",
+        patient_id="leftpleur3",
+        series_instance_uid="leftpleur3",
         read_img_flag=False,
         num_series_exists=0
     )
