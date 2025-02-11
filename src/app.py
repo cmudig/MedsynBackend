@@ -77,6 +77,8 @@ def overlay_heatmap_on_ct(ct_scan_folder, heatmap_npy_path, foldername, sample_n
         heatmap_data = zoom(heatmap_data, (zoom_factor, 1, 1), order=3)  # Interpolating slices
         print(f"🔄 Resized heatmap from {heatmap_slices} → {heatmap_data.shape[0]} slices")
 
+    series_instance_uid = pydicom.uid.generate_uid()
+    
     # Process each DICOM slice
     dicom_list = []
     for i, dicom_filename in enumerate(dicom_files):
@@ -100,7 +102,7 @@ def overlay_heatmap_on_ct(ct_scan_folder, heatmap_npy_path, foldername, sample_n
         ds.PixelData = overlayed_image.tobytes()
         ds.Rows, ds.Columns = overlayed_image.shape
         ds.SeriesDescription = "CT Scan with Attention Overlay"
-        ds.SeriesInstanceUID = pydicom.uid.generate_uid()
+        ds.SeriesInstanceUID = series_instance_uid
 
         # Save the new DICOM slice
         output_dicom_path = os.path.join(dicom_output_folder, f"slice_{i:03d}.dcm")
