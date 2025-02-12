@@ -47,120 +47,12 @@ def api_post():
     data = request.json
     return jsonify(data), 200
 
-
-def overlay_heatmap_on_ct(ct_scan_folder, heatmap_npy_path, foldername, sample_number):
-    """
-    Overlays a heatmap (stored as .npy) onto a CT scan (DICOM series) and saves the combined images as a new DICOM series.
-    """
-    dicom_output_folder = os.path.join(FILES_FOLDER, "dicom_overlays", foldername, sample_number)
-    os.makedirs(dicom_output_folder, exist_ok=True)
-
-    # Load the heatmap from .npy
-    heatmap_data = np.load(heatmap_npy_path)  # Shape: (num_heads, 1, num_slices, H, W)
-    print(f"✅ Loaded heatmap: {heatmap_data.shape}")
-
-    # Remove singleton dimension if necessary
-    if heatmap_data.shape[1] == 1:
-        heatmap_data = np.squeeze(heatmap_data, axis=1)  # Shape: (num_heads, num_slices, H, W)
-
-    # Average over attention heads
-    heatmap_data = heatmap_data.mean(axis=0)  # Shape: (num_slices, H, W)
-
-    # List all CT scan slices
-    dicom_files = sorted([f for f in os.listdir(ct_scan_folder) if f.endswith(".dcm")])
-    num_ct_slices = len(dicom_files)
-
-    # Ensure heatmap slices match CT scan slices (from 64 → 256)
-    heatmap_slices = heatmap_data.shape[0]
-    if heatmap_slices != num_ct_slices:
-        zoom_factor = num_ct_slices / heatmap_slices  # 256 / 64 = 4.0
-        heatmap_data = zoom(heatmap_data, (zoom_factor, 1, 1), order=3)  # Interpolating slices
-        print(f"🔄 Resized heatmap from {heatmap_slices} → {heatmap_data.shape[0]} slices")
-
-    series_instance_uid = pydicom.uid.generate_uid()
-    
-    # Process each DICOM slice
-    dicom_list = []
-    for i, dicom_filename in enumerate(dicom_files):
-        dicom_path = os.path.join(ct_scan_folder, dicom_filename)
-        ds = pydicom.dcmread(dicom_path)
-
-        # Read the CT image
-        ct_image = ds.pixel_array.astype(np.float32)
-        ct_image = (ct_image - np.min(ct_image)) / (np.max(ct_image) - np.min(ct_image))  # Normalize
-
-        # Read the corresponding heatmap slice
-        heatmap_slice = heatmap_data[i, :, :]
-        heatmap_slice = cv2.resize(heatmap_slice, (ct_image.shape[1], ct_image.shape[0]), interpolation=cv2.INTER_CUBIC)
-        heatmap_slice = (heatmap_slice - np.min(heatmap_slice)) / (np.max(heatmap_slice) - np.min(heatmap_slice))  # Normalize
-
-        # Overlay heatmap onto CT scan (blend using transparency)
-        overlayed_image = (ct_image * 0.7 + heatmap_slice * 0.3)  # Adjust blending ratio
-        overlayed_image = (overlayed_image * 255).astype(np.uint8)
-
-        # Update DICOM metadata
-        ds.PixelData = overlayed_image.tobytes()
-        ds.Rows, ds.Columns = overlayed_image.shape
-        ds.SeriesDescription = "CT Scan with Attention Overlay"
-        ds.SeriesInstanceUID = series_instance_uid
-
-        # Save the new DICOM slice
-        output_dicom_path = os.path.join(dicom_output_folder, f"slice_{i:03d}.dcm")
-        ds.save_as(output_dicom_path)
-        dicom_list.append(output_dicom_path)
-
-    print(f"✅ Overlay process complete. DICOM saved at {dicom_output_folder}")
-    return dicom_list
-
-@app.route('/dicom_files/<foldername>/<int:sample_number>/<filename>', methods=['GET'])
-def get_dicom_files(foldername, sample_number, filename):
-    try:
-        # Construct the path
-        dicom_folder = os.path.join(FILES_FOLDER, "dicom_overlays", f"{foldername}_sample_{sample_number}")
-        dicom_file_path = os.path.join(dicom_folder, filename)
-
-        print(f"Checking file: {dicom_file_path}")
-
-        # Ensure file exists
-        if not os.path.isfile(dicom_file_path):
-            return jsonify({"error": "File not found"}), 404
-
-        # Load the DICOM file
-        dicom_data = pydicom.dcmread(dicom_file_path)
-
-        print(f"🔎 Checking DICOM metadata for {filename}:")
-        print(f"   - StudyInstanceUID: {dicom_data.StudyInstanceUID}")
-        print(f"   - SeriesInstanceUID: {dicom_data.SeriesInstanceUID}")
-
-        # Convert to byte stream
-        dicom_bytes = io.BytesIO()
-        dicom_data.save_as(dicom_bytes)
-        dicom_bytes.seek(0)
-
-        # Serve the file
-        return send_file(dicom_bytes, mimetype="application/dicom", as_attachment=False)
-
-    except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({"error": str(e)}), 500
-
-# gets the attention map
-# @app.route('/attention-maps/<foldername>/<int:sample_number>/<studyInstanceUID>', methods=['GET'])
-
 @app.route('/dicom_files/<foldername>/<int:sample_number>', methods=['GET'])
 def list_dicom_files(foldername, sample_number):
 
     try:
-        # Construct full path
-        dicom_folder = os.path.join(FILES_FOLDER, "dicom_overlays", f"{foldername}_sample_{sample_number}")
-
-        # Ensure folder exists
-        if not os.path.exists(dicom_folder):
-            return jsonify({"error": "Folder not found"}), 404
-
-        # List files in the folder
-        files = [f for f in os.listdir(dicom_folder) if os.path.isfile(os.path.join(dicom_folder, f))]
-        return jsonify({"dicom_files": files}), 200
+       
+       return jsonify({"data": foldername}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -355,7 +247,7 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
 
         # convert nifti to dicom
         nifti_file = os.path.join(FILES_FOLDER,"img_256_standard",filename[:-4]+"_sample_" + str(num_series_exists) + ".nii.gz")
-        output_folder = os.path.join(FILES_FOLDER,"dicom",filename[:-4]+"_sample_" + str(num_series_exists))
+        output_folder = os.path.join(FILES_FOLDER,"dicom",studyInstanceUID+"_sample_"+str(num_series_exists))
         
         print(series_instance_uid)
         print(nifti_file)
@@ -412,26 +304,26 @@ def _save_text_to_file(folder_path, file_name, text_content):
     
     print(f"File '{file_name}' saved in '{folder_path}' with the provided content.")
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
     # studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag
-    description="Calcification, Atelectasis, Opacity, Consolidation"
+    # description="Calcification, Atelectasis, Opacity, Consolidation"
 
-    run_text_extractor_and_models(
-        studyInstanceUID="kate3",
-        description=description, 
-        prompt="left pleural effusion",
-        # prompt="left pleural effusion",
-        output_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed",
-        filename="leftpleuraleffusion2.npy",
-        # filename="20250202173128largepanco.npy",
-        patient_name="k",
-        patient_id="leftpleur3",
-        series_instance_uid="leftpleur3",
-        read_img_flag=False,
-        num_series_exists=0
-    )
+    # run_text_extractor_and_models(
+    #     studyInstanceUID="kate3",
+    #     description=description, 
+    #     prompt="left pleural effusion",
+    #     # prompt="left pleural effusion",
+    #     output_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed",
+    #     filename="leftpleuraleffusion2.npy",
+    #     # filename="20250202173128largepanco.npy",
+    #     patient_name="k",
+    #     patient_id="leftpleur3",
+    #     series_instance_uid="leftpleur3",
+    #     read_img_flag=False,
+    #     num_series_exists=0
+    # )
 
 
 """
