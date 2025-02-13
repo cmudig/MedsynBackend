@@ -264,9 +264,9 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         sys.stdout = old_stdout
         process_is_running=False
          # After diffusion completes, check and kill GPU processes
-        print("Checking for any lingering GPU processes...")
-        time.sleep(5)  # Ensure processes have updated
-        kill_gpu_process()  # Kill GPU processes
+        # print("Checking for any lingering GPU processes...")
+        # time.sleep(5)  # Ensure processes have updated
+        # kill_gpu_process()  # Kill GPU processes
 
 class StreamToFile(io.StringIO):
     def __init__(self):
