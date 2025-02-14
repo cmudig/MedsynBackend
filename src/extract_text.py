@@ -22,9 +22,6 @@ class TextExtractor:
         self.hidden_size = hidden_size
         self.save_seq_len = save_seq_len
 
-
-
-
         # init model
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         #print(self.device)
@@ -51,20 +48,19 @@ class TextExtractor:
 
 
 
-
     def run(self, text, output_folder, file_name):
         if not os.path.exists(output_folder):
             print("Createing output folder: " + output_folder)
             os.makedirs(output_folder)
 
         file_path = os.path.join(output_folder, file_name)
-        if os.path.exists(file_path):
-            print("File already exists: " + file_path)
+        tokens_path = os.path.join(output_folder, file_name.replace('.npy', '_token.npy'))
+        if os.path.exists(file_path) and os.path.exists(tokes_path):
+            print("File already exists: " + file_path + " and " + tokens_path)
 
             return
 
 
-        
         example_0 = self.tokenize_function(text)
         for item in example_0.keys():
             example_0[item] = example_0[item].to(self.device)
@@ -79,6 +75,11 @@ class TextExtractor:
 
         np.save(file_path, feature_0_np)
         print("Saved to: " + file_path)
+
+        #save tokens
+        tokens_np = example_0['inpt_ids'][:, :self.save_seq_len].detach().cpu().numpy()
+        np.save(tokens_path, tokens_np)
+        print("Saved rokens to: " + tokens_path)
 
     def tokenize_function(self, example_text):
         # Remove empty lines
