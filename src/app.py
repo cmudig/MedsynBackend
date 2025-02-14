@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_file, send_from_directory
 import os
 from extract_text import TextExtractor
-from stage1 import run_diffusion_1
+from MedsynBackend.src.stage1_kates_attnetion import run_diffusion_1
 from stage2 import run_diffusion_2
 import threading
 import io
