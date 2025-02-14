@@ -54,8 +54,8 @@ class TextExtractor:
             os.makedirs(output_folder)
 
         file_path = os.path.join(output_folder, file_name)
-        tokens_path = os.path.join(output_folder, file_name.replace('.npy', '_token.npy'))
-        if os.path.exists(file_path) and os.path.exists(tokes_path):
+        tokens_path = os.path.join(output_folder, file_name.replace('.npy', '_tokens.npy'))
+        if os.path.exists(file_path) and os.path.exists(tokens_path):
             print("File already exists: " + file_path + " and " + tokens_path)
 
             return
@@ -77,7 +77,7 @@ class TextExtractor:
         print("Saved to: " + file_path)
 
         #save tokens
-        tokens_np = example_0['inpt_ids'][:, :self.save_seq_len].detach().cpu().numpy()
+        tokens_np = example_0['input_ids'][:, :self.save_seq_len].detach().cpu().numpy()
         np.save(tokens_path, tokens_np)
         print("Saved rokens to: " + tokens_path)
 
