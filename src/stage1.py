@@ -1409,6 +1409,11 @@ class Trainer(object):
 
                                 # Average over time steps
                                 avg_attention_map = time_attention_maps.mean(dim=0)  # [batch_size, frames, query_len, key_len]
+                                # Stack attention maps per frame
+                                attention_maps_per_frame = np.stack(attention_maps_per_frame)  # [frames, H, W]
+
+                                attention_save_path = os.path.join(self.attention_folder, f"{file_name}_token_{token_idx}_{token_str}_heatmaps.npy")
+                                print("ATTENTION PATH: ", attention_save_path)
 
                                 # Map attention maps back to tokens
                                 for token_idx in range(tokens.shape[1]):
@@ -1426,7 +1431,6 @@ class Trainer(object):
 
                                     # Stack attention maps per frame
                                     attention_maps_per_frame = np.stack(attention_maps_per_frame)  # [frames, H, W]
-                               
                                     # Save the attention maps for this token
                                     np.save(attention_save_path, attention_maps_per_frame)
                                     print(f"Saved heatmap for token '{token_str}' at: {attention_save_path}")
@@ -1471,6 +1475,9 @@ class Trainer(object):
                                 # Average over time steps
                                 avg_attention_map = time_attention_maps.mean(dim=0)  # [batch_size, frames, query_len, key_len]
 
+                                attention_save_path = os.path.join(self.attention_folder, file_name.replace(".npy", "_attention.npy"))
+                                print("ATTENTION PATH: ", attention_save_path)
+
                                 # Map attention maps back to tokens
                                 for token_idx in range(tokens.shape[1]):
                                     token_id = tokens[0, token_idx]
@@ -1487,7 +1494,6 @@ class Trainer(object):
 
                                     # Stack attention maps per frame
                                     attention_maps_per_frame = np.stack(attention_maps_per_frame)  # [frames, H, W]
-                               
                                     # Save the attention maps for this token
                                     np.save(attention_save_path, attention_maps_per_frame)
                                     print(f"Saved heatmap for token '{token_str}' at: {attention_save_path}")
