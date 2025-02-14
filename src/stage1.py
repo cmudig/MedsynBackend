@@ -1105,7 +1105,7 @@ class GaussianDiffusion(nn.Module):
             cond = bert_embed(tokenize(cond), return_cls_repr=self.text_use_bert_cls)
             cond = cond.to(device)
 
-        x_recon, *_ = self.denoise_fn(x_noisy, t*(self.num_timesteps-1), indexes=indexes, cond=cond, **kwargs)
+        x_recon = self.denoise_fn(x_noisy, t*(self.num_timesteps-1), indexes=indexes, cond=cond, **kwargs)
 
         if self.loss_type == 'l1':
             loss = F.l1_loss(x_start, x_recon)
@@ -1427,7 +1427,7 @@ class Trainer(object):
                                     # Stack attention maps per frame
                                     attention_maps_per_frame = np.stack(attention_maps_per_frame)  # [frames, H, W]
                                     # Save the attention maps for this token
-                                    attention_save_path = os.path.join(self.attention_folder, f"{file_name}_token_{token_idx}_{token_str}_heatmaps.npy")
+                                    attention_save_path = os.path.join(self.attention_folder, f"{file_name[:-4]}_token_{token_idx}_{token_str}_heatmaps.npy")
                                     print("ATTENTION PATH: ", attention_save_path)
 
                                     np.save(attention_save_path, attention_maps_per_frame)
@@ -1490,7 +1490,7 @@ class Trainer(object):
                                     # Stack attention maps per frame
                                     attention_maps_per_frame = np.stack(attention_maps_per_frame)  # [frames, H, W]
                                     # Save the attention maps for this token
-                                    attention_save_path = os.path.join(self.attention_folder, f"{file_name}_token_{token_idx}_{token_str}_heatmaps.npy")
+                                    attention_save_path = os.path.join(self.attention_folder, f"{file_name[-4]}_token_{token_idx}_{token_str}_heatmaps.npy")
                                     print("ATTENTION PATH: ", attention_save_path)
 
                                     np.save(attention_save_path, attention_maps_per_frame)
