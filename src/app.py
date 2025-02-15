@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_file, send_from_directory
 import os
 from extract_text import TextExtractor
-from MedsynBackend.src.stage1 import run_diffusion_1
+from stage1 import run_diffusion_1
 from stage2 import run_diffusion_2
 import threading
 import io
@@ -304,11 +304,11 @@ def _save_text_to_file(folder_path, file_name, text_content):
     
     print(f"File '{file_name}' saved in '{folder_path}' with the provided content.")
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
     # studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag
-    description="Calcification, Atelectasis, Opacity, Consolidation"
+    # description="Calcification, Atelectasis, Opacity, Consolidation"
 
     # run_text_extractor_and_models(
     #     studyInstanceUID="kate3",
