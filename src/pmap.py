@@ -4,6 +4,8 @@ from datetime import datetime
 from highdicom.pm import ParametricMap, RealWorldValueMapping
 from pydicom.uid import generate_uid
 from scipy.ndimage import zoom
+import numpy as np
+import os
 
 def generate_pmap(heatmap_volume, threshold=0.5):
     """

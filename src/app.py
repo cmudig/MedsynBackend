@@ -319,22 +319,22 @@ def _save_text_to_file(folder_path, file_name, text_content):
     
     print(f"File '{file_name}' saved in '{folder_path}' with the provided content.")
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
-    description="Left Pleural Effusion"
+    # description="Left Pleural Effusion"
 
-    run_text_extractor_and_models(
-        studyInstanceUID="kate_leftpleur",
-        description=description, 
-        prompt="left pleural effusion, no consolidation, no right pleural effusion",
-        output_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed",
-        filename="kate_leftpleur.npy",
-        patient_name="k",
-        patient_id="10291029",
-        series_instance_uid="10291029",
-        read_img_flag=False,
-        num_series_exists=0
-    )
+    # run_text_extractor_and_models(
+    #     studyInstanceUID="kate_leftpleur",
+    #     description=description, 
+    #     prompt="left pleural effusion, no consolidation, no right pleural effusion",
+    #     output_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed",
+    #     filename="kate_leftpleur.npy",
+    #     patient_name="k",
+    #     patient_id="10291029",
+    #     series_instance_uid="10291029",
+    #     read_img_flag=False,
+    #     num_series_exists=0
+    # )
 
 
 """

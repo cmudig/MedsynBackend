@@ -44,7 +44,7 @@ set_seed(100)  # Use any fixed integer for reproducibility
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 torch.manual_seed(100)
-# torch.cuda.manual_seed_all(100)
+torch.cuda.manual_seed_all(100)
 
 
 def get_alpha_cum(t):
@@ -727,7 +727,7 @@ class Unet3D(nn.Module):
         x = self.mid_cross_attn1(x, kv=cond)
         cross_attn_module = self.mid_cross_attn1.fn.fn
         self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
-        print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn1")
+        # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn1")
         cross_attn_module.attention_maps = []
         x = self.mid_temporal_attn1(x, t)
         ###
@@ -735,7 +735,7 @@ class Unet3D(nn.Module):
         x = self.mid_cross_attn2(x, kv=cond)
         cross_attn_module = self.mid_cross_attn2.fn.fn
         self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
-        print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn2")
+        # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn2")
         cross_attn_module.attention_maps = []
         x = self.mid_temporal_attn2(x, t)
         ###
@@ -743,7 +743,7 @@ class Unet3D(nn.Module):
         x = self.mid_cross_attn3(x, kv=cond)
         cross_attn_module = self.mid_cross_attn3.fn.fn
         self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
-        print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn3")
+        # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn3")
         cross_attn_module.attention_maps = []
         x = self.mid_temporal_attn3(x, t)
         ###
@@ -751,7 +751,7 @@ class Unet3D(nn.Module):
         x = self.mid_cross_attn4(x, kv=cond)
         cross_attn_module = self.mid_cross_attn4.fn.fn
         self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
-        print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn4")
+        # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn4")
         cross_attn_module.attention_maps = []
         # self.heatmaps.extend(self.mid_cross_attn4.fn.fn.attention_maps)
         # print(f"Debug: Heatmap appended from mid_cross_attn4. Current length of heatmaps: {len(self.heatmaps)}")

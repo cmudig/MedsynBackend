@@ -883,7 +883,7 @@ class GaussianDiffusion(nn.Module):
     def p_sample_ddim(self, x, x_lr, slice_id, cond, t, t_minus, clip_denoised: bool, index, repeat_noise=False, use_original_steps=False, quantize_denoised=False,
                       temperature=1., noise_dropout=0., score_corrector=None, corrector_kwargs=None,
                       unconditional_guidance_scale=1., unconditional_conditioning=None):
-        b, *_, device = *x.shape, x.device
+        b, device = x.shape, x.device
 
         # pred_x0 = self.denoise_fn.forward_with_cond_scale(torch.cat([x_lr, x], dim=1), t, indexes=slice_id, cond=cond, cond_scale=1.0)
         x_recon = self.denoise_fn.forward_with_cond_scale(torch.cat([x_lr, x], dim=1), t, indexes=slice_id, cond=cond, cond_scale=1.0)
