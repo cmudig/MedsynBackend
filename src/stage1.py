@@ -34,7 +34,7 @@ import xformers, xformers.ops
 import sys
 
 #####for attentionmap checking########
-from accelerate.utils import set_seed
+# from accelerate.utils import set_seed
 import random
 random.seed(100)
 np.random.seed(100)
@@ -44,7 +44,7 @@ set_seed(100)  # Use any fixed integer for reproducibility
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 torch.manual_seed(100)
-torch.cuda.manual_seed_all(100)
+# torch.cuda.manual_seed_all(100)
 
 
 def get_alpha_cum(t):

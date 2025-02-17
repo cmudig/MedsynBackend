@@ -1,7 +1,20 @@
 <All keys matched successfully>
 (1, 192, 768)
-Saved to: /media/volume/gen-ai-volume/MedSyn/results/text_embed/20250215165350mildrightp.npy
-Saved rokens to: /media/volume/gen-ai-volume/MedSyn/results/text_embed/20250215165350mildrightp_tokens.npy
+Saved to: /media/volume/gen-ai-volume/MedSyn/results/text_embed/kate_leftpleur.npy
+Saved rokens to: /media/volume/gen-ai-volume/MedSyn/results/text_embed/kate_leftpleur_tokens.npy
 Textembedding stored in: /media/volume/gen-ai-volume/MedSyn/results/text_embed
-File '20250215165350mildrightp.txt' saved in '/media/volume/gen-ai-volume/MedSyn/results/prompts' with the provided content.
+File 'kate_leftpleur.txt' saved in '/media/volume/gen-ai-volume/MedSyn/results/prompts' with the provided content.
+Tokens file missing for dont_delete.npy
+found 1 text embedding files at /media/volume/gen-ai-volume/MedSyn/results/text_embed
+loading low-res model...
+Completed low res.
+Number of parameters: 54307908
+Map Location: cuda
+Model path: /media/volume/gen-ai-volume/MedSyn/models/stage2/1000_ckpt/pytorch_model.bin
+found 1 videos as gif files at /media/volume/gen-ai-volume/MedSyn/results/img_64_standard/kate_leftpleur
+loading model...
+Load accelerator state: /media/volume/gen-ai-volume/MedSyn/models/stage2/1000_ckpt
+training model...
+num_samples: 1
+High Resolution:   0%|          | 0/21 [00:00<?, ?it/s]High Resolution:   5%|4         | 1/21 [00:04<01:37,  4.89s/it]High Resolution:  10%|9         | 2/21 [00:08<01:23,  4.41s/it]High Resolution:  14%|#4        | 3/21 [00:13<01:16,  4.26s/it]High Resolution:  19%|#9        | 4/21 [00:17<01:11,  4.19s/it]High Resolution:  24%|##3       | 5/21 [00:21<01:06,  4.15s/it]High Resolution:  29%|##8       | 6/21 [00:25<01:01,  4.13s/it]High Resolution:  33%|###3      | 7/21 [00:29<00:57,  4.11s/it]High Resolution:  33%|###3      | 7/21 [00:33<01:06,  4.78s/it]
 Uploading Data to Orthanc...

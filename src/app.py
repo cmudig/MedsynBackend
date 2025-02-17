@@ -3,6 +3,8 @@ import os
 from extract_text import TextExtractor
 from stage1 import run_diffusion_1
 from stage2 import run_diffusion_2
+from heatmap import create_heatmap
+from pmap import run_pmap_function
 import threading
 import io
 import sys
@@ -233,7 +235,10 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                         dont_delete_folder=FILES_FOLDER+"/img_64_standard",
                         attention_folder=FILES_FOLDER+"/saliency_maps/"+studyInstanceUID,
                         num_sample=1,
+                        tokenizer=text_extractor.tokenizer,
                         read_img_flag=read_img_flag)
+        
+        print("Completed low res.")
 
         torch.cuda.empty_cache()
         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
@@ -244,6 +249,8 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                         model_folder=STAGE2_MODEL_FOLDER,
                         filename=filename,
                         num_series_exists=num_series_exists)
+        
+        print("Completed high res.")
 
         # convert nifti to dicom
         nifti_file = os.path.join(FILES_FOLDER,"img_256_standard",filename[:-4]+"_sample_" + str(num_series_exists) + ".nii.gz")
@@ -258,7 +265,15 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                         study_instance_uid=studyInstanceUID,
                         patient_name=patient_name,
                         patient_id=patient_id)
+        
+        print("Now making heatmap and pmap....")
+        # first we need to get the heatmap volume
+        heatmap_data_path = FILES_FOLDER+'/saliency_maps/'+studyInstanceUID+'/'+filename[:-4]+"_sample_" + str(num_series_exists)+'_token_0_[CLS]_heatmaps.npy'
+        hm_vol = create_heatmap(heatmap_data_path)
 
+        print('Now maknig pmap...')
+        out_path = run_pmap_function(studyInstanceUID, hm_vol, num_series_exists, 0.6)
+        print(f"We saved the pmap at {out_path}")
 
     finally:
         print("Uploading Data to Orthanc...")
@@ -304,26 +319,22 @@ def _save_text_to_file(folder_path, file_name, text_content):
     
     print(f"File '{file_name}' saved in '{folder_path}' with the provided content.")
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # app.run(host='0.0.0.0', port=5000, debug=True)
 
+    description="Left Pleural Effusion"
 
-    # studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag
-    # description="Calcification, Atelectasis, Opacity, Consolidation"
-
-    # run_text_extractor_and_models(
-    #     studyInstanceUID="kate3",
-    #     description=description, 
-    #     prompt="left pleural effusion",
-    #     # prompt="left pleural effusion",
-    #     output_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed",
-    #     filename="leftpleuraleffusion2.npy",
-    #     # filename="20250202173128largepanco.npy",
-    #     patient_name="k",
-    #     patient_id="leftpleur3",
-    #     series_instance_uid="leftpleur3",
-    #     read_img_flag=False,
-    #     num_series_exists=0
-    # )
+    run_text_extractor_and_models(
+        studyInstanceUID="kate_leftpleur",
+        description=description, 
+        prompt="left pleural effusion, no consolidation, no right pleural effusion",
+        output_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed",
+        filename="kate_leftpleur.npy",
+        patient_name="k",
+        patient_id="10291029",
+        series_instance_uid="10291029",
+        read_img_flag=False,
+        num_series_exists=0
+    )
 
 
 """
