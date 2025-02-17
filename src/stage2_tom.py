@@ -1,5 +1,8 @@
 import math
 import copy
+import time
+import SimpleITK as sitk
+
 import torch
 import numpy as np
 from torch import nn, einsum
@@ -15,7 +18,7 @@ from PIL import Image
 
 from tqdm import tqdm
 from einops import rearrange
-from dataloader import cache_transformed_text
+from dataloader import cache_transformed_train_data
 import glob, os
 from einops_exts import check_shape, rearrange_many
 
@@ -24,15 +27,9 @@ from rotary_embedding_torch import RotaryEmbedding
 from text import tokenize, bert_embed, BERT_MODEL_DIM
 
 from accelerate import Accelerator
-from accelerate.logging import get_logger
-from accelerate.utils import set_seed
-import accelerate
-from diffusers import DDIMScheduler, DDPMScheduler
-
-import xformers, xformers.ops
+import monai
 
 import sys
-
 
 def get_alpha_cum(t):
     return torch.where(t >= 0, torch.cos((t + 0.008) / 1.008 * math.pi / 2).clamp(min=0.0, max=1.0)**2, 1.0)
@@ -76,10 +73,10 @@ def make_ddim_sampling_parameters(alphacums, ddim_timesteps, eta, verbose=True):
 
     # according the the formula provided in https://arxiv.org/abs/2010.02502
     sigmas = eta * np.sqrt((1 - alphas_prev) / (1 - alphas) * (1 - alphas / alphas_prev))
-    # if verbose:
-    #     print(f'Selected alphas for ddim sampler: a_t: {alphas}; a_(t-1): {alphas_prev}')
-    #     print(f'For the chosen value of eta, which is {eta}, '
-    #           f'this results in the following sigma_t schedule for ddim sampler {sigmas}')
+    if verbose:
+        print(f'Selected alphas for ddim sampler: a_t: {alphas}; a_(t-1): {alphas_prev}')
+        print(f'For the chosen value of eta, which is {eta}, '
+              f'this results in the following sigma_t schedule for ddim sampler {sigmas}')
     return sigmas, alphas, alphas_prev
 
 def make_ddim_timesteps(ddim_discr_method, num_ddim_timesteps, num_ddpm_timesteps, verbose=True):
@@ -94,8 +91,8 @@ def make_ddim_timesteps(ddim_discr_method, num_ddim_timesteps, num_ddpm_timestep
     # assert ddim_timesteps.shape[0] == num_ddim_timesteps
     # add one to get the final alpha values right (the ones from first scale to data during sampling)
     steps_out = ddim_timesteps + 1
-    # if verbose:
-    #     print(f'Selected timesteps for ddim sampler: {steps_out}')
+    if verbose:
+        print(f'Selected timesteps for ddim sampler: {steps_out}')
     return steps_out
 
 
@@ -192,9 +189,9 @@ class RelativePositionBias(nn.Module):
         ret += torch.where(is_small, n, val_if_large)
         return ret
 
-    def forward(self, n, device):
-        q_pos = torch.arange(n, dtype=torch.long, device=device)
-        k_pos = torch.arange(n, dtype=torch.long, device=device)
+    def forward(self, indexes, device):
+        q_pos = indexes.squeeze()
+        k_pos = indexes.squeeze()
         rel_pos = rearrange(k_pos, 'j -> 1 j') - rearrange(q_pos, 'i -> i 1')
         rp_bucket = self._relative_position_bucket(rel_pos, num_buckets=self.num_buckets,
                                                    max_distance=self.max_distance)
@@ -286,6 +283,7 @@ class Block(nn.Module):
         self.act = nn.SiLU()
 
     def forward(self, x, scale_shift=None):
+        #print("shape x: {}".format(x.shape))
         x = self.proj(x)
         x = self.norm(x)
 
@@ -339,7 +337,6 @@ class Block3d(nn.Module):
 
         return self.act(x)
 
-
 class ResnetBlock3d(nn.Module):
     def __init__(self, dim, dim_out, *, time_emb_dim=None, groups=8):
         super().__init__()
@@ -365,6 +362,7 @@ class ResnetBlock3d(nn.Module):
         h = self.block2(h)
         return h + self.res_conv(x)
 
+
 class SpatialLinearAttention(nn.Module):
     def __init__(self, dim, heads=4, dim_head=32):
         super().__init__()
@@ -379,14 +377,16 @@ class SpatialLinearAttention(nn.Module):
         x = rearrange(x, 'b c f h w -> (b f) c h w')
 
         qkv = self.to_qkv(x).chunk(3, dim=1)
-        q, k, v = rearrange_many(qkv, 'b (h c) x y -> (b h) (x y) c', h=self.heads)
+        q, k, v = rearrange_many(qkv, 'b (h c) x y -> b h c (x y)', h=self.heads)
 
-        query = q.contiguous()
-        key = k.contiguous()
-        value = v.contiguous()
-        hidden_states = xformers.ops.memory_efficient_attention(query, key, value, attn_bias=None)
+        q = q.softmax(dim=-2)
+        k = k.softmax(dim=-1)
 
-        out = rearrange(hidden_states, '(b h) (x y) c -> b (h c) x y', h=self.heads, x=h, y=w)
+        q = q * self.scale
+        context = torch.einsum('b h d n, b h e n -> b h d e', k, v)
+
+        out = torch.einsum('b h d e, b h d n -> b h e n', context, q)
+        out = rearrange(out, 'b h c (x y) -> b (h c) x y', h=self.heads, x=h, y=w)
         out = self.to_out(out)
         return rearrange(out, '(b f) c h w -> b c f h w', b=b)
 
@@ -408,18 +408,20 @@ class CrossAttention(nn.Module):
         kv = torch.cat([kv.unsqueeze(dim=1)]*f, dim=1)
         kv = rearrange(kv, 'b f h c -> (b f) h c')
         k, v = self.to_kv(kv).chunk(2, dim=-1)
-        k = rearrange(k, 'b d (h c) -> (b h) d c', h=self.heads)
-        v = rearrange(v, 'b d (h c) -> (b h) d c', h=self.heads)
+        k = rearrange(k, 'b d (h c) -> b h c d', h=self.heads)
+        v = rearrange(v, 'b d (h c) -> b h c d', h=self.heads)
 
         q = self.to_q(x)
-        q = rearrange(q, 'b (h c) x y -> (b h) (x y) c', h=self.heads)
+        q = rearrange(q, 'b (h c) x y -> b h c (x y)', h=self.heads)
 
-        query = q.contiguous()
-        key = k.contiguous()
-        value = v.contiguous()
-        hidden_states = xformers.ops.memory_efficient_attention(query, key, value, attn_bias=None)
+        q = q.softmax(dim=-2)
+        k = k.softmax(dim=-1)
 
-        out = rearrange(hidden_states, '(b h) (x y) c -> b (h c) x y', h=self.heads, x=h, y=w)
+        q = q * self.scale
+        context = torch.einsum('b h d n, b h e n -> b h d e', k, v)
+
+        out = torch.einsum('b h d e, b h d n -> b h e n', context, q)
+        out = rearrange(out, 'b h c (x y) -> b (h c) x y', h=self.heads, x=h, y=w)
         out = self.to_out(out)
         return rearrange(out, '(b f) c h w -> b c f h w', b=b)
 
@@ -542,16 +544,18 @@ class Unet3D(nn.Module):
             resnet_groups=8
     ):
         super().__init__()
-
-        self.attention_maps = []
-
         self.channels = channels
+
+        # initial conv
+
         init_dim = default(init_dim, dim)
         assert is_odd(init_kernel_size)
 
         init_padding = init_kernel_size // 2
-        self.init_conv = nn.Conv3d(channels, init_dim, (init_kernel_size, init_kernel_size, init_kernel_size),
+        self.init_conv0 = nn.Conv3d(channels*2, init_dim, (init_kernel_size, init_kernel_size, init_kernel_size),
                                    padding=(init_padding, init_padding, init_padding))
+
+        # self.init_temporal_attn = Residual(PreNorm(init_dim, temporal_attn(init_dim)))
 
         # dimensions
 
@@ -571,8 +575,6 @@ class Unet3D(nn.Module):
         # text conditioning
 
         self.has_cond = exists(cond_dim) or use_bert_text_cond
-
-        self.null_cond_emb = nn.Parameter(torch.randn(1, 192, cond_dim)) if self.has_cond else None
 
         # layers
 
@@ -597,31 +599,18 @@ class Unet3D(nn.Module):
             self.downs.append(nn.ModuleList([
                 block_klass_cond(dim_in, dim_out),
                 block_klass_cond(dim_out, dim_out),
+                Residual(PreNorm(dim_out, SpatialLinearAttention(dim_out,
+                                                                 heads=attn_heads))) if use_sparse_linear_attn and is_last else nn.Identity(),
+                Residual(PreNorm(dim_out, CrossAttention(dim_out, heads=attn_heads, dim_con=cond_dim))) if use_sparse_linear_attn else nn.Identity(),
                 block_klass_cond3d(dim_out, dim_out),
                 Downsample(dim_out) if not is_last else nn.Identity()
             ]))
 
         mid_dim = dims[-1]
         self.mid_block1 = block_klass_cond(mid_dim, mid_dim)
-
         spatial_attn = EinopsToAndFrom('b c f h w', 'b f (h w) c', Attention(mid_dim, heads=attn_heads))
-
-        self.mid_spatial_attn1 = Residual(PreNorm(mid_dim, spatial_attn))
-        self.mid_cross_attn1 = Residual(PreNorm(mid_dim, CrossAttention(mid_dim, heads=attn_heads, dim_con=cond_dim)))
-        self.mid_temporal_attn1 = block_klass_cond3d(mid_dim, mid_dim)
-        ###
-        self.mid_spatial_attn2 = Residual(PreNorm(mid_dim, spatial_attn))
-        self.mid_cross_attn2 = Residual(PreNorm(mid_dim, CrossAttention(mid_dim, heads=attn_heads, dim_con=cond_dim)))
-        self.mid_temporal_attn2 = block_klass_cond3d(mid_dim, mid_dim)
-        ###
-        self.mid_spatial_attn3 = Residual(PreNorm(mid_dim, spatial_attn))
-        self.mid_cross_attn3 = Residual(PreNorm(mid_dim, CrossAttention(mid_dim, heads=attn_heads, dim_con=cond_dim)))
-        self.mid_temporal_attn3 = block_klass_cond3d(mid_dim, mid_dim)
-        ###
-        self.mid_spatial_attn4 = Residual(PreNorm(mid_dim, spatial_attn))
-        self.mid_cross_attn4 = Residual(PreNorm(mid_dim, CrossAttention(mid_dim, heads=attn_heads, dim_con=cond_dim)))
-        self.mid_temporal_attn4 = block_klass_cond3d(mid_dim, mid_dim)
-
+        self.mid_spatial_attn = Residual(PreNorm(mid_dim, spatial_attn))
+        self.mid_temporal_conv = block_klass_cond3d(mid_dim, mid_dim)
         self.mid_block2 = block_klass_cond(mid_dim, mid_dim)
 
         for ind, (dim_in, dim_out) in enumerate(reversed(in_out)):
@@ -630,41 +619,30 @@ class Unet3D(nn.Module):
             self.ups.append(nn.ModuleList([
                 block_klass_cond(dim_out * 2, dim_in),
                 block_klass_cond(dim_in, dim_in),
+                Residual(PreNorm(dim_in, SpatialLinearAttention(dim_in,
+                                                                heads=attn_heads))) if use_sparse_linear_attn and is_last else nn.Identity(),
+                Residual(PreNorm(dim_in, CrossAttention(dim_in, heads=attn_heads, dim_con=cond_dim))) if use_sparse_linear_attn else nn.Identity(),
                 block_klass_cond3d(dim_in, dim_in),
                 Upsample(dim_in) if not is_last else nn.Identity()
             ]))
 
-        self.final_conv = nn.Sequential(
+        self.final_conv0 = nn.Sequential(
             block_klass(dim * 2, dim),
             nn.Conv3d(dim, channels, 1)
         )
-
-    def extract_attention_hook(self, module, input, output):
-        """Hook function to capture attention maps."""
-        if isinstance(output, tuple):
-            output = output[0]
-        self.attention_maps.append(output.detach().cpu()) #store attention maps
-
-    def register_attention_hooks(self):
-        """Register hooks on all CrossAttention layers."""
-        for name, module in self.named_modules():
-            if isinstance(module, CrossAttention):
-                module.register_forward_hook(self.extract_attention_hook)
 
     def forward_with_cond_scale(
             self,
             *args,
             cond_scale=2.,
             **kwargs
-    ):
-        logits, attention_maps = self.forward(*args, null_cond_prob=0., **kwargs)
+    ):  
+        logits = self.forward(*args, null_cond_prob=0., **kwargs)
         if cond_scale == 1 or not self.has_cond:
-            return logits, attention_maps
-
+            return logits
+        
         null_logits = self.forward(*args, null_cond_prob=1., **kwargs)
-        scaled_logits = null_logits + (logits - null_logits) * cond_scale
-
-        return scaled_logits, attention_maps
+        return null_logits + (logits - null_logits) * cond_scale
 
     def forward(
             self,
@@ -677,64 +655,44 @@ class Unet3D(nn.Module):
             prob_focus_present=0.
             # probability at which a given batch sample will focus on the present (0. is all off, 1. is completely arrested attention across time)
     ):
-        assert not (self.has_cond and not exists(cond)), 'cond must be passed in if cond_dim specified'
+        #assert not (self.has_cond and not exists(cond)), 'cond must be passed in if cond_dim specified'
 
-        self.attention_maps = []
-
-        x = self.init_conv(x)
+        x = self.init_conv0(x)
 
         r = x.clone()
         t = self.time_mlp(time) if exists(self.time_mlp) else None
 
         # classifier free guidance
 
-        if self.has_cond:
-            batch, device = x.shape[0], x.device
-            mask = prob_mask_like((batch,), null_cond_prob, device=device)
-            null_cond_emb = torch.cat([self.null_cond_emb]*batch, dim=0)
-            cond = torch.where(rearrange(mask, 'b -> b 1 1'), null_cond_emb, cond)
-
         h = []
 
-        for idx,(block1, block2, temporal_block, downsample) in enumerate(self.downs):
+        for idx, (block1, block2, spatial_attn, cross_attn, temporal_conv, downsample) in enumerate(self.downs):
+            #torch.cuda.empty_cache()
+            #print("Index: {}".format(idx))
             x = block1(x, t)
             x = block2(x, t)
             h.append(x)
             x = downsample(x)
-            x = temporal_block(x, t)
+            x = spatial_attn(x)
+            x = cross_attn(x)
+            x = temporal_conv(x, t)
 
         x = self.mid_block1(x, t)
-        ###
-        x = self.mid_spatial_attn1(x)
-        x = self.mid_cross_attn1(x, kv=cond)
-        x = self.mid_temporal_attn1(x, t)
-        ###
-        x = self.mid_spatial_attn2(x)
-        x = self.mid_cross_attn2(x, kv=cond)
-        x = self.mid_temporal_attn2(x, t)
-        ###
-        x = self.mid_spatial_attn3(x)
-        x = self.mid_cross_attn3(x, kv=cond)
-        x = self.mid_temporal_attn3(x, t)
-        ###
-        x = self.mid_spatial_attn4(x)
-        x = self.mid_cross_attn4(x, kv=cond)
-        x = self.mid_temporal_attn4(x, t)
-        ###
+        x = self.mid_spatial_attn(x)
+        x = self.mid_temporal_conv(x, t)
         x = self.mid_block2(x, t)
 
-        for block1, block2, temporal_block, upsample in self.ups:
+        for block1, block2, spatial_attn, cross_attn, temporal_conv, upsample in self.ups:
             x = torch.cat((x, h.pop()), dim=1)
             x = block1(x, t)
             x = block2(x, t)
-            x = temporal_block(x, t)
+            x = spatial_attn(x)
+            x = cross_attn(x)
+            x = temporal_conv(x, t)
             x = upsample(x)
 
         x = torch.cat((x, r), dim=1)
-
-        final_output = self.final_conv(x)
-
-        return final_output, self.attention_maps
+        return self.final_conv0(x)
 
 
 # gaussian diffusion trainer class
@@ -772,9 +730,7 @@ class GaussianDiffusion(nn.Module):
             use_dynamic_thres=False,  # from the Imagen paper
             dynamic_thres_percentile=0.9,
             volume_depth=128,
-            ddim_timesteps=50,
-            read_img_flag=False,
-            noise_folder=None
+            ddim_timesteps,
     ):
         super().__init__()
         self.channels = channels
@@ -782,8 +738,6 @@ class GaussianDiffusion(nn.Module):
         self.num_frames = num_frames
         self.denoise_fn = denoise_fn
         self.volume_depth = volume_depth
-        self.read_img_flag = read_img_flag
-        self.noise_folder = noise_folder
 
         betas = cosine_beta_schedule(timesteps)
 
@@ -796,9 +750,8 @@ class GaussianDiffusion(nn.Module):
         self.loss_type = loss_type
 
         self.ddim_timesteps = ddim_timesteps
-
-        ddim_timesteps = make_ddim_timesteps(ddim_discr_method="uniform", num_ddim_timesteps=200,
-                                                  num_ddpm_timesteps=timesteps, verbose=True)
+        ddim_timesteps = make_ddim_timesteps(ddim_discr_method="uniform", num_ddim_timesteps=50,
+                                                  num_ddpm_timesteps=timesteps, verbose=False)
 
         # register buffer helper function that casts float64 to float32
 
@@ -834,7 +787,7 @@ class GaussianDiffusion(nn.Module):
 
         ddim_sigmas, ddim_alphas, ddim_alphas_prev = make_ddim_sampling_parameters(alphacums=alphas_cumprod.cpu(),
                                                                                    ddim_timesteps=ddim_timesteps,
-                                                                                   eta=ddim_eta, verbose=True)
+                                                                                   eta=ddim_eta, verbose=False)
 
         ddim_alphas_prev = torch.from_numpy(ddim_alphas_prev)
         self.register_buffer('ddim_sigmas', ddim_sigmas)
@@ -891,10 +844,11 @@ class GaussianDiffusion(nn.Module):
 
         return posterior_mean, posterior_variance, posterior_log_variance_clipped
 
-    def p_mean_variance(self, x, t, clip_denoised: bool, indexes=None, cond=None, cond_scale=1.):
+    def p_mean_variance(self, x, x_lr, t, clip_denoised: bool, indexes=None, cond=None, cond_scale=1.):
 
-        x_recon, *_ = self.denoise_fn.forward_with_cond_scale(x, t, indexes=indexes, cond=cond, cond_scale=cond_scale)
-            # self.predict_start_from_noise(x, t=t, noise=self.denoise_fn.forward_with_cond_scale(x, t, indexes=indexes, cond=cond, cond_scale=cond_scale))
+        x_recon = self.denoise_fn.forward_with_cond_scale(torch.cat([x_lr, x], dim=1), t, indexes=indexes, cond=cond, cond_scale=cond_scale)
+            # self.predict_start_from_noise(x, t=t,
+            #                                     noise=self.denoise_fn.forward_with_cond_scale(torch.cat([x_lr, x], dim=1), t, indexes=indexes, cond=cond, cond_scale=cond_scale))
 
         if clip_denoised:
             s = 1.
@@ -911,30 +865,30 @@ class GaussianDiffusion(nn.Module):
             # clip by threshold, depending on whether static or dynamic
             x_recon = x_recon.clamp(-s, s) / s
 
-        # model_mean, posterior_variance, posterior_log_variance = self.q_posterior(x_start=x_recon, x_t=x, t=t)
-        model_mean, posterior_variance = get_z_t_via_z_tp1(x_recon, x, (t - 1) * 1.0 / (self.num_timesteps - 1.0),
-                                                           (t * 1.0) / (self.num_timesteps - 1.0))
-        return model_mean, posterior_variance
-
+        model_mean, posterior_variance, posterior_log_variance = self.q_posterior(x_start=x_recon, x_t=x, t=t)
+        return model_mean, posterior_variance, posterior_log_variance
 
     @torch.inference_mode()
-    def p_sample(self, x, t, indexes=None, cond=None, cond_scale=1., clip_denoised=True):
+    def p_sample(self, x, x_lr, t, indexes=None, cond=None, cond_scale=1., clip_denoised=True):
         b, *_, device = *x.shape, x.device
-
-        model_mean, model_variance = self.p_mean_variance(x=x, t=t, indexes=indexes, clip_denoised=clip_denoised,
+        model_mean, _, model_log_variance = self.p_mean_variance(x=x, x_lr=x_lr, t=t, indexes=indexes, clip_denoised=clip_denoised,
                                                                  cond=cond,
                                                                  cond_scale=cond_scale)
         noise = torch.randn_like(x)
         # no noise when t == 0
         nonzero_mask = (1 - (t == 0).float()).reshape(b, 1, self.num_frames, 1, 1)
-        return model_mean + nonzero_mask * (model_variance**0.5) * noise
+        return model_mean + nonzero_mask * (0.5 * model_log_variance).exp() * noise
 
     @torch.inference_mode()
-    def p_sample_ddim(self, x, t, t_minus, indexes=None, cond=None, cond_scale=1., clip_denoised=True):
+    def p_sample_ddim(self, x, x_lr, slice_id, cond, t, t_minus, clip_denoised: bool, index, repeat_noise=False, use_original_steps=False, quantize_denoised=False,
+                      temperature=1., noise_dropout=0., score_corrector=None, corrector_kwargs=None,
+                      unconditional_guidance_scale=1., unconditional_conditioning=None):
         b, *_, device = *x.shape, x.device
 
-        x_recon, *_ = self.denoise_fn.forward_with_cond_scale(x, t, indexes=indexes, cond=cond, cond_scale=cond_scale)
+        # pred_x0 = self.denoise_fn.forward_with_cond_scale(torch.cat([x_lr, x], dim=1), t, indexes=slice_id, cond=cond, cond_scale=1.0)
+        x_recon = self.denoise_fn.forward_with_cond_scale(torch.cat([x_lr, x], dim=1), t, indexes=slice_id, cond=cond, cond_scale=1.0)
 
+        # current prediction for x_0
         if clip_denoised:
             s = 1.
             if self.use_dynamic_thres:
@@ -952,54 +906,46 @@ class GaussianDiffusion(nn.Module):
         if t[0]<int(self.num_timesteps / self.ddim_timesteps):
             x = x_recon
         else:
-            t_minus = torch.clip(t_minus, min=0.0)
+            t_minus = torch.clip(t_minus,min=0.0)
             x = ddim_sample(x_recon, x, (t_minus * 1.0) / (self.num_timesteps), (t * 1.0) / (self.num_timesteps))
-
-        attention_maps = self.denoise_fn.attention_maps
-        return x, attention_maps
+        return x
 
     @torch.inference_mode()
-    def p_sample_loop(self, shape, cond=None, cond_scale=1., use_ddim=True, init_noise=None):
+    def p_sample_loop(self, shape, cond=None, img_lr=None, cond_scale=1., use_ddim=True):
         device = self.betas.device
 
         bsz = shape[0]
-
-        # Register attention hooks before sampling
-        self.denoise_fn.register_attention_hooks()  # Ensure hooks are active
-        self.denoise_fn.attention_maps = []  # Reset stored attention
 
         if use_ddim:
             time_steps = range(0, self.num_timesteps+1, int(self.num_timesteps/self.ddim_timesteps))
         else:
             time_steps = range(0, self.num_timesteps)
 
-        img = init_noise if init_noise is not None else torch.randn(shape, device=device)
-
+        img = torch.randn(shape, device=device)
         indexes = []
+        batch_images_inputs_lr = []
         for b in range(bsz):
             index = np.arange(self.num_frames)
+            batch_images_inputs_lr.append(img_lr[b, :, index, ...].unsqueeze(dim=0))
             indexes.append(torch.from_numpy(index))
         indexes = torch.stack(indexes, dim=0).long().to(device)
-        
-        for i, t in enumerate(tqdm(reversed(time_steps), desc='Low Resolution: ',
+        batch_images_inputs_lr = torch.cat(batch_images_inputs_lr, dim=0)
+        for i, t in enumerate(tqdm(reversed(time_steps), desc='High Resolution',
                                    total=len(time_steps), file=sys.stdout)):
-            
             time = torch.full((bsz,), t, device=device, dtype=torch.float32)
 
             if use_ddim:
                 time_minus = time - int(self.num_timesteps / self.ddim_timesteps)
-                img, attention_maps = self.p_sample_ddim(img, time, time_minus, indexes=indexes, cond=cond,
-                                         cond_scale=cond_scale)
+                img = self.p_sample_ddim(x=img, x_lr=batch_images_inputs_lr, slice_id=indexes, cond=cond, t=time,
+                                         t_minus=time_minus, clip_denoised=True, index=len(time_steps) - i - 1)
             else:
-                img, attention_maps = self.p_sample(img, time, indexes=indexes, cond=cond,
+                img = self.p_sample(img, batch_images_inputs_lr, time, indexes=indexes, cond=cond,
                                     cond_scale=cond_scale)
-                
-        #unnormalize image before returning
-        unnormalized_img = unnormalize_img(img).to(img.device)
-        return img, unnormalized_img, attention_maps
+
+        return unnormalize_img(img)
 
     @torch.inference_mode()
-    def sample(self, cond=None, cond_scale=1., batch_size=16, DDIM=True):
+    def sample(self, img_lr=None, cond=None, cond_scale=1., batch_size=16, DDIM=True):
         device = next(self.denoise_fn.parameters()).device
 
         if is_list_str(cond):
@@ -1009,26 +955,8 @@ class GaussianDiffusion(nn.Module):
         image_size = self.image_size
         channels = self.channels
         num_frames = self.num_frames
-
-        shape = (batch_size, channels, num_frames, image_size, image_size)
-
-        if not os.path.exists(self.noise_folder):
-            os.makedirs(self.noise_folder, exist_ok=True)
-
-        noise_path = self.noise_folder+"/pre_saved_noise.pth"  # Set your noise file path
-        # Check if read_img_flag is set to load pre-saved noise
-        if self.read_img_flag and os.path.exists(noise_path): #this is when we want to use the saved noise
-                print(f"Loading pre-saved noise from {noise_path}")
-                noise = torch.load(noise_path, map_location=device)
-        else: #read_img_flag is false or the path doesn't exist (but that should never happen)
-            # Generate random noise as usual and save that
-            print("Pre-saved noise not found! Generating new fixed noise instead.")
-            torch.manual_seed(42)  # Ensures reproducibility
-            noise = torch.randn(shape, device=device)
-            torch.save(noise, noise_path)  # Save for future use
-
-        raw_img, unnormalized_img, attention_maps = self.p_sample_loop(shape, cond=cond, cond_scale=cond_scale, use_ddim=DDIM, init_noise=noise)
-        return raw_img, unnormalized_img, attention_maps
+        return self.p_sample_loop((batch_size, channels, num_frames, image_size, image_size), cond=cond, img_lr=img_lr,
+                                      cond_scale=cond_scale, use_ddim=DDIM)
 
     @torch.inference_mode()
     def interpolate(self, x1, x2, t=None, lam=0.5):
@@ -1045,40 +973,6 @@ class GaussianDiffusion(nn.Module):
             img = self.p_sample(img, torch.full((b,), i, device=device, dtype=torch.long))
 
         return img
-
-    def q_sample(self, x_start, t, noise=None):
-        noise = default(noise, lambda: torch.randn_like(x_start))
-
-        return (
-                extract(self.sqrt_alphas_cumprod, t, x_start.shape) * x_start +
-                extract(self.sqrt_one_minus_alphas_cumprod, t, x_start.shape) * noise
-        )
-
-    def p_losses(self, x_start, t, indexes=None, cond=None, noise=None, **kwargs):
-        b, c, f, h, w, device = *x_start.shape, x_start.device
-
-        x_noisy, noise = get_z_t(x_start, t)
-
-        if is_list_str(cond):
-            cond = bert_embed(tokenize(cond), return_cls_repr=self.text_use_bert_cls)
-            cond = cond.to(device)
-
-        x_recon, *_ = self.denoise_fn(x_noisy, t*(self.num_timesteps-1), indexes=indexes, cond=cond, **kwargs)
-
-        if self.loss_type == 'l1':
-            loss = F.l1_loss(x_start, x_recon)
-        elif self.loss_type == 'l2':
-            loss = F.mse_loss(x_start, x_recon)
-        else:
-            raise NotImplementedError()
-
-        return loss
-
-    def forward(self, x, *args, **kwargs):
-        b, device, img_size, = x.shape[0], x.device, self.image_size
-        check_shape(x, 'b c f h w', c=self.channels, f=self.num_frames, h=img_size, w=img_size)
-        t = torch.rand((b), device=device).float()
-        return self.p_losses(x, t, *args, **kwargs)
 
 
 # trainer class
@@ -1201,20 +1095,22 @@ class Trainer(object):
             save_and_sample_every=1000,
             results_folder='./results',
             save_folder='',
-            attention_folder='',
-            dont_delete_folder='',
+            num_series_exists=0,
+            filename="",
             num_sample_rows=4,
-            num_sample=16,
-            max_grad_norm=None
+            max_grad_norm=None,
+            text_embed_folder=''
     ):
         super().__init__()
         self.model = diffusion_model
         map_location = 'cuda' if torch.cuda.is_available() else 'cpu'
-        #print(results_folder)
-        model_path = os.path.join(results_folder,"1000_ckpt/pytorch_model.bin")
+        print("Map Location: {}".format(map_location))
+        model_path = os.path.join(results_folder, "1000_ckpt/pytorch_model.bin")
+        print("Model path: {}".format(model_path))
         self.model.load_state_dict(torch.load(model_path, map_location=map_location), strict=False)
-        self.ema = EMA(ema_decay)
-        self.ema_model = copy.deepcopy(self.model)
+
+        self.ema_model = diffusion_model
+        self.ema_model.load_state_dict(torch.load(model_path, map_location=map_location), strict=False)
         self.update_ema_every = update_ema_every
 
         self.step_start_ema = step_start_ema
@@ -1229,23 +1125,24 @@ class Trainer(object):
         channels = diffusion_model.channels
         self.num_frames = diffusion_model.num_frames
         self.save_folder = save_folder
-        self.attention_folder = attention_folder
-        self.dont_delete_folder = dont_delete_folder
-        self.num_sample = num_sample
+        self.num_series_exists=num_series_exists
+        self.filename=filename
 
         train_files = []
 
         for img_dir in os.listdir(folder):
-            if img_dir[-3:] == 'npy':
-                train_files.append({'text': os.path.join(folder, img_dir)})
+            # dummy text
+            if ".npy" in img_dir:
+                train_files.append({"image": os.path.join(folder, img_dir),
+                                    'text': os.path.join(
+                                        text_embed_folder, "dont_delete.npy")}) # this file is really needed otherwise there is a monai error!!
 
-        self.ds = cache_transformed_text(train_files=train_files)
+        self.ds = cache_transformed_train_data(shape=[image_size, image_size, image_size], train_files=train_files)  # Dataset(folder, image_size, channels = channels, num_frames = num_frames)
 
-        #print(f'found {len(self.ds)} text embedding files at {folder}')
+        print(f'found {len(self.ds)} videos as gif files at {folder}')
         assert len(self.ds) > 0, 'need to have at least 1 video to start training (although 1 is not great, try 100k)'
 
         self.dl = data.DataLoader(self.ds, batch_size=train_batch_size, shuffle=True, pin_memory=True)
-        self.opt = AdamW(diffusion_model.parameters(), lr=train_lr, betas=(0.9, 0.999))
 
         self.step = 0
 
@@ -1255,8 +1152,6 @@ class Trainer(object):
         self.num_sample_rows = num_sample_rows
         self.results_folder = Path(results_folder)
         self.results_folder.mkdir(exist_ok=True, parents=True)
-
-        self.reset_parameters()
 
         if amp:
             mixed_precision = "fp16"
@@ -1268,9 +1163,7 @@ class Trainer(object):
             mixed_precision=mixed_precision,
         )
 
-        self.model, self.ema_model, self.dl, self.opt, self.step = self.accelerator.prepare(
-            self.model, self.ema_model, self.dl, self.opt, self.step
-        )
+        self.ema_model, self.dl = self.accelerator.prepare(self.ema_model, self.dl)
 
     def reset_parameters(self):
         self.ema_model.load_state_dict(self.model.state_dict())
@@ -1287,12 +1180,15 @@ class Trainer(object):
     def load(self, milestone, **kwargs):
         if milestone == -1:
             dirs = os.listdir(self.results_folder)
-            #print(dirs)
             dirs = [d for d in dirs if d.endswith("ckpt")]
             dirs = sorted(dirs, key=lambda x: int(x.split("_")[0]))
             path = dirs[-1]
-
+        
         self.step = int(path.split("_")[0]) * self.save_and_sample_every + 1
+        print("Load accelerator state: {}".format(os.path.join(self.results_folder, path)))
+        self.accelerator.load_state(os.path.join(self.results_folder, path), strict=False)
+
+
 
     def train(
             self,
@@ -1302,149 +1198,133 @@ class Trainer(object):
     ):
         assert callable(log_fn)
 
-        self.results_folder = os.path.join(str(self.results_folder), "given_text_ddim_eval")
-        if not os.path.exists(self.results_folder):
-            os.mkdir(self.results_folder)
-        if not os.path.exists(self.attention_folder):
-            os.makedirs(self.attention_folder, exist_ok=True)
+        #self.results_folder = os.path.join(str(self.results_folder), "ddim_eval2")
         if not os.path.exists(self.save_folder):
-            os.makedirs(self.save_folder, exist_ok=True)
+            os.mkdir(self.save_folder)
 
-        for i, data in enumerate(self.dl):
+        for idx, data in enumerate(self.dl):
+            img, text = data["image"], None#data["text"]
+            img_lr = img.to(self.accelerator.device).squeeze(dim=1)
+            img_lr = F.interpolate(img_lr, scale_factor=4, mode='nearest')
+            #
+            img_lr = (img_lr-0.5)*2.0
 
-            text = data["text"].squeeze(dim=1)
-            text = text.to(self.accelerator.device)
+            # text = text.to(self.accelerator.device).squeeze(dim=1)
 
-            for idx in range(self.num_sample):
-                with torch.no_grad():
+            with torch.no_grad():
+                if idx == 0:
+                    file_name = f"{self.filename[:-4]}_sample_{self.num_series_exists}"
+                else:
+                    file_name = data['image_meta_dict']['filename_or_obj'][0].split('/')[-1].split('.')[0]
 
-                    file_name = data['text_meta_dict']['filename_or_obj'][0].split('/')[-1].split('.')[0]+"_sample_"+str(idx)+".npy"
-                    save_path = os.path.join(self.save_folder, str(f'{file_name}'))
+                save_path = os.path.join(self.save_folder, str(f'{file_name}.nii.gz'))
+                num_samples = self.num_sample_rows ** 2
+                
+                print("num_samples: {}".format(num_samples))
 
-                    if "dont_delete" not in file_name:
-                        if not os.path.exists(save_path):
+                if not os.path.exists(save_path):
+                    batches = num_to_groups(num_samples, self.batch_size)
+                    all_videos_list = list(
+                        map(lambda n: self.ema_model.sample(batch_size=n, img_lr=img_lr, cond=text), batches))
+                    all_videos_list = torch.cat(all_videos_list, dim=0)
+                    all_videos_list_img, all_videos_list_lobe, all_videos_list_airway, all_videos_list_vessel = all_videos_list.chunk(
+                        4, dim=1)
+                    all_videos_list = torch.cat(
+                        [all_videos_list_img, all_videos_list_lobe, all_videos_list_airway, all_videos_list_vessel],
+                        dim=0)
 
-                            num_samples = self.num_sample_rows ** 2
-                            batches = num_to_groups(num_samples, self.batch_size)
+                    #np.save(os.path.join(self.results_folder, str(f'{file_name}')),
+                    #        all_videos_list.cpu().numpy())
 
-                            all_videos_list = []
-                            all_attention_maps = []
+                    frames = all_videos_list_img.squeeze().cpu().numpy()
+                    save_nii(frames, output_dir=self.save_folder, output_postfix=str(f'{file_name}'))
+                    #input_saver.save(frames)
 
-                            for n in batches:
-                                raw_img, unnormalized_img, attention_maps = self.ema_model.sample(batch_size=n, cond=text)
-                                all_videos_list.append(unnormalized_img)  # Use unnormalized for visualization
-                                all_attention_maps.append(attention_maps)
+                    frames_lobe = all_videos_list_lobe.squeeze().cpu().numpy()
+                    #save_nii(frames_lobe, output_dir=self.save_folder, output_postfix=str(f'{file_name}_lobe')) #uncomment to store lobe
+                    #input_saver.save(frames_lobe)
 
-                            np.save(save_path, torch.stack(all_videos_list).cpu().numpy())  # Convert list to tensor
+                    frames_airway = all_videos_list_airway.squeeze().cpu().numpy()
+                    #save_nii(frames_airway, output_dir=self.save_folder, output_postfix=str(f'{file_name}_airway')) #uncomment to store airway
+                    #input_saver.save(frames_airway)
 
-                        
-                            attention_save_path = os.path.join(self.attention_folder, file_name.replace(".npy", "_attention.npy"))
-                            print("ATTENTION PATH: ", attention_save_path)
-                            flattened_maps = [torch.tensor(m).to("cpu") for maps in all_attention_maps for m in maps]
-                            np.save(attention_save_path, torch.stack(flattened_maps).cpu().numpy())
-                    else:
-                        #check that don't delete exists in the dont delete folder
-                        dont_delete_path = os.path.join(self.dont_delete_folder, str(f'{file_name}'))
-                        if not os.path.exists(dont_delete_path):
-                            num_samples = self.num_sample_rows ** 2
-                            batches = num_to_groups(num_samples, self.batch_size)
+                    frames_vessel = all_videos_list_vessel.squeeze(dim=0).cpu().numpy()
+                    #save_nii(frames_vessel, output_dir=self.save_folder, output_postfix=str(f'{file_name}_vessel')) #uncomment to store vessels
+                    #input_saver.save(frames_vessel)
+                else:
+                    print("File already exists: {}".format(save_path))
 
-                            all_videos_list = []
-                            all_attention_maps = []
 
-                            for n in batches:
-                                raw_img, unnormalized_img, attention_maps = self.ema_model.sample(batch_size=n, cond=text)
-                                all_videos_list.append(unnormalized_img)  # Use unnormalized for visualization
-                                all_attention_maps.append(attention_maps)
+def save_nii(img, output_dir, output_postfix):
+    img = sitk.GetImageFromArray(img)
+    sitk.WriteImage(img, os.path.join(output_dir, output_postfix+".nii.gz"))
 
-                            np.save(save_path, torch.stack(all_videos_list).cpu().numpy())  # Convert list to tensor
-
-                        
-                            attention_save_path = os.path.join(self.attention_folder, file_name.replace(".npy", "_attention.npy"))
-                            print("ATTENTION PATH: ", attention_save_path)
-                            flattened_maps = [torch.tensor(m).to("cpu") for maps in all_attention_maps for m in maps]
-                            np.save(attention_save_path, torch.stack(flattened_maps).cpu().numpy())
-                        else:
-                            print("File already exists: {}".format(save_path))
-            
-def run_diffusion_1(input_folder,
-                    output_folder,
-                    dont_delete_folder,
-                    model_folder,
-                    attention_folder,
-                    num_sample,
-                    noise_folder,
-                    read_img_flag=False):
     
-    model = Unet3D(
-        dim=160,
+def run_diffusion_2(input_folder,
+                    output_folder,
+                    model_folder,
+                    filename="",
+                    num_series_exists=0):
+    model_high = Unet3D(
+        dim=56,
         cond_dim=768,
         dim_mults=(1, 2, 4, 8),
         channels=4,
-        attn_heads=8,
+        attn_heads=4,
         attn_dim_head=32,
         use_bert_text_cond=False,
         init_dim=None,
         init_kernel_size=7,
-        use_sparse_linear_attn=True,
+        use_sparse_linear_attn=False,
         block_type='resnet',
         resnet_groups=8
     )
 
-    total_params = sum(p.numel() for p in model.parameters())
-    #print(f"Number of parameters: {total_params}")
+    total_params = sum(p.numel() for p in model_high.parameters())
+    print(f"Number of parameters: {total_params}")
 
-    diffusion_model = GaussianDiffusion(
-        denoise_fn=model,
-        image_size=64,
-        num_frames=64,
+    diffusion_model_high = GaussianDiffusion(
+        denoise_fn=model_high,
+        image_size=256,
+        num_frames=256,
         text_use_bert_cls=False,
         channels=4,
         timesteps=1000,
         loss_type='l2',
         use_dynamic_thres=False,  # from the Imagen paper
         dynamic_thres_percentile=0.995,
-        volume_depth=64,
-        ddim_timesteps=50,
-        read_img_flag=read_img_flag,
-        noise_folder=noise_folder
+        volume_depth=256,
+        ddim_timesteps=20,
     )
 
-                      #folder="/ocean/projects/asc170022p/lisun/r3/results/text_embed_example",
-                      #results_folder='/ocean/projects/asc170022p/yanwuxu/diffusion/video-diffusion-pytorch/video_diffusion_pytorch/results_text_low_res_improved_unet_seg',
-                      #save_folder='./results/img_64_exp4/',
-                      #folder="/ocean/projects/asc170022p/lisun/r3/results/text_embed_example_standard",
-                      #save_folder='./results/img_64_standard/',
-    trainer = Trainer(diffusion_model=diffusion_model,
+    trainer_high_res = Trainer(diffusion_model=diffusion_model_high,
                       folder=input_folder,
                       ema_decay=0.995,
                       num_frames=64,
                       train_batch_size=1,
                       train_lr=1e-4,
                       train_num_steps=1000000,
-                      gradient_accumulate_every=4,
-                      amp=True,
+                      gradient_accumulate_every=2,
+                      amp=False,
                       step_start_ema=10000,
                       update_ema_every=10,
                       save_and_sample_every=1000,
                       results_folder=model_folder,
                       save_folder=output_folder,
-                      attention_folder=attention_folder,
-                      dont_delete_folder=dont_delete_folder,
+                      num_series_exists=num_series_exists,
+                      filename=filename,
                       num_sample_rows=1,
-                      num_sample=num_sample,
-                      max_grad_norm=1.0)
+                      max_grad_norm=1.0,
+                          text_embed_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed") 
 
-    print("loading low-res model...")
-    trainer.load(-1)
-    #print("training model...")
-    trainer.train()
 
-# run_diffusion_1(input_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed", 
-#                 output_folder= "/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/test_rightpleur_noleft", 
-#                 dont_delete_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard",
-#                 model_folder="/media/volume/gen-ai-volume/MedSyn/models/stage1", 
-#                 attention_folder="/media/volume/gen-ai-volume/MedSyn/results/saliency_maps/test_rightpleur_noleft",
-#                 num_sample=1,
-#                 noise_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/saved_noise/test_rightpleur_noleft",
-#                 read_img_flag=False)
+    print("loading model...")
+    trainer_high_res.load(-1)
+
+    print("training model...")
+    trainer_high_res.train()
+"""
+run_diffusion_2(input_folder="/jet/home/wartmann/MedSyn/results/img_64_standard_bulk", 
+                output_folder='/jet/home/wartmann/MedSyn/results/img_256_standard_bulk/', 
+                model_folder='/ocean/projects/cis210093p/wartmann/MedSyn/models/medsyn_params/stage2')
+"""

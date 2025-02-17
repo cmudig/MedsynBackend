@@ -930,7 +930,7 @@ class GaussianDiffusion(nn.Module):
 
     def p_mean_variance(self, x, t, clip_denoised: bool, indexes=None, cond=None, cond_scale=1.):
 
-        x_recon, *_ = self.denoise_fn.forward_with_cond_scale(x, t, indexes=indexes, cond=cond, cond_scale=cond_scale)
+        x_recon = self.denoise_fn.forward_with_cond_scale(x, t, indexes=indexes, cond=cond, cond_scale=cond_scale)
             # self.predict_start_from_noise(x, t=t, noise=self.denoise_fn.forward_with_cond_scale(x, t, indexes=indexes, cond=cond, cond_scale=cond_scale))
 
         if clip_denoised:
@@ -970,7 +970,7 @@ class GaussianDiffusion(nn.Module):
     def p_sample_ddim(self, x, t, t_minus, indexes=None, cond=None, cond_scale=1., clip_denoised=True):
         b, *_, device = *x.shape, x.device
 
-        x_recon, *_ = self.denoise_fn.forward_with_cond_scale(x, t, indexes=indexes, cond=cond, cond_scale=cond_scale)
+        x_recon = self.denoise_fn.forward_with_cond_scale(x, t, indexes=indexes, cond=cond, cond_scale=cond_scale)
 
         if clip_denoised:
             s = 1.
@@ -1040,7 +1040,7 @@ class GaussianDiffusion(nn.Module):
             # Clear the attention maps in denoise_fn for next time
             self.denoise_fn.attention_maps = []
 
-        return img
+        return unnormalize_img(img)
 
     @torch.inference_mode()
     def sample(self, cond=None, cond_scale=1., batch_size=16, DDIM=True):
@@ -1071,7 +1071,8 @@ class GaussianDiffusion(nn.Module):
             noise = torch.randn(shape, device=device)
             torch.save(noise, noise_path)  # Save for future use
 
-        return self.p_sample_loop((batch_size, channels, num_frames, image_size, image_size), cond=cond, cond_scale=cond_scale, use_ddim=DDIM)
+        return self.p_sample_loop(shape, cond=cond, cond_scale=cond_scale, use_ddim=DDIM, init_noise=noise)
+    
     @torch.inference_mode()
     def interpolate(self, x1, x2, t=None, lam=0.5):
         b, *_, device = *x1.shape, x1.device
