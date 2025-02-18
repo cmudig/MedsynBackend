@@ -1569,7 +1569,7 @@ def run_diffusion_1(input_folder,
                       num_sample=num_sample,
                       tokenizer=tokenizer,
                       max_grad_norm=1.0,
-                      num_series_exists=0)
+                      num_series_exists=num_series_exists)
 
     print("loading low-res model...")
     trainer.load(-1)

@@ -7,7 +7,7 @@ from scipy.ndimage import zoom
 import numpy as np
 import os
 
-def generate_pmap(heatmap_volume, threshold=0.5):
+def generate_pmap(heatmap_volume, threshold=0.5, binarize=True):
     """
     Convert a heatmap into a binary probability map (PMAP).
     
@@ -18,7 +18,10 @@ def generate_pmap(heatmap_volume, threshold=0.5):
     Returns:
         numpy.ndarray: A binary probability map (same shape as heatmap_volume).
     """
-    pmap = (heatmap_volume > threshold).astype(np.uint8)  # Convert to 0 and 1
+    if binarize:
+        pmap = (heatmap_volume > threshold).astype(np.uint8)  # Convert to 0 and 1
+    else:
+        pmap = (heatmap_volume > threshold).astype(np.float32)
     return pmap
 
 def resize_pmap(pmap, target_shape):
@@ -155,9 +158,16 @@ def attach_pmap_to_dicom_series(dicom_dir, pmap, filename, sampleNum, series_des
     print(f"Saved PMAP DICOM to {output_pmap_path}")
     return output_pmap_path
 
-def run_pmap_function(folder, heatmap_volume, sampleNum, threshold):
+def run_pmap_function(folder, heatmap_volume, sampleNum, threshold, saliencymap=False, saliencythresh=False):
     dicom_dir = f"/media/volume/gen-ai-volume/MedSyn/results/dicom/{folder}_sample_{sampleNum}"
-    pmap = generate_pmap(heatmap_volume, threshold=threshold)
-    output_pmap_dicom = attach_pmap_to_dicom_series(dicom_dir, pmap, folder, sampleNum, "Saliency map", "heatmap")
+    if not saliencymap and not saliencythresh:
+        pmap = generate_pmap(heatmap_volume, threshold=threshold, binarize=True)
+        output_pmap_dicom = attach_pmap_to_dicom_series(dicom_dir, pmap, folder, sampleNum, "Probability Map", "pmap")
+    elif not saliencymap:
+        pmap = generate_pmap(heatmap_volume, threshold=threshold, binarize=False)
+        output_pmap_dicom = attach_pmap_to_dicom_series(dicom_dir, pmap, folder, sampleNum, "Saliency Map Threshold", "saliencythresh")
+    else:
+        output_pmap_dicom = attach_pmap_to_dicom_series(dicom_dir, heatmap_volume, folder, sampleNum, "Saliency Map", "saliency")
+
 
     return output_pmap_dicom
