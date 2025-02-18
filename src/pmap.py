@@ -60,7 +60,7 @@ def load_dicom_series(directory):
     
     return dicom_datasets
 
-def attach_pmap_to_dicom_series(dicom_dir, pmap, filename, sampleNum, series_description, typemap):
+def attach_pmap_to_dicom_series(dicom_dir, pmap, filename, sampleNum, series_description, typemap, combined):
     """
     Attach a PMAP to a DICOM CT series and save it as a multi-frame DICOM PMAP.
 
@@ -131,7 +131,7 @@ def attach_pmap_to_dicom_series(dicom_dir, pmap, filename, sampleNum, series_des
         real_world_value_mappings=real_world_value_mappings,  
         window_center=0.5,  # Helps display PMAP properly (0 to 1 range)
         window_width=1.0,  # Ensures PMAP contrast scaling works
-        series_description=series_description,
+        series_description=series_description+(" COMBIND" if combined else " SINGLE"),
         series_number=3005,  # ✅ Match expected PMAP series number in OHIF
         instance_number=1
     )
@@ -151,23 +151,23 @@ def attach_pmap_to_dicom_series(dicom_dir, pmap, filename, sampleNum, series_des
 
     # Save the PMAP as a DICOM file
     pmap_save_path = "/media/volume/gen-ai-volume/MedSyn/results/dicom_overlays"
-    output_pmap_path = os.path.join(pmap_save_path, filename, f"{filename}_sample_{sampleNum}_output_{typemap}.dcm")
+    output_pmap_path = os.path.join(pmap_save_path, filename, f"{filename}_sample_{sampleNum}_{'combined_' if combined else 'single_'}output_{typemap}.dcm")
     os.makedirs(os.path.dirname(output_pmap_path), exist_ok=True)  
     parametric_map.save_as(output_pmap_path)
 
     print(f"Saved PMAP DICOM to {output_pmap_path}")
     return output_pmap_path
 
-def run_pmap_function(folder, heatmap_volume, sampleNum, threshold, saliencymap=False, saliencythresh=False):
+def run_pmap_function(folder, heatmap_volume, sampleNum, threshold, saliencymap=False, saliencythresh=False, combined=False):
     dicom_dir = f"/media/volume/gen-ai-volume/MedSyn/results/dicom/{folder}_sample_{sampleNum}"
     if not saliencymap and not saliencythresh:
         pmap = generate_pmap(heatmap_volume, threshold=threshold, binarize=True)
-        output_pmap_dicom = attach_pmap_to_dicom_series(dicom_dir, pmap, folder, sampleNum, "Probability Map", "pmap")
+        output_pmap_dicom = attach_pmap_to_dicom_series(dicom_dir, pmap, folder, sampleNum, "Probability Map", "pmap", combined)
     elif not saliencymap:
         pmap = generate_pmap(heatmap_volume, threshold=threshold, binarize=False)
-        output_pmap_dicom = attach_pmap_to_dicom_series(dicom_dir, pmap, folder, sampleNum, "Saliency Map Threshold", "saliencythresh")
+        output_pmap_dicom = attach_pmap_to_dicom_series(dicom_dir, pmap, folder, sampleNum, "Saliency Map Threshold", "saliencythresh", combined)
     else:
-        output_pmap_dicom = attach_pmap_to_dicom_series(dicom_dir, heatmap_volume, folder, sampleNum, "Saliency Map", "saliency")
+        output_pmap_dicom = attach_pmap_to_dicom_series(dicom_dir, heatmap_volume, folder, sampleNum, "Saliency Map", "saliency", combined)
 
 
     return output_pmap_dicom
