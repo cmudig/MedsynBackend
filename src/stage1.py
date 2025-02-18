@@ -1249,7 +1249,8 @@ class Trainer(object):
             dont_delete_folder='',
             num_sample_rows=4,
             num_sample=16,
-            max_grad_norm=None
+            max_grad_norm=None,
+            num_series_exists=0
     ):
         super().__init__()
         self.model = diffusion_model
@@ -1277,6 +1278,7 @@ class Trainer(object):
         self.attention_folder = attention_folder
         self.dont_delete_folder = dont_delete_folder
         self.num_sample = num_sample
+        self.num_series_exists = num_series_exists
 
         train_files = []
         for file_name in os.listdir(folder):
@@ -1369,7 +1371,7 @@ class Trainer(object):
             for idx in range(self.num_sample):
                 with torch.no_grad():
 
-                    file_name = data['text_meta_dict']['filename_or_obj'][0].split('/')[-1].split('.')[0]+"_sample_"+str(idx)+".npy"
+                    file_name = data['text_meta_dict']['filename_or_obj'][0].split('/')[-1].split('.')[0]+"_sample_"+str(self.num_series_exists)+".npy"
                     save_path = os.path.join(self.save_folder, str(f'{file_name}'))
 
                     if "dont_delete" not in file_name:
@@ -1509,7 +1511,8 @@ def run_diffusion_1(input_folder,
                     num_sample,
                     noise_folder,
                     tokenizer,
-                    read_img_flag=False):
+                    read_img_flag,
+                    num_series_exists):
     
     model = Unet3D(
         dim=160,
@@ -1565,7 +1568,8 @@ def run_diffusion_1(input_folder,
                       num_sample_rows=1,
                       num_sample=num_sample,
                       tokenizer=tokenizer,
-                      max_grad_norm=1.0)
+                      max_grad_norm=1.0,
+                      num_series_exists=0)
 
     print("loading low-res model...")
     trainer.load(-1)
