@@ -236,7 +236,8 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                         attention_folder=FILES_FOLDER+"/saliency_maps/"+studyInstanceUID,
                         num_sample=1,
                         tokenizer=text_extractor.tokenizer,
-                        read_img_flag=read_img_flag)
+                        read_img_flag=read_img_flag,
+                        num_series_exists=num_series_exists)
         
         print("Completed low res.")
 
