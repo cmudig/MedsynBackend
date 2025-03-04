@@ -1,3 +1,5 @@
+
+
 """
 Author: Duy-Phuong Dao
 Email: phuongdd.1997@gmail.com (or duyphuongcri@gmail.com)
@@ -129,21 +131,31 @@ def get_transforms_normal_seg_notext(shape):
 def get_transforms_text():
     train_target_transforms = Compose(
         [
-            LoadImaged(keys=["text"], reader='NumpyReader'),
-            # AddChanneld(keys=["image"]),
-            # Orientationd(keys=["image"], axcodes="IRP"),
-            # ThresholdIntensityd(keys=["image"], threshold=300, above=False),
-            # NormalizeIntensityd(keys=["image"], subtrahend=-362,divisor=662),
-            # RandSpatialCropd(
-            #     keys=["image"], roi_size=shape,
-            #     max_roi_size=shape, random_center=True, random_size=False,
-            # ),
-            # SpatialPadd(keys=["image"], spatial_size=shape),
-            ToTensord(keys=["text"]),
+            LoadImaged(keys=["text", "tokens"], reader='NumpyReader'),
+            ToTensord(keys=["text", "tokens"]),
         ]
     )
-
     return train_target_transforms
+
+
+# def get_transforms_text():
+#     train_target_transforms = Compose(
+#         [
+#             LoadImaged(keys=["text"], reader='NumpyReader'),
+#             # AddChanneld(keys=["image"]),
+#             # Orientationd(keys=["image"], axcodes="IRP"),
+#             # ThresholdIntensityd(keys=["image"], threshold=300, above=False),
+#             # NormalizeIntensityd(keys=["image"], subtrahend=-362,divisor=662),
+#             # RandSpatialCropd(
+#             #     keys=["image"], roi_size=shape,
+#             #     max_roi_size=shape, random_center=True, random_size=False,
+#             # ),
+#             # SpatialPadd(keys=["image"], spatial_size=shape),
+#             ToTensord(keys=["text"]),
+#         ]
+#     )
+
+#     return train_target_transforms
 
 
 def get_transforms_aug(shape, crop_shape):
@@ -248,14 +260,22 @@ def get_transforms_seg_multiple():
 def worker_init_fn(worker_id):
     worker_info = torch.utils.data.get_worker_info()
     worker_info.dataset.transform.set_random_state(worker_info.seed % (2 ** 32))
-
-
+    
+    
 def cache_transformed_text(train_files):
     train_transforms = get_transforms_text()
     train_ds = monai.data.CacheDataset(
         data=train_files, transform=train_transforms, cache_rate=0.0
     )
     return train_ds
+
+
+# def cache_transformed_text(train_files):
+#     train_transforms = get_transforms_text()
+#     train_ds = monai.data.CacheDataset(
+#         data=train_files, transform=train_transforms, cache_rate=0.0
+#     )
+#     return train_ds
 
 
 def cache_transformed_train_data(train_files, shape):

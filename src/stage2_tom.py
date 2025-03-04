@@ -1130,12 +1130,6 @@ class Trainer(object):
 
         train_files = []
 
-        parent_folder = "/".join(folder.split("/")[:-1])
-        first_sample = "dont_delete_sample_0.npy"
-        train_files.append({"image": os.path.join(parent_folder, first_sample),
-                                    'text': os.path.join(
-                                        text_embed_folder, "dont_delete.npy")})
-
         for img_dir in os.listdir(folder):
             # dummy text
             if ".npy" in img_dir:
@@ -1218,7 +1212,6 @@ class Trainer(object):
             # text = text.to(self.accelerator.device).squeeze(dim=1)
 
             with torch.no_grad():
-
                 if idx == 0:
                     file_name = f"{self.filename[:-4]}_sample_{self.num_series_exists}"
                 else:
@@ -1263,15 +1256,15 @@ class Trainer(object):
 
 
 def save_nii(img, output_dir, output_postfix):
-    img = sitk.GetImageFromArray(img.astype('float32'))
+    img = sitk.GetImageFromArray(img)
     sitk.WriteImage(img, os.path.join(output_dir, output_postfix+".nii.gz"))
 
+    
 def run_diffusion_2(input_folder,
                     output_folder,
                     model_folder,
                     filename="",
-                    num_series_exists=0
-                    ):
+                    num_series_exists=0):
     model_high = Unet3D(
         dim=56,
         cond_dim=768,
@@ -1328,15 +1321,10 @@ def run_diffusion_2(input_folder,
     print("loading model...")
     trainer_high_res.load(-1)
 
-    # print("training model...")
+    print("training model...")
     trainer_high_res.train()
 """
 run_diffusion_2(input_folder="/jet/home/wartmann/MedSyn/results/img_64_standard_bulk", 
                 output_folder='/jet/home/wartmann/MedSyn/results/img_256_standard_bulk/', 
                 model_folder='/ocean/projects/cis210093p/wartmann/MedSyn/models/medsyn_params/stage2')
 """
-
-# if __name__ == "__main__":
-#     run_diffusion_2(input_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/kate", 
-#                 output_folder='/media/volume/gen-ai-volume/MedSyn/results/img_256_standard', 
-#                 model_folder='/media/volume/gen-ai-volume/MedSyn/models/stage2')

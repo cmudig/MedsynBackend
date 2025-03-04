@@ -33,6 +33,19 @@ import xformers, xformers.ops
 
 import sys
 
+#####for attentionmap checking########
+# from accelerate.utils import set_seed
+import random
+random.seed(100)
+np.random.seed(100)
+
+# Set a global seed
+set_seed(100)  # Use any fixed integer for reproducibility
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+torch.manual_seed(100)
+torch.cuda.manual_seed_all(100)
+
 
 def get_alpha_cum(t):
     return torch.where(t >= 0, torch.cos((t + 0.008) / 1.008 * math.pi / 2).clamp(min=0.0, max=1.0)**2, 1.0)
@@ -400,26 +413,34 @@ class CrossAttention(nn.Module):
         self.to_kv = nn.Linear(dim_con, hidden_dim*2, bias=False)
         self.to_out = nn.Conv2d(hidden_dim, dim, 1)
 
+        self.attention_maps = []
+
     def forward(self, x, kv=None):
         b, c, f, h, w = x.shape
         x = rearrange(x, 'b c f h w -> (b f) c h w')
 
-        self.to_kv(kv)
-        kv = torch.cat([kv.unsqueeze(dim=1)]*f, dim=1)
-        kv = rearrange(kv, 'b f h c -> (b f) h c')
-        k, v = self.to_kv(kv).chunk(2, dim=-1)
-        k = rearrange(k, 'b d (h c) -> (b h) d c', h=self.heads)
-        v = rearrange(v, 'b d (h c) -> (b h) d c', h=self.heads)
+        kv = torch.cat([kv.unsqueeze(dim=1)] * f, dim=1)
+        kv = rearrange(kv, 'b f n c -> (b f) n c')  # n is seq_len
 
-        q = self.to_q(x)
-        q = rearrange(q, 'b (h c) x y -> (b h) (x y) c', h=self.heads)
+        q = self.to_q(x)  # (b*f), hidden_dim, h, w
+        q = rearrange(q, 'b (h d) x y -> b h (x y) d', h=self.heads)
 
-        query = q.contiguous()
-        key = k.contiguous()
-        value = v.contiguous()
-        hidden_states = xformers.ops.memory_efficient_attention(query, key, value, attn_bias=None)
+        k_v = self.to_kv(kv).chunk(2, dim=-1)
+        k, v = k_v  # (b*f), n, hidden_dim
+        k = rearrange(k, 'b n (h d) -> b h n d', h=self.heads)
+        v = rearrange(v, 'b n (h d) -> b h n d', h=self.heads)
 
-        out = rearrange(hidden_states, '(b h) (x y) c -> b (h c) x y', h=self.heads, x=h, y=w)
+        # Compute attention scores
+        q = q * self.scale
+        scores = torch.einsum('bhqd,bhkd->bhqk', q, k)  # [batch, heads, query_len, key_len]
+        attn_weights = torch.softmax(scores, dim=-1)  # [batch, heads, query_len, key_len]
+        # print(f"[DEBUG] Attention weights to [CLS]: {attn_weights[:, :, 0, :].detach().cpu().numpy()}")
+
+        # Append the attention weights for each batch to the list
+        self.attention_maps.append(attn_weights.detach().cpu())
+
+        out = torch.einsum('bhqk,bhkd->bhqd', attn_weights, v)
+        out = rearrange(out, 'b h (x y) d -> b (h d) x y', x=h, y=w)
         out = self.to_out(out)
         return rearrange(out, '(b f) c h w -> b c f h w', b=b)
 
@@ -637,18 +658,31 @@ class Unet3D(nn.Module):
             nn.Conv3d(dim, channels, 1)
         )
 
+    # def extract_attention_hook(self, module, input, output):
+    #     """Hook function to capture attention maps."""
+    #     if isinstance(output, tuple):
+    #         output = output[0]
+    #     self.attention_maps.append(output.detach().cpu()) #store attention maps
+
+    # def register_attention_hooks(self):
+    #     """Register hooks on all CrossAttention layers."""
+    #     for name, module in self.named_modules():
+    #         if isinstance(module, CrossAttention):
+    #             module.register_forward_hook(self.extract_attention_hook)
+
     def forward_with_cond_scale(
             self,
             *args,
             cond_scale=2.,
             **kwargs
     ):
+        
         logits = self.forward(*args, null_cond_prob=0., **kwargs)
         if cond_scale == 1 or not self.has_cond:
             return logits
 
         null_logits = self.forward(*args, null_cond_prob=1., **kwargs)
-        return null_logits + (logits - null_logits) * cond_scale
+        return null_logits + (logits - null_logits) * cond_scale 
 
     def forward(
             self,
@@ -662,6 +696,8 @@ class Unet3D(nn.Module):
             # probability at which a given batch sample will focus on the present (0. is all off, 1. is completely arrested attention across time)
     ):
         assert not (self.has_cond and not exists(cond)), 'cond must be passed in if cond_dim specified'
+
+        self.attention_maps = []
 
         x = self.init_conv(x)
 
@@ -689,30 +725,52 @@ class Unet3D(nn.Module):
         ###
         x = self.mid_spatial_attn1(x)
         x = self.mid_cross_attn1(x, kv=cond)
+        cross_attn_module = self.mid_cross_attn1.fn.fn
+        self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
+        # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn1")
+        cross_attn_module.attention_maps = []
         x = self.mid_temporal_attn1(x, t)
         ###
         x = self.mid_spatial_attn2(x)
         x = self.mid_cross_attn2(x, kv=cond)
+        cross_attn_module = self.mid_cross_attn2.fn.fn
+        self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
+        # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn2")
+        cross_attn_module.attention_maps = []
         x = self.mid_temporal_attn2(x, t)
         ###
         x = self.mid_spatial_attn3(x)
         x = self.mid_cross_attn3(x, kv=cond)
+        cross_attn_module = self.mid_cross_attn3.fn.fn
+        self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
+        # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn3")
+        cross_attn_module.attention_maps = []
         x = self.mid_temporal_attn3(x, t)
         ###
         x = self.mid_spatial_attn4(x)
         x = self.mid_cross_attn4(x, kv=cond)
+        cross_attn_module = self.mid_cross_attn4.fn.fn
+        self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
+        # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn4")
+        cross_attn_module.attention_maps = []
+        # self.heatmaps.extend(self.mid_cross_attn4.fn.fn.attention_maps)
+        # print(f"Debug: Heatmap appended from mid_cross_attn4. Current length of heatmaps: {len(self.heatmaps)}")
         x = self.mid_temporal_attn4(x, t)
         ###
         x = self.mid_block2(x, t)
 
         for block1, block2, temporal_block, upsample in self.ups:
             x = torch.cat((x, h.pop()), dim=1)
+            
             x = block1(x, t)
             x = block2(x, t)
             x = temporal_block(x, t)
             x = upsample(x)
 
         x = torch.cat((x, r), dim=1)
+        print(f"Debug: Total Attention Maps: {len(self.attention_maps)}")
+
+
         return self.final_conv(x)
 
 
@@ -933,6 +991,7 @@ class GaussianDiffusion(nn.Module):
         else:
             t_minus = torch.clip(t_minus, min=0.0)
             x = ddim_sample(x_recon, x, (t_minus * 1.0) / (self.num_timesteps), (t * 1.0) / (self.num_timesteps))
+
         return x
 
     @torch.inference_mode()
@@ -947,6 +1006,9 @@ class GaussianDiffusion(nn.Module):
             time_steps = range(0, self.num_timesteps)
 
         img = init_noise if init_noise is not None else torch.randn(shape, device=device)
+
+        self.attention_maps = []
+        print(f"Debug: Cleared attention_maps, Length is now {len(self.attention_maps)}")
 
         indexes = []
         for b in range(bsz):
@@ -966,6 +1028,18 @@ class GaussianDiffusion(nn.Module):
             else:
                 img = self.p_sample(img, time, indexes=indexes, cond=cond,
                                     cond_scale=cond_scale)
+                
+        #unnormalize image before returning
+        
+        # Collect attention maps from all CrossAttention modules
+        # Collect attention maps
+        if hasattr(self.denoise_fn, 'attention_maps') and isinstance(self.denoise_fn.attention_maps, list):
+            self.attention_maps.append([h.clone().detach() for h in self.denoise_fn.attention_maps])
+            print(f"Debug: Appended attention_maps. Length is now {len(self.attention_maps)}")
+            print(f"Debug: Number of attention maps in the last timestep: {len(self.attention_maps[-1])}")
+            # Clear the attention maps in denoise_fn for next time
+            self.denoise_fn.attention_maps = []
+
         return unnormalize_img(img)
 
     @torch.inference_mode()
@@ -996,9 +1070,9 @@ class GaussianDiffusion(nn.Module):
             torch.manual_seed(42)  # Ensures reproducibility
             noise = torch.randn(shape, device=device)
             torch.save(noise, noise_path)  # Save for future use
-        
-        return self.p_sample_loop(shape, cond=cond, cond_scale=cond_scale, use_ddim=DDIM, init_noise=noise)
 
+        return self.p_sample_loop(shape, cond=cond, cond_scale=cond_scale, use_ddim=DDIM, init_noise=noise)
+    
     @torch.inference_mode()
     def interpolate(self, x1, x2, t=None, lam=0.5):
         b, *_, device = *x1.shape, x1.device
@@ -1158,6 +1232,7 @@ class Trainer(object):
             diffusion_model,
             folder,
             *,
+            tokenizer,
             ema_decay=0.995,
             num_frames=16,
             train_batch_size=32,
@@ -1170,12 +1245,16 @@ class Trainer(object):
             save_and_sample_every=1000,
             results_folder='./results',
             save_folder='',
+            attention_folder='',
+            dont_delete_folder='',
             num_sample_rows=4,
             num_sample=16,
-            max_grad_norm=None
+            max_grad_norm=None,
+            num_series_exists=0
     ):
         super().__init__()
         self.model = diffusion_model
+        self.tokenizer = tokenizer 
         map_location = 'cuda' if torch.cuda.is_available() else 'cpu'
         #print(results_folder)
         model_path = os.path.join(results_folder,"1000_ckpt/pytorch_model.bin")
@@ -1196,31 +1275,24 @@ class Trainer(object):
         channels = diffusion_model.channels
         self.num_frames = diffusion_model.num_frames
         self.save_folder = save_folder
+        self.attention_folder = attention_folder
+        self.dont_delete_folder = dont_delete_folder
         self.num_sample = num_sample
+        self.num_series_exists = num_series_exists
 
         train_files = []
-
-        for img_dir in os.listdir(folder):
-            if img_dir[-3:] == 'npy':
-                train_files.append({'text': os.path.join(folder, img_dir)})
-
-        # for img_dir in os.listdir("/ocean/projects/asc170022p/lisun/r3/results/moved_img_nii_seg_lobe_256_v2"):
-        #     train_files.append({"image": os.path.join(folder, img_dir),
-        #                         "lobe": os.path.join(
-        #                             "/ocean/projects/asc170022p/lisun/r3/results/moved_img_nii_seg_lobe_256_v2",
-        #                             img_dir),
-        #                         "airway": os.path.join(
-        #                             "/ocean/projects/asc170022p/lisun/r3/results/moved_img_nii_seg_airway_256_label",
-        #                             img_dir),
-        #                         "vessel": os.path.join(
-        #                             "/ocean/projects/asc170022p/lisun/r3/results/moved_img_nii_seg_vessels_256_label",
-        #                             img_dir),
-        #                         'text': os.path.join("/ocean/projects/asc170022p/lisun/r3/results/text_embedding_192",
-        #                                              img_dir)})
+        for file_name in os.listdir(folder):
+            if file_name.endswith('.npy') and not file_name.endswith('_tokens.npy'):
+                text_path = os.path.join(folder, file_name)
+                tokens_path = text_path.replace('.npy', '_tokens.npy')
+                if os.path.exists(tokens_path):
+                    train_files.append({'text': text_path, 'tokens': tokens_path, 'filename_or_obj': file_name})
+                else:
+                    print(f"Tokens file missing for {file_name}")
 
         self.ds = cache_transformed_text(train_files=train_files)
 
-        #print(f'found {len(self.ds)} text embedding files at {folder}')
+        print(f'found {len(self.ds)} text embedding files at {folder}')
         assert len(self.ds) > 0, 'need to have at least 1 video to start training (although 1 is not great, try 100k)'
 
         self.dl = data.DataLoader(self.ds, batch_size=train_batch_size, shuffle=True, pin_memory=True)
@@ -1272,26 +1344,6 @@ class Trainer(object):
             path = dirs[-1]
 
         self.step = int(path.split("_")[0]) * self.save_and_sample_every + 1
-        #print("Accelerator load:{}".format(os.path.join(self.results_folder, path)))
-        #self.accelerator.load_state(os.path.join(self.results_folder, path), strict=False)# we already loaded the model
-        #try:
-        #    if milestone == -1:
-        #        dirs = os.listdir(self.results_folder)
-        #        dirs = [d for d in dirs if d.endswith("ckpt")]
-        #        dirs = sorted(dirs, key=lambda x: int(x.split("_")[0]))
-        #        path = dirs[-1]
-        #        self.accelerator.load_state(os.path.join(self.results_folder, path), strict=False)
-        #        self.step = int(path.split("_")[0]) * self.save_and_sample_every + 1
-        #except Exception as e:
-        #    print("Failed to load complete checkpoint due to:", e)
-        #    print("Attempting to load model only...")
-        #    model_path = os.path.join(self.results_folder, "pytorch_model.bin")
-        #    print(model_path)
-        #    if os.path.exists(model_path):
-        #        map_location = 'cuda' if torch.cuda.is_available() else 'cpu'
-        #        self.model.load_state_dict(torch.load(model_path, map_location=map_location), strict=False)
-        #    else:
-        #        print("Model file not found. Ensure you have the correct path.")
 
     def train(
             self,
@@ -1304,45 +1356,163 @@ class Trainer(object):
         self.results_folder = os.path.join(str(self.results_folder), "given_text_ddim_eval")
         if not os.path.exists(self.results_folder):
             os.mkdir(self.results_folder)
+        if not os.path.exists(self.attention_folder):
+            os.makedirs(self.attention_folder, exist_ok=True)
+        if not os.path.exists(self.save_folder):
+            os.makedirs(self.save_folder, exist_ok=True)
+
         for i, data in enumerate(self.dl):
 
             text = data["text"].squeeze(dim=1)
+            tokens = data["tokens"].squeeze(dim=1)
             text = text.to(self.accelerator.device)
+            tokens = tokens.to(self.accelerator.device)
 
             for idx in range(self.num_sample):
                 with torch.no_grad():
 
-                    file_name = data['text_meta_dict']['filename_or_obj'][0].split('/')[-1].split('.')[0]+"_sample_"+str(idx)+".npy"
+                    file_name = data['text_meta_dict']['filename_or_obj'][0].split('/')[-1].split('.')[0]+"_sample_"+str(self.num_series_exists)+".npy"
                     save_path = os.path.join(self.save_folder, str(f'{file_name}'))
-                    if not os.path.exists(save_path):
 
-                        num_samples = self.num_sample_rows ** 2
-                        batches = num_to_groups(num_samples, self.batch_size)
-                        all_videos_list = list(
-                            map(lambda n: self.ema_model.sample(batch_size=n, cond=text), batches))
-                        all_videos_list = torch.cat(all_videos_list, dim=0)
-                        np.save(save_path,
-                                all_videos_list.cpu().numpy())
+                    if "dont_delete" not in file_name:
+                        if not os.path.exists(save_path):
+
+                            num_samples = self.num_sample_rows ** 2
+                            batches = num_to_groups(num_samples, self.batch_size)
+
+                            
+                            all_videos_list = list(map(lambda n: self.ema_model.sample(batch_size=n, cond=text), batches))
+                            all_videos_list = torch.cat(all_videos_list, dim=0)
+                            np.save(save_path, all_videos_list.cpu().numpy())  # Convert list to tensor
+
+                            # Process and save attention maps
+                            heatmaps = self.ema_model.attention_maps
+                            if heatmaps:
+                                num_timesteps = len(heatmaps)
+                                batch_size = self.batch_size  # Should be 1
+                                frames = self.num_frames
+                                num_layers = len(heatmaps[0])  # Number of CrossAttention layers
+
+                                # Initialize a list to hold avg_attention_map per timestep
+                                avg_attention_maps_per_timestep = []
+
+                                for timestep_idx, timestep_maps in enumerate(heatmaps):
+                                    # Stack over layers
+                                    layer_maps = torch.stack(timestep_maps)  # [num_layers, batch_size * frames, heads, query_len, key_len]
+                                    # Average over layers
+                                    avg_layer_map = layer_maps.mean(dim=0)  # [batch_size * frames, heads, query_len, key_len]
+                                    # Average over heads
+                                    avg_layer_map = avg_layer_map.mean(dim=1)  # [batch_size * frames, query_len, key_len]
+                                    # Reshape to [batch_size, frames, query_len, key_len]
+                                    avg_layer_map = avg_layer_map.view(batch_size, frames, avg_layer_map.shape[1], avg_layer_map.shape[2])
+                                    avg_attention_maps_per_timestep.append(avg_layer_map)
+
+                                # Stack over time steps
+                                time_attention_maps = torch.stack(avg_attention_maps_per_timestep)  # [num_timesteps, batch_size, frames, query_len, key_len]
+
+                                # Average over time steps
+                                avg_attention_map = time_attention_maps.mean(dim=0)  # [batch_size, frames, query_len, key_len]
+
+                                # Map attention maps back to tokens
+                                for token_idx in range(tokens.shape[1]):
+                                    token_id = tokens[0, token_idx]
+                                    token_str = self.tokenizer.decode([token_id.item()]).strip()
+                                    attention_maps_per_frame = []
+                                    for frame_idx in range(frames):
+                                        # Extract attention weights for this token at this frame
+                                        attention_map = avg_attention_map[0, frame_idx, :, token_idx]  # [query_len]
+                                        # Reshape query_len back to spatial dimensions
+                                        query_len = attention_map.shape[0]
+                                        h = w = int(math.sqrt(query_len))
+                                        attention_map = attention_map.view(h, w)
+                                        attention_maps_per_frame.append(attention_map.cpu().numpy())
+
+                                    # Stack attention maps per frame
+                                    attention_maps_per_frame = np.stack(attention_maps_per_frame)  # [frames, H, W]
+                                    # Save the attention maps for this token
+                                    attention_save_path = os.path.join(self.attention_folder, f"{file_name[:-4]}_token_{token_idx}_{token_str}_heatmaps.npy")
+                                    print("ATTENTION PATH: ", attention_save_path)
+
+                                    np.save(attention_save_path, attention_maps_per_frame)
+                                    print(f"Saved heatmap for token '{token_str}' at: {attention_save_path}")
+                            else:
+                                print("No heatmaps to save.")
                     else:
-                        print("File already exists: {}".format(save_path))
-                #all_videos_list, all_videos_list_lobe, all_videos_list_airway, all_videos_list_vessel = all_videos_list.chunk(
-                #    4, dim=1)
-                #all_videos_list = torch.cat(
-                #    [all_videos_list, all_videos_list_lobe, all_videos_list_airway, all_videos_list_vessel], dim=0)
+                        #check that don't delete exists in the dont delete folder
+                        dont_delete_path = os.path.join(self.dont_delete_folder, str(f'{file_name}'))
+                        if not os.path.exists(dont_delete_path):
+                            num_samples = self.num_sample_rows ** 2
+                            batches = num_to_groups(num_samples, self.batch_size)
+                            
+                            all_videos_list = list(map(lambda n: self.ema_model.sample(batch_size=n, cond=text), batches))
+                            all_videos_list = torch.cat(all_videos_list, dim=0)
+                            np.save(save_path, all_videos_list).cpu().numpy()  # Convert list to tensor
 
-                #all_videos_list = F.pad(all_videos_list, (2, 2, 2, 2))
+                            # Process and save attention maps
+                            heatmaps = self.ema_model.attention_maps
+                            if heatmaps:
+                                num_timesteps = len(heatmaps)
+                                batch_size = self.batch_size  # Should be 1
+                                frames = self.num_frames
+                                num_layers = len(heatmaps[0])  # Number of CrossAttention layers
 
-                #one_gif = rearrange(all_videos_list, '(i j) c f h w -> c f (i h) (j w)',
-                #                    i=self.num_sample_rows)
-                #video_path = os.path.join(self.results_folder, str(f'{file_name}.gif')).replace(".npy", "")
-                #video_tensor_to_gif(one_gif, video_path)
+                                # Initialize a list to hold avg_attention_map per timestep
+                                avg_attention_maps_per_timestep = []
 
+                                for timestep_idx, timestep_maps in enumerate(heatmaps):
+                                    # Stack over layers
+                                    layer_maps = torch.stack(timestep_maps)  # [num_layers, batch_size * frames, heads, query_len, key_len]
+                                    # Average over layers
+                                    avg_layer_map = layer_maps.mean(dim=0)  # [batch_size * frames, heads, query_len, key_len]
+                                    # Average over heads
+                                    avg_layer_map = avg_layer_map.mean(dim=1)  # [batch_size * frames, query_len, key_len]
+                                    # Reshape to [batch_size, frames, query_len, key_len]
+                                    avg_layer_map = avg_layer_map.view(batch_size, frames, avg_layer_map.shape[1], avg_layer_map.shape[2])
+                                    avg_attention_maps_per_timestep.append(avg_layer_map)
+
+                                # Stack over time steps
+                                time_attention_maps = torch.stack(avg_attention_maps_per_timestep)  # [num_timesteps, batch_size, frames, query_len, key_len]
+
+                                # Average over time steps
+                                avg_attention_map = time_attention_maps.mean(dim=0)  # [batch_size, frames, query_len, key_len]
+
+                                # Map attention maps back to tokens
+                                for token_idx in range(tokens.shape[1]):
+                                    token_id = tokens[0, token_idx]
+                                    token_str = self.tokenizer.decode([token_id.item()]).strip()
+                                    attention_maps_per_frame = []
+                                    for frame_idx in range(frames):
+                                        # Extract attention weights for this token at this frame
+                                        attention_map = avg_attention_map[0, frame_idx, :, token_idx]  # [query_len]
+                                        # Reshape query_len back to spatial dimensions
+                                        query_len = attention_map.shape[0]
+                                        h = w = int(math.sqrt(query_len))
+                                        attention_map = attention_map.view(h, w)
+                                        attention_maps_per_frame.append(attention_map.cpu().numpy())
+
+                                    # Stack attention maps per frame
+                                    attention_maps_per_frame = np.stack(attention_maps_per_frame)  # [frames, H, W]
+                                    # Save the attention maps for this token
+                                    attention_save_path = os.path.join(self.attention_folder, f"{file_name[-4]}_token_{token_idx}_{token_str}_heatmaps.npy")
+                                    print("ATTENTION PATH: ", attention_save_path)
+
+                                    np.save(attention_save_path, attention_maps_per_frame)
+                                    print(f"Saved heatmap for token '{token_str}' at: {attention_save_path}")
+                            else:
+                                print("No heatmaps to save.")
+                        else:
+                            print("File already exists: {}".format(save_path))
+            
 def run_diffusion_1(input_folder,
                     output_folder,
-                    noise_folder,
+                    dont_delete_folder,
                     model_folder,
-                    num_sample=1,
-                    read_img_flag=False):
+                    attention_folder,
+                    num_sample,
+                    noise_folder,
+                    tokenizer,
+                    read_img_flag,
+                    num_series_exists):
     
     model = Unet3D(
         dim=160,
@@ -1378,11 +1548,7 @@ def run_diffusion_1(input_folder,
         noise_folder=noise_folder
     )
 
-                      #folder="/ocean/projects/asc170022p/lisun/r3/results/text_embed_example",
-                      #results_folder='/ocean/projects/asc170022p/yanwuxu/diffusion/video-diffusion-pytorch/video_diffusion_pytorch/results_text_low_res_improved_unet_seg',
-                      #save_folder='./results/img_64_exp4/',
-                      #folder="/ocean/projects/asc170022p/lisun/r3/results/text_embed_example_standard",
-                      #save_folder='./results/img_64_standard/',
+
     trainer = Trainer(diffusion_model=diffusion_model,
                       folder=input_folder,
                       ema_decay=0.995,
@@ -1397,11 +1563,24 @@ def run_diffusion_1(input_folder,
                       save_and_sample_every=1000,
                       results_folder=model_folder,
                       save_folder=output_folder,
+                      attention_folder=attention_folder,
+                      dont_delete_folder=dont_delete_folder,
                       num_sample_rows=1,
                       num_sample=num_sample,
-                      max_grad_norm=1.0)
+                      tokenizer=tokenizer,
+                      max_grad_norm=1.0,
+                      num_series_exists=num_series_exists)
 
     print("loading low-res model...")
     trainer.load(-1)
     #print("training model...")
     trainer.train()
+
+# run_diffusion_1(input_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed", 
+#                 output_folder= "/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/test_rightpleur_noleft", 
+#                 dont_delete_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard",
+#                 model_folder="/media/volume/gen-ai-volume/MedSyn/models/stage1", 
+#                 attention_folder="/media/volume/gen-ai-volume/MedSyn/results/saliency_maps/test_rightpleur_noleft",
+#                 num_sample=1,
+#                 noise_folder="/media/volume/gen-ai-volume/MedSyn/results/img_64_standard/saved_noise/test_rightpleur_noleft",
+#                 read_img_flag=False)

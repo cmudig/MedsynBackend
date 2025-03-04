@@ -1,8 +1,10 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, send_from_directory
 import os
 from extract_text import TextExtractor
 from stage1 import run_diffusion_1
 from stage2 import run_diffusion_2
+from heatmap import create_heatmap
+from pmap import run_pmap_function
 import threading
 import io
 import sys
@@ -14,6 +16,11 @@ import torch
 import signal
 import subprocess
 import time
+import numpy as np
+from flask import Flask, jsonify, send_file
+import cv2
+import nibabel as nib
+from scipy.ndimage import zoom
 
 
 app = Flask(__name__)
@@ -41,6 +48,16 @@ def base_route():
 def api_post():
     data = request.json
     return jsonify(data), 200
+
+@app.route('/dicom_files/<foldername>/<int:sample_number>', methods=['GET'])
+def list_dicom_files(foldername, sample_number):
+
+    try:
+       
+       return jsonify({"data": foldername}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # lists all files in a folder
 @app.route('/files/<foldername>/<int:sample_number>', methods=['GET'])
@@ -193,11 +210,12 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
 
     
     # clear output folder low-resolution
-    for fn in os.listdir(FILES_FOLDER +"/img_64_standard"):
-        file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
-        if os.path.isfile(file_path) and "dont_delete" not in fn:
-            if "saved_noise" not in fn:
-                os.remove(file_path)
+    if read_img_flag:
+        for fn in os.listdir(FILES_FOLDER +"/img_64_standard/" + studyInstanceUID):
+            file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
+            if os.path.isfile(file_path) and "dont_delete" not in fn:
+                if "saved_noise" not in fn:
+                    os.remove(file_path)
 
     try:
         torch.cuda.empty_cache()
@@ -210,43 +228,34 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         torch.cuda.empty_cache()
         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
 
-        # if not read_img_flag:
-        # Run low-res model
-        # run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
-        #                 output_folder=FILES_FOLDER +"/img_64_standard/" + studyInstanceUID,
-        #                 model_folder=STAGE1_MODEL_FOLDER, 
-        #                 num_sample=1)
-
-        # torch.cuda.empty_cache()
-        # accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
-
-        # # Run high-res model
-        # run_diffusion_2(input_folder=FILES_FOLDER+ "/img_64_standard/" + studyInstanceUID, 
-        #             output_folder=FILES_FOLDER +"/img_256_standard", 
-        #             model_folder=STAGE2_MODEL_FOLDER,
-        #             filename=filename,
-        #             num_series_exists=num_series_exists
-        #             )
         run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
-                        output_folder=FILES_FOLDER +"/img_64_standard", 
+                        output_folder=FILES_FOLDER +"/img_64_standard/" + studyInstanceUID, 
                         noise_folder=FILES_FOLDER+"/img_64_standard/saved_noise/" + studyInstanceUID,
                         model_folder=STAGE1_MODEL_FOLDER, 
+                        dont_delete_folder=FILES_FOLDER+"/img_64_standard",
+                        attention_folder=FILES_FOLDER+"/saliency_maps/"+studyInstanceUID,
                         num_sample=1,
-                        read_img_flag=read_img_flag)
+                        tokenizer=text_extractor.tokenizer,
+                        read_img_flag=read_img_flag,
+                        num_series_exists=num_series_exists)
+        
+        print("Completed low res.")
 
         torch.cuda.empty_cache()
         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
 
         # Run high-res model
-        run_diffusion_2(input_folder=FILES_FOLDER+ "/img_64_standard", 
+        run_diffusion_2(input_folder=FILES_FOLDER+ "/img_64_standard/"+studyInstanceUID, 
                         output_folder=FILES_FOLDER +"/img_256_standard", 
                         model_folder=STAGE2_MODEL_FOLDER,
                         filename=filename,
                         num_series_exists=num_series_exists)
+        
+        print("Completed high res.")
 
         # convert nifti to dicom
         nifti_file = os.path.join(FILES_FOLDER,"img_256_standard",filename[:-4]+"_sample_" + str(num_series_exists) + ".nii.gz")
-        output_folder = os.path.join(FILES_FOLDER,"dicom",filename[:-4]+"_sample_" + str(num_series_exists))
+        output_folder = os.path.join(FILES_FOLDER,"dicom",studyInstanceUID+"_sample_"+str(num_series_exists))
         
         print(series_instance_uid)
         print(nifti_file)
@@ -257,7 +266,15 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                         study_instance_uid=studyInstanceUID,
                         patient_name=patient_name,
                         patient_id=patient_id)
+        
+        print("Now making heatmap and pmap....")
+        # first we need to get the heatmap volume
+        heatmap_data_path = FILES_FOLDER+'/saliency_maps/'+studyInstanceUID+'/'+filename[:-4]+"_sample_" + str(num_series_exists)+'_token_0_[CLS]_heatmaps.npy'
+        hm_vol = create_heatmap(heatmap_data_path)
 
+        print('Now maknig pmap...')
+        out_path = run_pmap_function(studyInstanceUID, hm_vol, num_series_exists, 0.6)
+        print(f"We saved the pmap at {out_path}")
 
     finally:
         print("Uploading Data to Orthanc...")
@@ -305,21 +322,17 @@ def _save_text_to_file(folder_path, file_name, text_content):
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
 
-
-    # studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag
-    # description="Calcification, Atelectasis, Opacity, Consolidation"
+    # description="Left Pleural Effusion"
 
     # run_text_extractor_and_models(
-    #     studyInstanceUID="kate",
+    #     studyInstanceUID="kate_leftpleur",
     #     description=description, 
-    #     prompt="right pleural effusion",
-    #     # prompt="left pleural effusion",
+    #     prompt="left pleural effusion, no consolidation, no right pleural effusion",
     #     output_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed",
-    #     filename="20250202174321rightkate.npy",
-    #     # filename="20250202173128largepanco.npy",
-    #     patient_name="kate2",
-    #     patient_id="test_w_alvaro",
-    #     series_instance_uid="123alvaro",
+    #     filename="kate_leftpleur.npy",
+    #     patient_name="k",
+    #     patient_id="10291029",
+    #     series_instance_uid="10291029",
     #     read_img_flag=False,
     #     num_series_exists=0
     # )
