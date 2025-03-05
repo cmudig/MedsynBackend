@@ -5,11 +5,15 @@ import torch
 from transformers import AutoModelForTokenClassification, AutoTokenizer
 from scipy.ndimage import zoom
 import time
+import logging
+
 
 # Paths
 SAL_MAPS_FOLDER = "/media/volume/gen-ai-volume/MedSyn/results/saliency_maps/"
 NER_HEATMAPS_FOLDER = "/media/volume/gen-ai-volume/MedSyn/results/NER_subsets_heatmaps/"
 LOG_FILE = "/home/exouser/MedsynBackend/src/log.txt"  # Ensure it matches the model log
+
+logging.basicConfig(filename=LOG_FILE, level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # Load RadBERT for NER
 NER_MODEL_NAME = "StanfordAIMI/RadBERT"
@@ -21,15 +25,39 @@ model.eval()
 
 def extract_medical_keywords(text):
     """Extract key medical terms from the input text using RadBERT."""
-    tokens = tokenizer(text, return_tensors="pt", truncation=True).to(device)
+    logging.debug(f"Original Input Text: {text}")
+
+    # Tokenize with offsets to map back to words
+    inputs = tokenizer(text, return_offsets_mapping=True, return_tensors="pt", truncation=True).to(device)
+    tokenized_words = tokenizer.convert_ids_to_tokens(inputs["input_ids"][0])
+    
+    logging.debug(f"Tokenized Words: {tokenized_words}")
+
     with torch.no_grad():
-        outputs = model(**tokens).logits
+        outputs = model(**inputs).logits
+        logging.debug(f"Model Output Shape: {outputs.shape}") 
 
-    predictions = torch.argmax(outputs, dim=-1)
-    extracted_keywords = tokenizer.convert_ids_to_tokens(predictions[0].cpu().numpy())
+    predictions = torch.argmax(outputs, dim=-1).cpu().numpy()[0]
 
-    # Extract unigrams, bigrams, and trigrams
-    extracted_ngrams = extracted_keywords.copy()
+    # Map token indices to NER labels
+    id2label = model.config.id2label
+    predicted_labels = [id2label[idx] for idx in predictions]
+
+    # Log token-label pairs
+    logging.debug("NER Predictions per Token:")
+    for i, (token, label) in enumerate(zip(tokenized_words, predicted_labels)):
+        logging.debug(f"Token: {token}, Label: {label}")
+
+    # Extract meaningful entity tokens
+    extracted_keywords = [
+        tokenized_words[i] for i, label in enumerate(predicted_labels) 
+        if label not in ["O", "[PAD]", "[CLS]", "[SEP]"]
+    ]
+
+    logging.debug(f"Extracted NER Tokens: {extracted_keywords}")
+
+    # Generate n-grams for logging and saving
+    extracted_ngrams = extracted_keywords[:]
     for i in range(len(extracted_keywords) - 1):
         extracted_ngrams.append(f"{extracted_keywords[i]} {extracted_keywords[i+1]}")
     for i in range(len(extracted_keywords) - 2):
@@ -37,11 +65,10 @@ def extract_medical_keywords(text):
 
     extracted_ngrams = list(set(extracted_ngrams))  # Remove duplicates
 
-    # Log extracted terms
-    with open(LOG_FILE, "a") as log:
-        log.write(f"Extracted NER Keywords: {', '.join(extracted_ngrams)}\n")
-
+    logging.debug(f"Extracted NER Keywords (with n-grams): {', '.join(extracted_ngrams)}")
+    
     return extracted_ngrams
+
 
 def wait_for_heatmaps(study_id, max_wait=300):
     """Wait until heatmaps are available for the study ID."""
