@@ -22,6 +22,10 @@ import cv2
 import nibabel as nib
 from scipy.ndimage import zoom
 
+# for NER
+from NER_Averages import process_ner_heatmaps
+
+
 
 app = Flask(__name__)
 
@@ -240,6 +244,7 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                         num_series_exists=num_series_exists)
         
         print("Completed low res.")
+        process_ner_heatmaps(prompt, studyInstanceUID)
 
         torch.cuda.empty_cache()
         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
