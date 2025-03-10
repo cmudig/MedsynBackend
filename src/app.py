@@ -313,13 +313,9 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         
         for fn in os.listdir(full_dir):
             file_path = os.path.join(full_dir, fn)  # include the subfolder
-            print("HERRREEE", file_path)
-
             if os.path.isfile(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
-                print("whhahattt")
                 os.remove(file_path)
             elif os.path.isdir(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
-                print("directorrrryyyyy")
                 for f in os.listdir(file_path):
                     os.remove(os.path.join(file_path, f))
     else:
