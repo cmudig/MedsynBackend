@@ -40,11 +40,11 @@ random.seed(100)
 np.random.seed(100)
 
 # Set a global seed
-set_seed(100)  # Use any fixed integer for reproducibility
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = False
-torch.manual_seed(100)
-torch.cuda.manual_seed_all(100)
+# set_seed(100)  # Use any fixed integer for reproducibility
+# torch.backends.cudnn.deterministic = True
+# torch.backends.cudnn.benchmark = False
+# torch.manual_seed(100)
+# torch.cuda.manual_seed_all(100)
 
 
 def get_alpha_cum(t):
@@ -1067,7 +1067,7 @@ class GaussianDiffusion(nn.Module):
         else: #read_img_flag is false or the path doesn't exist (but that should never happen)
             # Generate random noise as usual and save that
             print("Pre-saved noise not found! Generating new fixed noise instead.")
-            torch.manual_seed(42)  # Ensures reproducibility
+            # torch.manual_seed(42)  # Ensures reproducibility
             noise = torch.randn(shape, device=device)
             torch.save(noise, noise_path)  # Save for future use
 
@@ -1371,7 +1371,7 @@ class Trainer(object):
             for idx in range(self.num_sample):
                 with torch.no_grad():
 
-                    file_name = data['text_meta_dict']['filename_or_obj'][0].split('/')[-1].split('.')[0]+"_sample_"+str(self.num_series_exists)+".npy"
+                    file_name = self.save_folder.split("/")[-1]+"_sample_"+str(self.num_series_exists)+".npy"
                     save_path = os.path.join(self.save_folder, str(f'{file_name}'))
 
                     if "dont_delete" not in file_name:

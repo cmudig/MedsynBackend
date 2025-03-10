@@ -21,7 +21,8 @@ from flask import Flask, jsonify, send_file
 import cv2
 import nibabel as nib
 from scipy.ndimage import zoom
-
+import signal
+import pynvml
 
 app = Flask(__name__)
 
@@ -161,47 +162,141 @@ def progress():
     
     return last_line
 
-def get_gpu_process():
-    """Finds running GPU processes that are using CUDA."""
-    try:
-        result = subprocess.run(
-            ["nvidia-smi", "--query-compute-apps=pid,name", "--format=csv,noheader"],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-        )
-        if result.returncode == 0:
-            processes = result.stdout.strip().split("\n")
-            gpu_processes = [line.split(",")[0].strip() for line in processes if "python" in line]
-            return gpu_processes if gpu_processes else None
-        else:
-            print("Failed to retrieve GPU processes:", result.stderr)
-            return None
-    except Exception as e:
-        print(f"Error retrieving GPU processes: {e}")
-        return None
-
-def kill_gpu_process():
-    """Kills all detected GPU processes (except this script)."""
-    gpu_processes = get_gpu_process()
-    if gpu_processes:
-        for pid in gpu_processes:
-            if str(os.getpid()) not in pid:  # Avoid killing this process
-                print(f"Killing GPU process: {pid}")
-                os.kill(int(pid), signal.SIGKILL)
-    else:
-        print("[INFO] No active GPU processes found.")
-
 @app.route('/status', methods=['GET'])
 def check_running():
     global process_is_running
     return jsonify({"process_is_running": process_is_running})
 
+def clear_processes():
+    pynvml.nvmlInit()
+    device_count = pynvml.nvmlDeviceGetCount()
+
+    for i in range(device_count):
+        handle = pynvml.nvmlDeviceGetHandleByIndex(i)
+        processes = pynvml.nvmlDeviceGetComputeRunningProcesses(handle)
+        for proc in processes:
+            print(f"GPU {i} - PID: {proc.pid}, GPU Memory: {proc.usedGpuMemory} bytes")
+            # Be cautious! This will kill the process.
+            os.kill(proc.pid, signal.SIGTERM)
+
+    pynvml.nvmlShutdown()
+
+# def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag, num_series_exists=0):
+#     # filename: e.g. test.npy
+#     global process_is_running
+#     old_stdout = sys.stdout
+#     sys.stdout = StreamToFile()
+#     process_is_running = True
+
+#     # clear output folder textembedding
+#     for fn in os.listdir(FILES_FOLDER+"/text_embed"):
+#         file_path = os.path.join(FILES_FOLDER+"/text_embed", fn)
+#         if os.path.isfile(file_path) and "dont_delete" not in fn:
+#             os.remove(file_path)
+
+    
+#     # clear output folder low-resolution
+#     if read_img_flag:
+#         full_dir = os.path.join(FILES_FOLDER, "img_64_standard", studyInstanceUID)
+#         #if full_dir does not exist, make it
+#         if not os.path.exists(full_dir):
+#             os.makedirs(full_dir)
+        
+#         for fn in os.listdir(full_dir):
+#             file_path = os.path.join(full_dir, fn)  # include the subfolder
+#             print("HERRREEE", file_path)
+
+#             if os.path.isfile(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
+#                 print("whhahattt")
+#                 os.remove(file_path)
+#             elif os.path.isdir(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
+#                 print("directorrrryyyyy")
+#                 for f in os.listdir(file_path):
+#                     os.remove(os.path.join(file_path, f))
+#     else:
+#         for fn in os.listdir(FILES_FOLDER +"/img_64_standard/"):
+#             file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
+#             #recurisvely delete all files in any folder in the img_64_standard folder that is not dont_delete or saved_noise
+#             if os.path.isfile(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
+#                 os.remove(file_path)
+#             elif os.path.isdir(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
+#                 for f in os.listdir(file_path):
+#                     os.remove(os.path.join(file_path, f))
+#                 os.rmdir(file_path)
+
+#     try:
+#         torch.cuda.empty_cache()
+#         # Run the text extractor
+#         text_extractor = TextExtractor(resume_model=TEXTEXTRACTOR_MODEL_FOLDER)
+#         text_extractor.run(prompt, output_folder, filename)
+#         print(f"Textembedding stored in: {output_folder}")
+#         _save_text_to_file(folder_path=FILES_FOLDER+"/prompts", file_name=filename[:-4]+"_"+str(num_series_exists)+".txt", text_content=prompt)
+        
+#         torch.cuda.empty_cache()
+#         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
+
+#         run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
+#                         output_folder=FILES_FOLDER +"/img_64_standard/" + studyInstanceUID, 
+#                         noise_folder=FILES_FOLDER+"/img_64_standard/saved_noise/" + studyInstanceUID,
+#                         model_folder=STAGE1_MODEL_FOLDER, 
+#                         dont_delete_folder=FILES_FOLDER+"/img_64_standard",
+#                         attention_folder=FILES_FOLDER+"/saliency_maps/"+studyInstanceUID,
+#                         num_sample=1,
+#                         tokenizer=text_extractor.tokenizer,
+#                         read_img_flag=read_img_flag,
+#                         num_series_exists=num_series_exists)
+        
+#         print("Completed low res.")
+
+#         torch.cuda.empty_cache()
+#         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
+
+#         # Run high-res model
+#         run_diffusion_2(input_folder=FILES_FOLDER+ "/img_64_standard/"+studyInstanceUID, 
+#                         output_folder=FILES_FOLDER +"/img_256_standard", 
+#                         model_folder=STAGE2_MODEL_FOLDER,
+#                         filename=filename,
+#                         num_series_exists=num_series_exists)
+        
+#         print("Completed high res.")
+
+#         # convert nifti to dicom
+#         nifti_file = os.path.join(FILES_FOLDER,"img_256_standard",studyInstanceUID+"_sample_" + str(num_series_exists) + ".nii.gz")
+#         output_folder = os.path.join(FILES_FOLDER,"dicom",studyInstanceUID+"_sample_"+str(num_series_exists))
+        
+#         print(series_instance_uid)
+#         print(nifti_file)
+#         nifti_to_dicom(nifti_file=nifti_file,
+#                         output_folder=output_folder,
+#                         series_description=description,                      
+#                         series_instance_uid=series_instance_uid,
+#                         study_instance_uid=studyInstanceUID,
+#                         patient_name=patient_name,
+#                         patient_id=patient_id)
+        
+#         print("Now making heatmap and pmap....")
+#         # first we need to get the heatmap volume
+#         heatmap_data_path = FILES_FOLDER+'/saliency_maps/'+studyInstanceUID+'/'+filename[:-4]+"_sample_" + str(num_series_exists)+'_token_0_[CLS]_heatmaps.npy'
+#         hm_vol = create_heatmap(heatmap_data_path)
+
+#         print('Now maknig pmap...')
+#         out_path = run_pmap_function(studyInstanceUID, hm_vol, num_series_exists, 0.6)
+#         print(f"We saved the pmap at {out_path}")
+
+#     finally:
+#         print("Uploading Data to Orthanc...")
+#         sys.stdout = old_stdout
+#         process_is_running=False
+#         clear_processes()
+
+
 def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag, num_series_exists=0):
-    # filename: e.g. test.npy
+
     global process_is_running
     old_stdout = sys.stdout
     sys.stdout = StreamToFile()
     process_is_running = True
-
+    
     # clear output folder textembedding
     for fn in os.listdir(FILES_FOLDER+"/text_embed"):
         file_path = os.path.join(FILES_FOLDER+"/text_embed", fn)
@@ -211,19 +306,39 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
     
     # clear output folder low-resolution
     if read_img_flag:
-        for fn in os.listdir(FILES_FOLDER +"/img_64_standard/" + studyInstanceUID):
-            file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
-            if os.path.isfile(file_path) and "dont_delete" not in fn:
-                if "saved_noise" not in fn:
-                    os.remove(file_path)
+        full_dir = os.path.join(FILES_FOLDER, "img_64_standard", studyInstanceUID)
+        #if full_dir does not exist, make it
+        if not os.path.exists(full_dir):
+            os.makedirs(full_dir)
+        
+        for fn in os.listdir(full_dir):
+            file_path = os.path.join(full_dir, fn)  # include the subfolder
+            print("HERRREEE", file_path)
 
+            if os.path.isfile(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
+                print("whhahattt")
+                os.remove(file_path)
+            elif os.path.isdir(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
+                print("directorrrryyyyy")
+                for f in os.listdir(file_path):
+                    os.remove(os.path.join(file_path, f))
+    else:
+        for fn in os.listdir(FILES_FOLDER +"/img_64_standard/"):
+            file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
+            #recurisvely delete all files in any folder in the img_64_standard folder that is not dont_delete or saved_noise
+            if os.path.isfile(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
+                os.remove(file_path)
+            elif os.path.isdir(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
+                for f in os.listdir(file_path):
+                    os.remove(os.path.join(file_path, f))
+                os.rmdir(file_path)
+    
     try:
         torch.cuda.empty_cache()
         # Run the text extractor
         text_extractor = TextExtractor(resume_model=TEXTEXTRACTOR_MODEL_FOLDER)
         text_extractor.run(prompt, output_folder, filename)
         print(f"Textembedding stored in: {output_folder}")
-        _save_text_to_file(folder_path=FILES_FOLDER+"/prompts", file_name=filename[:-4]+".txt", text_content=prompt)
         
         torch.cuda.empty_cache()
         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
@@ -273,17 +388,19 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         hm_vol = create_heatmap(heatmap_data_path)
 
         print('Now maknig pmap...')
-        out_path = run_pmap_function(studyInstanceUID, hm_vol, num_series_exists, 0.6)
+        out_path = run_pmap_function(studyInstanceUID, hm_vol, num_series_exists, 0.7)
         print(f"We saved the pmap at {out_path}")
-
+        out_path = run_pmap_function(studyInstanceUID, hm_vol, num_series_exists, 0.7, saliencymap=True, saliencythresh=False)
+        print("Saving saliency map: ", out_path)
+        out_path = run_pmap_function(studyInstanceUID, hm_vol, num_series_exists, 0.7, saliencymap=False, saliencythresh=True)
+        print("Saving saliency map threshold: ", out_path)
+        
     finally:
         print("Uploading Data to Orthanc...")
         sys.stdout = old_stdout
         process_is_running=False
-         # After diffusion completes, check and kill GPU processes
-        # print("Checking for any lingering GPU processes...")
-        # time.sleep(5)  # Ensure processes have updated
-        # kill_gpu_process()  # Kill GPU processes
+        clear_processes()
+
 
 class StreamToFile(io.StringIO):
     def __init__(self):
@@ -322,17 +439,17 @@ def _save_text_to_file(folder_path, file_name, text_content):
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
 
-    # description="Left Pleural Effusion"
+    # description="no pleural effusion, no consolidation, and no cardiomegaly."
 
     # run_text_extractor_and_models(
-    #     studyInstanceUID="kate_leftpleur",
+    #     studyInstanceUID="3271643143176",
     #     description=description, 
-    #     prompt="left pleural effusion, no consolidation, no right pleural effusion",
+    #     prompt="no pleural effusion, no consolidation, and no cardiomegaly",
     #     output_folder="/media/volume/gen-ai-volume/MedSyn/results/text_embed",
-    #     filename="kate_leftpleur.npy",
-    #     patient_name="k",
-    #     patient_id="10291029",
-    #     series_instance_uid="10291029",
+    #     filename="3271643143176.npy",
+    #     patient_name="3271643143176",
+    #     patient_id="3271643143176",
+    #     series_instance_uid="3271643143176",
     #     read_img_flag=False,
     #     num_series_exists=0
     # )
