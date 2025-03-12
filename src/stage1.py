@@ -802,6 +802,7 @@ class GaussianDiffusion(nn.Module):
             *,
             image_size,
             num_frames,
+            save_folder,
             text_use_bert_cls=False,
             channels=3,
             timesteps=1000,
@@ -811,7 +812,7 @@ class GaussianDiffusion(nn.Module):
             volume_depth=128,
             ddim_timesteps=50,
             read_img_flag=False,
-            noise_folder=None
+            noise_folder=None,
     ):
         super().__init__()
         self.channels = channels
@@ -821,6 +822,7 @@ class GaussianDiffusion(nn.Module):
         self.volume_depth = volume_depth
         self.read_img_flag = read_img_flag
         self.noise_folder = noise_folder
+        self.save_folder = save_folder
 
         betas = cosine_beta_schedule(timesteps)
 
@@ -1537,6 +1539,7 @@ def run_diffusion_1(input_folder,
         denoise_fn=model,
         image_size=64,
         num_frames=64,
+        save_folder=output_folder,
         text_use_bert_cls=False,
         channels=4,
         timesteps=1000,
