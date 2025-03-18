@@ -725,26 +725,26 @@ class Unet3D(nn.Module):
         ###
         x = self.mid_spatial_attn1(x)
         x = self.mid_cross_attn1(x, kv=cond)
-        cross_attn_module = self.mid_cross_attn1.fn.fn
-        self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
-        # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn1")
-        cross_attn_module.attention_maps = []
+        # cross_attn_module = self.mid_cross_attn1.fn.fn
+        # self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
+        # # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn1")
+        # cross_attn_module.attention_maps = []
         x = self.mid_temporal_attn1(x, t)
         ###
         x = self.mid_spatial_attn2(x)
         x = self.mid_cross_attn2(x, kv=cond)
-        cross_attn_module = self.mid_cross_attn2.fn.fn
-        self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
-        # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn2")
-        cross_attn_module.attention_maps = []
+        # cross_attn_module = self.mid_cross_attn2.fn.fn
+        # self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
+        # # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn2")
+        # cross_attn_module.attention_maps = []
         x = self.mid_temporal_attn2(x, t)
         ###
         x = self.mid_spatial_attn3(x)
         x = self.mid_cross_attn3(x, kv=cond)
-        cross_attn_module = self.mid_cross_attn3.fn.fn
-        self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
-        # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn3")
-        cross_attn_module.attention_maps = []
+        # cross_attn_module = self.mid_cross_attn3.fn.fn
+        # self.attention_maps.extend([attn_map for attn_map in cross_attn_module.attention_maps])
+        # # print(f"Debug: Collected {len(cross_attn_module.attention_maps)} attention maps from mid_cross_attn3")
+        # cross_attn_module.attention_maps = []
         x = self.mid_temporal_attn3(x, t)
         ###
         x = self.mid_spatial_attn4(x)
@@ -1032,15 +1032,15 @@ class GaussianDiffusion(nn.Module):
                                     cond_scale=cond_scale)
                 
         #unnormalize image before returning
-        
-        # Collect attention maps from all CrossAttention modules
-        # Collect attention maps
-        if hasattr(self.denoise_fn, 'attention_maps') and isinstance(self.denoise_fn.attention_maps, list):
-            self.attention_maps.append([h.clone().detach() for h in self.denoise_fn.attention_maps])
-            print(f"Debug: Appended attention_maps. Length is now {len(self.attention_maps)}")
-            print(f"Debug: Number of attention maps in the last timestep: {len(self.attention_maps[-1])}")
-            # Clear the attention maps in denoise_fn for next time
-            self.denoise_fn.attention_maps = []
+            if t == 0:
+                # Collect attention maps from all CrossAttention modules
+                # Collect attention maps
+                if hasattr(self.denoise_fn, 'attention_maps') and isinstance(self.denoise_fn.attention_maps, list):
+                    self.attention_maps.append([h.clone().detach() for h in self.denoise_fn.attention_maps])
+                    print(f"Debug: Appended attention_maps. Length is now {len(self.attention_maps)}")
+                    print(f"Debug: Number of attention maps in the last timestep: {len(self.attention_maps[-1])}")
+                    # Clear the attention maps in denoise_fn for next time
+                self.denoise_fn.attention_maps = []
 
         return unnormalize_img(img)
 
