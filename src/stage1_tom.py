@@ -1349,7 +1349,7 @@ def run_diffusion_1(input_folder,
         cond_dim=768,
         dim_mults=(1, 2, 4, 8),
         channels=4,
-        attn_heads=8,
+        attn_heads=8,s
         attn_dim_head=32,
         use_bert_text_cond=False,
         init_dim=None,
