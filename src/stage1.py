@@ -33,8 +33,6 @@ import xformers, xformers.ops
 
 import sys
 
-
-
 #####for attentionmap checking########
 # from accelerate.utils import set_seed
 import random
@@ -42,11 +40,11 @@ random.seed(100)
 np.random.seed(100)
 
 # Set a global seed
-set_seed(100)  # Use any fixed integer for reproducibility
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = False
-torch.manual_seed(100)
-torch.cuda.manual_seed_all(100)
+# set_seed(100)  # Use any fixed integer for reproducibility
+# torch.backends.cudnn.deterministic = True
+# torch.backends.cudnn.benchmark = False
+# torch.manual_seed(100)
+# torch.cuda.manual_seed_all(100)
 
 
 def get_alpha_cum(t):
@@ -804,6 +802,7 @@ class GaussianDiffusion(nn.Module):
             *,
             image_size,
             num_frames,
+            save_folder,
             text_use_bert_cls=False,
             channels=3,
             timesteps=1000,
@@ -813,7 +812,7 @@ class GaussianDiffusion(nn.Module):
             volume_depth=128,
             ddim_timesteps=50,
             read_img_flag=False,
-            noise_folder=None
+            noise_folder=None,
     ):
         super().__init__()
         self.channels = channels
@@ -823,6 +822,7 @@ class GaussianDiffusion(nn.Module):
         self.volume_depth = volume_depth
         self.read_img_flag = read_img_flag
         self.noise_folder = noise_folder
+        self.save_folder = save_folder
 
         betas = cosine_beta_schedule(timesteps)
 
@@ -1069,7 +1069,8 @@ class GaussianDiffusion(nn.Module):
         else: #read_img_flag is false or the path doesn't exist (but that should never happen)
             # Generate random noise as usual and save that
             print("Pre-saved noise not found! Generating new fixed noise instead.")
-            torch.manual_seed(42)  # Ensures reproducibility
+            seed_calc = int(self.save_folder.split("/")[-1])
+            torch.manual_seed(seed_calc)  # Ensures reproducibility
             noise = torch.randn(shape, device=device)
             torch.save(noise, noise_path)  # Save for future use
 
@@ -1373,7 +1374,7 @@ class Trainer(object):
             for idx in range(self.num_sample):
                 with torch.no_grad():
 
-                    file_name = data['text_meta_dict']['filename_or_obj'][0].split('/')[-1].split('.')[0]+"_sample_"+str(self.num_series_exists)+".npy"
+                    file_name = self.save_folder.split("/")[-1]+"_sample_"+str(self.num_series_exists)+".npy"
                     save_path = os.path.join(self.save_folder, str(f'{file_name}'))
 
                     if "dont_delete" not in file_name:
@@ -1538,6 +1539,7 @@ def run_diffusion_1(input_folder,
         denoise_fn=model,
         image_size=64,
         num_frames=64,
+        save_folder=output_folder,
         text_use_bert_cls=False,
         channels=4,
         timesteps=1000,
