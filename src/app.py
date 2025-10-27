@@ -23,6 +23,8 @@ import nibabel as nib
 from scipy.ndimage import zoom
 import signal
 import pynvml
+import re
+import re
 
 app = Flask(__name__)
 
@@ -167,19 +169,48 @@ def check_running():
     global process_is_running
     return jsonify({"process_is_running": process_is_running})
 
-def clear_processes():
-    pynvml.nvmlInit()
-    device_count = pynvml.nvmlDeviceGetCount()
+def _build_token_suffix(token_idx, token_text):
+    slug = re.sub(r'[^a-zA-Z0-9]+', '_', token_text.lower()).strip('_')
+    slug = slug or f"token{token_idx}"
+    return f"token_{token_idx}_{slug}"
 
-    for i in range(device_count):
-        handle = pynvml.nvmlDeviceGetHandleByIndex(i)
-        processes = pynvml.nvmlDeviceGetComputeRunningProcesses(handle)
-        for proc in processes:
-            print(f"GPU {i} - PID: {proc.pid}, GPU Memory: {proc.usedGpuMemory} bytes")
-            # Be cautious! This will kill the process.
-            os.kill(proc.pid, signal.SIGTERM)
 
-    pynvml.nvmlShutdown()
+def _safe_run_pmap(folder, heatmap_volume, sample_num, threshold, *, token_suffix=None, **kwargs):
+    try:
+        return run_pmap_function(folder, heatmap_volume, sample_num, threshold, token_suffix=token_suffix, **kwargs)
+    except TypeError:
+        # Fall back for environments that still have the older signature.
+        return run_pmap_function(folder, heatmap_volume, sample_num, threshold, **kwargs)
+
+
+def clear_processes(skip_pids=None):
+    """Terminate remaining GPU processes, keeping the current process alive."""
+    skip = {os.getpid()}
+    if skip_pids:
+        skip.update(skip_pids)
+
+    try:
+        pynvml.nvmlInit()
+    except pynvml.NVMLError as exc:
+        print(f"NVML init failed: {exc}")
+        return
+
+    try:
+        device_count = pynvml.nvmlDeviceGetCount()
+
+        for i in range(device_count):
+            handle = pynvml.nvmlDeviceGetHandleByIndex(i)
+            processes = pynvml.nvmlDeviceGetComputeRunningProcesses(handle)
+            for proc in processes:
+                if proc.pid in skip:
+                    continue
+                print(f"GPU {i} - PID: {proc.pid}, GPU Memory: {proc.usedGpuMemory} bytes")
+                try:
+                    os.kill(proc.pid, signal.SIGTERM)
+                except ProcessLookupError:
+                    pass
+    finally:
+        pynvml.nvmlShutdown()
 
 # def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag, num_series_exists=0):
 #     # filename: e.g. test.npy
@@ -378,18 +409,57 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                         patient_name=patient_name,
                         patient_id=patient_id)
         
-        print("Now making heatmap and pmap....")
-        # first we need to get the heatmap volume
-        heatmap_data_path = FILES_FOLDER+'/saliency_maps/'+studyInstanceUID+'/'+filename[:-4]+"_sample_" + str(num_series_exists)+'_token_0_[CLS]_heatmaps.npy'
-        hm_vol = create_heatmap(heatmap_data_path)
+        print("Collecting per-token heatmaps...")
+        heatmap_dir = os.path.join(FILES_FOLDER, 'saliency_maps', studyInstanceUID)
+        heatmap_prefix = f"{filename[:-4]}_sample_{num_series_exists}_token_"
+        heatmap_suffix = "_heatmaps.npy"
+        token_heatmaps = []
 
-        print('Now maknig pmap...')
-        out_path = run_pmap_function(studyInstanceUID, hm_vol, num_series_exists, 0.7)
-        print(f"We saved the pmap at {out_path}")
-        out_path = run_pmap_function(studyInstanceUID, hm_vol, num_series_exists, 0.7, saliencymap=True, saliencythresh=False)
-        print("Saving saliency map: ", out_path)
-        out_path = run_pmap_function(studyInstanceUID, hm_vol, num_series_exists, 0.7, saliencymap=False, saliencythresh=True)
-        print("Saving saliency map threshold: ", out_path)
+        if os.path.isdir(heatmap_dir):
+            for file_name in sorted(os.listdir(heatmap_dir)):
+                if not file_name.startswith(heatmap_prefix) or not file_name.endswith(heatmap_suffix):
+                    continue
+                token_meta = file_name[len(heatmap_prefix):-len(heatmap_suffix)]
+                if '_' not in token_meta:
+                    print(f"Skipping heatmap with unexpected name: {file_name}")
+                    continue
+                token_idx_str, token_text = token_meta.split('_', 1)
+                try:
+                    token_idx = int(token_idx_str)
+                except ValueError:
+                    print(f"Unable to parse token index from {file_name}")
+                    continue
+                if token_text == '[PAD]':
+                    continue
+
+                heatmap_path = os.path.join(heatmap_dir, file_name)
+                heatmap_volume = create_heatmap(heatmap_path)
+                token_heatmaps.append({
+                    'index': token_idx,
+                    'token': token_text,
+                    'path': heatmap_path,
+                    'heatmap': heatmap_volume,
+                    'suffix': _build_token_suffix(token_idx, token_text)
+                })
+        else:
+            print(f"No heatmap directory found at {heatmap_dir}")
+
+        if token_heatmaps:
+            print(f"Generating DICOM overlays for {len(token_heatmaps)} tokens (excluding [PAD]).")
+            for entry in token_heatmaps:
+                hm_vol = entry['heatmap']
+                suffix = entry['suffix']
+                token = entry['token']
+                idx = entry['index']
+                print(f"Now making pmap for token '{token}' (index {idx})...")
+                out_path = _safe_run_pmap(studyInstanceUID, hm_vol, num_series_exists, 0.7, token_suffix=suffix)
+                print(f"Saved PMAP to {out_path}")
+                out_path = _safe_run_pmap(studyInstanceUID, hm_vol, num_series_exists, 0.7, saliencymap=True, saliencythresh=False, token_suffix=suffix)
+                print(f"Saved saliency map to {out_path}")
+                out_path = _safe_run_pmap(studyInstanceUID, hm_vol, num_series_exists, 0.7, saliencymap=False, saliencythresh=True, token_suffix=suffix)
+                print(f"Saved saliency threshold map to {out_path}")
+        else:
+            print("No eligible token heatmaps found; skipping PMAP generation.")
         
     finally:
         print("Uploading Data to Orthanc...")
