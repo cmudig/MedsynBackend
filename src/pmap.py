@@ -1,6 +1,7 @@
 import pydicom
 import highdicom as hd
 from datetime import datetime
+from typing import Optional
 from highdicom.pm import ParametricMap, RealWorldValueMapping
 from pydicom.uid import generate_uid
 from scipy.ndimage import zoom
@@ -66,6 +67,18 @@ def _sanitize_label(label: str) -> str:
     return slug or 'token'
 
 
+def _pretty_token_label(token_suffix: Optional[str]) -> str:
+    if not token_suffix:
+        return "Token"
+    try:
+        parts = token_suffix.split('_', 2)
+        if len(parts) >= 3:
+            return parts[2].replace('_', ' ').upper()
+    except Exception:
+        pass
+    return token_suffix.replace('_', ' ').upper()
+
+
 def attach_pmap_to_dicom_series(dicom_dir, pmap, filename, sampleNum, series_description, typemap, combined, token_suffix=None):
     """
     Attach a PMAP to a DICOM CT series and save it as a multi-frame DICOM PMAP.
@@ -124,6 +137,7 @@ def attach_pmap_to_dicom_series(dicom_dir, pmap, filename, sampleNum, series_des
     ]
 
     # ✅ Fix: Ensure correct Modality (CT) and reference correct CT Series
+    token_label = _pretty_token_label(token_suffix)
     parametric_map = ParametricMap(
         source_images=dicom_series,  # Use full DICOM series
         pixel_array=pmap,  # Already resized
@@ -135,9 +149,9 @@ def attach_pmap_to_dicom_series(dicom_dir, pmap, filename, sampleNum, series_des
         device_serial_number="0000",
         contains_recognizable_visual_features=False,
         real_world_value_mappings=real_world_value_mappings,  
-        window_center=0.5,  # Helps display PMAP properly (0 to 1 range)
+        window_center=0.9,  # Helps display PMAP properly (0 to 1 range)
         window_width=1.0,  # Ensures PMAP contrast scaling works
-        series_description=token_suffix,
+        series_description=f"{token_label} {series_description}",
         series_number=3005,  # ✅ Match expected PMAP series number in OHIF
         instance_number=1
     )
