@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional
 from highdicom.pm import ParametricMap, RealWorldValueMapping
 from pydicom.uid import generate_uid
-from scipy.ndimage import zoom
+from scipy.ndimage import zoom, binary_fill_holes
 import numpy as np
 import os
 import re
@@ -79,6 +79,20 @@ def _pretty_token_label(token_suffix: Optional[str]) -> str:
     return token_suffix.replace('_', ' ').upper()
 
 
+def _compute_body_mask(dicom_series, threshold: float = -750.0) -> np.ndarray:
+    """Return a boolean mask for voxels that belong to the body volume."""
+    mask_slices = []
+    for dataset in dicom_series:
+        pixels = dataset.pixel_array.astype(np.float32)
+        slope = getattr(dataset, "RescaleSlope", 1.0) or 1.0
+        intercept = getattr(dataset, "RescaleIntercept", 0.0) or 0.0
+        hu = pixels * slope + intercept
+        slice_mask = hu > threshold
+        slice_mask = binary_fill_holes(slice_mask)
+        mask_slices.append(slice_mask)
+    return np.stack(mask_slices, axis=0)
+
+
 def attach_pmap_to_dicom_series(dicom_dir, pmap, filename, sampleNum, series_description, typemap, combined, token_suffix=None):
     """
     Attach a PMAP to a DICOM CT series and save it as a multi-frame DICOM PMAP.
@@ -103,8 +117,15 @@ def attach_pmap_to_dicom_series(dicom_dir, pmap, filename, sampleNum, series_des
         pmap = resize_pmap(pmap, (num_slices, dicom_height, dicom_width))
 
     pmap = pmap.astype(np.float32)
+
+    # Mask out voxels that lie outside the body to avoid background overlays
+    body_mask = _compute_body_mask(dicom_series)
+
     # ✅ Flip the PMAP if it appears upside down
     pmap = np.flip(pmap, axis=1)  # Flip along height (axial view)
+    body_mask = np.flip(body_mask, axis=1)
+
+    pmap = np.where(body_mask, pmap, 0.0)
     # pmap = np.flip(pmap, axis=0)  # Flip along depth (coronal view)
     # pmap = np.flip(pmap, axis=2)  # Flip along width (sagittal view)
     
