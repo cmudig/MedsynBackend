@@ -119,13 +119,13 @@ def attach_pmap_to_dicom_series(dicom_dir, pmap, filename, sampleNum, series_des
     pmap = pmap.astype(np.float32)
 
     # Mask out voxels that lie outside the body to avoid background overlays
-    body_mask = _compute_body_mask(dicom_series)
+    # body_mask = _compute_body_mask(dicom_series)
 
     # ✅ Flip the PMAP if it appears upside down
     pmap = np.flip(pmap, axis=1)  # Flip along height (axial view)
-    body_mask = np.flip(body_mask, axis=1)
+    # body_mask = np.flip(body_mask, axis=1)
 
-    pmap = np.where(body_mask, pmap, 0.0)
+    # pmap = np.where(body_mask, pmap, 0.0)
     # pmap = np.flip(pmap, axis=0)  # Flip along depth (coronal view)
     # pmap = np.flip(pmap, axis=2)  # Flip along width (sagittal view)
     

@@ -25,6 +25,7 @@ import signal
 import pynvml
 import re
 import re
+from typing import Optional
 
 app = Flask(__name__)
 
@@ -173,6 +174,51 @@ def _build_token_suffix(token_idx, token_text):
     slug = re.sub(r'[^a-zA-Z0-9]+', '_', token_text.lower()).strip('_')
     slug = slug or f"token{token_idx}"
     return f"token_{token_idx}_{slug}"
+
+
+def _token_file_path(filename: str) -> str:
+    safe_name = os.path.basename(filename)
+    base, ext = os.path.splitext(safe_name)
+    token_file = f"{base}_tokens.npy" if ext else f"{safe_name}_tokens.npy"
+    return os.path.join(FILES_FOLDER, "text_embed", token_file)
+
+
+def _first_sentence_token_limit(filename: str, tokenizer) -> Optional[int]:
+    """Return the largest token index to keep (exclusive of the first '.' token)."""
+    tokens_path = _token_file_path(filename)
+    if not os.path.exists(tokens_path):
+        print(f"Token file not found at {tokens_path}; generating overlays for full prompt.")
+        return None
+
+    try:
+        token_ids = np.load(tokens_path)
+    except Exception as exc:
+        print(f"Failed to load tokens from {tokens_path}: {exc}")
+        return None
+
+    flat_token_ids = token_ids.flatten().tolist()
+    limit = None
+
+    for idx, token_id in enumerate(flat_token_ids):
+        try:
+            decoded = tokenizer.decode([int(token_id)]).strip()
+        except Exception as exc:
+            print(f"Tokenizer decode failed at index {idx}: {exc}")
+            return None
+
+        if decoded in ("[SEP]", "[PAD]"):
+            break
+        if not decoded:
+            continue
+
+        if '.' in decoded:
+            limit = idx - 1
+            break
+
+    if limit is None:
+        return None
+
+    return limit
 
 
 def _safe_run_pmap(folder, heatmap_volume, sample_num, threshold, *, token_suffix=None, **kwargs):
@@ -443,6 +489,14 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                 })
         else:
             print(f"No heatmap directory found at {heatmap_dir}")
+
+        if token_heatmaps:
+            token_heatmaps.sort(key=lambda entry: entry['index'])
+            cutoff_index = _first_sentence_token_limit(filename, text_extractor.tokenizer)
+            if cutoff_index is not None:
+                before_count = len(token_heatmaps)
+                token_heatmaps = [entry for entry in token_heatmaps if entry['index'] <= cutoff_index]
+                print(f"Limiting token overlays to first sentence tokens (<= index {cutoff_index}). {before_count} -> {len(token_heatmaps)}.")
 
         if token_heatmaps:
             print(f"Generating DICOM overlays for {len(token_heatmaps)} tokens (excluding [PAD]).")
