@@ -114,6 +114,7 @@ def get_file(foldername, filename, sample_number):
 # run model
 @app.route('/files/<fileID>', methods=['POST'])
 def process_text(fileID):
+    global process_is_running
     try:
         # Get the prompt from the POST request
         data = request.get_json()
@@ -148,6 +149,8 @@ def process_text(fileID):
         print(f"outputfolder: {output_folder}")
 
         print
+        # mark the process as running before launching the background thread so /status reflects it immediately
+        process_is_running = True
         # Start the process in a separate thread
         threading.Thread(target=run_text_extractor_and_models, args=(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag, num_series_exists, saved_noise_path)).start()
 
@@ -156,6 +159,7 @@ def process_text(fileID):
                         "prompt":prompt,
                         "seriesInstanceUID":series_instance_uid}), 200
     except Exception as e:
+        process_is_running = False
         return jsonify({"error": str(e)}), 500
 
 @app.route('/progress')
