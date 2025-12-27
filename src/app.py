@@ -125,6 +125,7 @@ def process_text(fileID):
         patient_id = data.get('patient_id')
         read_img_flag = data.get('read_img_flag')
         num_series_exists = data.get('num_series_in_study')
+        saved_noise_path = data.get('saved_noise_path')
         print(f"promt: {prompt}")
         print(f"description: {description}")
         print(f"studyInstanceUID: {studyInstanceUID}")
@@ -132,6 +133,8 @@ def process_text(fileID):
         print(f"patient_name: {patient_name}")
         print(f"patient_id: {patient_id}")
         print(f"num_Series: {num_series_exists}")
+        if saved_noise_path:
+            print(f"saved_noise_path override: {saved_noise_path}")
         series_instance_uid = pydicom.uid.generate_uid()
         
         if not prompt:
@@ -146,7 +149,7 @@ def process_text(fileID):
 
         print
         # Start the process in a separate thread
-        threading.Thread(target=run_text_extractor_and_models, args=(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag, num_series_exists)).start()
+        threading.Thread(target=run_text_extractor_and_models, args=(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag, num_series_exists, saved_noise_path)).start()
 
         return jsonify({"message": "Process started", 
                         "filename": filename,
@@ -367,7 +370,7 @@ def clear_processes(skip_pids=None):
 #         clear_processes()
 
 
-def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag, num_series_exists=0):
+def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_folder, filename, patient_name, patient_id, series_instance_uid, read_img_flag, num_series_exists=0, saved_noise_path: Optional[str] = None):
 
     global process_is_running
     old_stdout = sys.stdout
@@ -416,9 +419,13 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
         torch.cuda.empty_cache()
         accelerate.state.AcceleratorState._shared_state.clear() # dirty hack to reset accelerator state
 
+        noise_folder = saved_noise_path or FILES_FOLDER+"/img_64_standard/saved_noise/" + studyInstanceUID
+        if saved_noise_path:
+            print(f"Using overridden saved noise path: {noise_folder}")
+
         run_diffusion_1(input_folder=FILES_FOLDER+"/text_embed", 
                         output_folder=FILES_FOLDER +"/img_64_standard/" + studyInstanceUID, 
-                        noise_folder=FILES_FOLDER+"/img_64_standard/saved_noise/" + studyInstanceUID,
+                        noise_folder=noise_folder,
                         model_folder=STAGE1_MODEL_FOLDER, 
                         dont_delete_folder=FILES_FOLDER+"/img_64_standard",
                         attention_folder=FILES_FOLDER+"/saliency_maps/"+studyInstanceUID,
