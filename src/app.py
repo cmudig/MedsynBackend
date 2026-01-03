@@ -236,6 +236,36 @@ def _safe_run_pmap(folder, heatmap_volume, sample_num, threshold, *, token_suffi
         return run_pmap_function(folder, heatmap_volume, sample_num, threshold, **kwargs)
 
 
+def _upload_pmap_to_orthanc(dicom_path: str, study_uid: str, sample_num: int) -> None:
+    """Upload the generated PMAP DICOM to Orthanc if possible."""
+    if not dicom_path or not dicom_path.endswith("_pmap.dcm"):
+        print(f"PMAP upload skipped; not a pmap file: {dicom_path}")
+        return
+
+    if not os.path.isfile(dicom_path):
+        print(f"PMAP upload skipped; file missing: {dicom_path}")
+        return
+
+    try:
+        import requests  # type: ignore
+    except ImportError:
+        print("Requests library unavailable; skipping PMAP upload.")
+        return
+
+    url = os.environ.get("ORTHANC_URL", "http://localhost:8042/instances")
+    username = os.environ.get("ORTHANC_USERNAME")
+    password = os.environ.get("ORTHANC_PASSWORD")
+    auth = (username, password) if username or password else None
+
+    try:
+        with open(dicom_path, "rb") as fp:
+            response = requests.post(url, data=fp, auth=auth, timeout=30)
+        response.raise_for_status()
+        print(f"Uploaded PMAP for sample {sample_num} ({study_uid}) to Orthanc at {url}.")
+    except Exception as exc:
+        print(f"Failed to upload PMAP {dicom_path} to Orthanc: {exc}")
+
+
 def clear_processes(skip_pids=None):
     """Terminate remaining GPU processes, keeping the current process alive."""
     skip = {os.getpid()}
@@ -380,40 +410,43 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
     old_stdout = sys.stdout
     sys.stdout = StreamToFile()
     process_is_running = True
-    
-    # clear output folder textembedding
-    for fn in os.listdir(FILES_FOLDER+"/text_embed"):
-        file_path = os.path.join(FILES_FOLDER+"/text_embed", fn)
-        if os.path.isfile(file_path) and "dont_delete" not in fn:
-            os.remove(file_path)
-
-    
-    # clear output folder low-resolution
-    if read_img_flag:
-        full_dir = os.path.join(FILES_FOLDER, "img_64_standard", studyInstanceUID)
-        #if full_dir does not exist, make it
-        if not os.path.exists(full_dir):
-            os.makedirs(full_dir)
-        
-        for fn in os.listdir(full_dir):
-            file_path = os.path.join(full_dir, fn)  # include the subfolder
-            if os.path.isfile(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
-                os.remove(file_path)
-            elif os.path.isdir(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
-                for f in os.listdir(file_path):
-                    os.remove(os.path.join(file_path, f))
-    else:
-        for fn in os.listdir(FILES_FOLDER +"/img_64_standard/"):
-            file_path = os.path.join(FILES_FOLDER +"/img_64_standard", fn)
-            #recurisvely delete all files in any folder in the img_64_standard folder that is not dont_delete or saved_noise
-            if os.path.isfile(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
-                os.remove(file_path)
-            elif os.path.isdir(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
-                for f in os.listdir(file_path):
-                    os.remove(os.path.join(file_path, f))
-                os.rmdir(file_path)
-    
     try:
+        # Make sure expected output roots exist before we start clearing them.
+        text_embed_dir = os.path.join(FILES_FOLDER, "text_embed")
+        img64_root = os.path.join(FILES_FOLDER, "img_64_standard")
+        os.makedirs(text_embed_dir, exist_ok=True)
+        os.makedirs(img64_root, exist_ok=True)
+
+        # clear output folder textembedding
+        for fn in os.listdir(text_embed_dir):
+            file_path = os.path.join(text_embed_dir, fn)
+            if os.path.isfile(file_path) and "dont_delete" not in fn:
+                os.remove(file_path)
+
+        # clear output folder low-resolution
+        if read_img_flag:
+            full_dir = os.path.join(img64_root, studyInstanceUID)
+            if not os.path.exists(full_dir):
+                os.makedirs(full_dir)
+
+            for fn in os.listdir(full_dir):
+                file_path = os.path.join(full_dir, fn)  # include the subfolder
+                if os.path.isfile(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
+                    os.remove(file_path)
+                elif os.path.isdir(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
+                    for f in os.listdir(file_path):
+                        os.remove(os.path.join(file_path, f))
+        else:
+            for fn in os.listdir(img64_root):
+                file_path = os.path.join(img64_root, fn)
+                # recursively delete files that are not marked keepers
+                if os.path.isfile(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
+                    os.remove(file_path)
+                elif os.path.isdir(file_path) and "dont_delete" not in fn and "saved_noise" not in fn:
+                    for f in os.listdir(file_path):
+                        os.remove(os.path.join(file_path, f))
+                    os.rmdir(file_path)
+    
         torch.cuda.empty_cache()
         # Run the text extractor
         text_extractor = TextExtractor(resume_model=TEXTEXTRACTOR_MODEL_FOLDER)
@@ -519,6 +552,7 @@ def run_text_extractor_and_models(studyInstanceUID, description, prompt, output_
                 print(f"Now making pmap for token '{token}' (index {idx})...")
                 out_path = _safe_run_pmap(studyInstanceUID, hm_vol, num_series_exists, 0.7, token_suffix=suffix)
                 print(f"Saved PMAP to {out_path}")
+                _upload_pmap_to_orthanc(out_path, studyInstanceUID, num_series_exists)
                 out_path = _safe_run_pmap(studyInstanceUID, hm_vol, num_series_exists, 0.7, saliencymap=True, saliencythresh=False, token_suffix=suffix)
                 print(f"Saved saliency map to {out_path}")
                 out_path = _safe_run_pmap(studyInstanceUID, hm_vol, num_series_exists, 0.7, saliencymap=False, saliencythresh=True, token_suffix=suffix)

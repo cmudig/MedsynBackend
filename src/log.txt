@@ -1,459 +1,831 @@
 cuda
 <All keys matched successfully>
 (1, 192, 768)
-Saved to: /media/volume/gen-ai-volume/MedSyn/results/text_embed/566768856938097.npy
-Saved rokens to: /media/volume/gen-ai-volume/MedSyn/results/text_embed/566768856938097_tokens.npy
+Saved to: /media/volume/gen-ai-volume/MedSyn/results/text_embed/678543127898756.npy
+Saved rokens to: /media/volume/gen-ai-volume/MedSyn/results/text_embed/678543127898756_tokens.npy
 Textembedding stored in: /media/volume/gen-ai-volume/MedSyn/results/text_embed
 Tokens file missing for dont_delete.npy
 found 1 text embedding files at /media/volume/gen-ai-volume/MedSyn/results/text_embed
 loading low-res model...
-Loading pre-saved noise from /media/volume/gen-ai-volume/MedSyn/results/img_64_standard/saved_noise/566768856938097/pre_saved_noise.pth
+Loading pre-saved noise from /media/volume/gen-ai-volume/MedSyn/results/img_64_standard/saved_noise/678543127898756/pre_saved_noise.pth
 Debug: Cleared attention_maps, Length is now 0
 Low Resolution:   0%|          | 0/51 [00:00<?, ?it/s]Debug: Total Attention Maps: 4
-Low Resolution:   2%|1         | 1/51 [00:00<00:13,  3.64it/s]Debug: Total Attention Maps: 4
-Low Resolution:   4%|3         | 2/51 [00:00<00:13,  3.64it/s]Debug: Total Attention Maps: 4
-Low Resolution:   6%|5         | 3/51 [00:00<00:13,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:   8%|7         | 4/51 [00:01<00:12,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  10%|9         | 5/51 [00:01<00:12,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  12%|#1        | 6/51 [00:01<00:12,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  14%|#3        | 7/51 [00:01<00:12,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  16%|#5        | 8/51 [00:02<00:11,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  18%|#7        | 9/51 [00:02<00:11,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  20%|#9        | 10/51 [00:02<00:11,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  22%|##1       | 11/51 [00:03<00:10,  3.66it/s]Debug: Total Attention Maps: 4
+Low Resolution:   2%|1         | 1/51 [00:00<00:25,  1.96it/s]Debug: Total Attention Maps: 4
+Low Resolution:   4%|3         | 2/51 [00:00<00:18,  2.65it/s]Debug: Total Attention Maps: 4
+Low Resolution:   6%|5         | 3/51 [00:01<00:15,  3.07it/s]Debug: Total Attention Maps: 4
+Low Resolution:   8%|7         | 4/51 [00:01<00:14,  3.31it/s]Debug: Total Attention Maps: 4
+Low Resolution:  10%|9         | 5/51 [00:01<00:13,  3.40it/s]Debug: Total Attention Maps: 4
+Low Resolution:  12%|#1        | 6/51 [00:01<00:12,  3.51it/s]Debug: Total Attention Maps: 4
+Low Resolution:  14%|#3        | 7/51 [00:02<00:12,  3.53it/s]Debug: Total Attention Maps: 4
+Low Resolution:  16%|#5        | 8/51 [00:02<00:11,  3.60it/s]Debug: Total Attention Maps: 4
+Low Resolution:  18%|#7        | 9/51 [00:02<00:11,  3.59it/s]Debug: Total Attention Maps: 4
+Low Resolution:  20%|#9        | 10/51 [00:02<00:11,  3.64it/s]Debug: Total Attention Maps: 4
+Low Resolution:  22%|##1       | 11/51 [00:03<00:11,  3.62it/s]Debug: Total Attention Maps: 4
 Low Resolution:  24%|##3       | 12/51 [00:03<00:10,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  25%|##5       | 13/51 [00:03<00:10,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  27%|##7       | 14/51 [00:03<00:10,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  29%|##9       | 15/51 [00:04<00:09,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  31%|###1      | 16/51 [00:04<00:09,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  33%|###3      | 17/51 [00:04<00:09,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  35%|###5      | 18/51 [00:04<00:09,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  37%|###7      | 19/51 [00:05<00:08,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  39%|###9      | 20/51 [00:05<00:08,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  41%|####1     | 21/51 [00:05<00:08,  3.66it/s]Debug: Total Attention Maps: 4
+Low Resolution:  25%|##5       | 13/51 [00:03<00:10,  3.63it/s]Debug: Total Attention Maps: 4
+Low Resolution:  27%|##7       | 14/51 [00:04<00:10,  3.61it/s]Debug: Total Attention Maps: 4
+Low Resolution:  29%|##9       | 15/51 [00:04<00:10,  3.54it/s]Debug: Total Attention Maps: 4
+Low Resolution:  31%|###1      | 16/51 [00:04<00:09,  3.54it/s]Debug: Total Attention Maps: 4
+Low Resolution:  33%|###3      | 17/51 [00:04<00:09,  3.54it/s]Debug: Total Attention Maps: 4
+Low Resolution:  35%|###5      | 18/51 [00:05<00:09,  3.54it/s]Debug: Total Attention Maps: 4
+Low Resolution:  37%|###7      | 19/51 [00:05<00:08,  3.60it/s]Debug: Total Attention Maps: 4
+Low Resolution:  39%|###9      | 20/51 [00:05<00:08,  3.65it/s]Debug: Total Attention Maps: 4
+Low Resolution:  41%|####1     | 21/51 [00:06<00:08,  3.63it/s]Debug: Total Attention Maps: 4
 Low Resolution:  43%|####3     | 22/51 [00:06<00:07,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  45%|####5     | 23/51 [00:06<00:07,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  47%|####7     | 24/51 [00:06<00:07,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  49%|####9     | 25/51 [00:06<00:07,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  51%|#####     | 26/51 [00:07<00:06,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  53%|#####2    | 27/51 [00:07<00:06,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  55%|#####4    | 28/51 [00:07<00:06,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  57%|#####6    | 29/51 [00:07<00:06,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  59%|#####8    | 30/51 [00:08<00:05,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  61%|######    | 31/51 [00:08<00:05,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  63%|######2   | 32/51 [00:08<00:05,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  65%|######4   | 33/51 [00:09<00:04,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  67%|######6   | 34/51 [00:09<00:04,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  69%|######8   | 35/51 [00:09<00:04,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  71%|#######   | 36/51 [00:09<00:04,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  73%|#######2  | 37/51 [00:10<00:03,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  75%|#######4  | 38/51 [00:10<00:03,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  76%|#######6  | 39/51 [00:10<00:03,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  78%|#######8  | 40/51 [00:10<00:03,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  80%|########  | 41/51 [00:11<00:02,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  82%|########2 | 42/51 [00:11<00:02,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  84%|########4 | 43/51 [00:11<00:02,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  86%|########6 | 44/51 [00:12<00:01,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  88%|########8 | 45/51 [00:12<00:01,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  90%|######### | 46/51 [00:12<00:01,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  92%|#########2| 47/51 [00:12<00:01,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  94%|#########4| 48/51 [00:13<00:00,  3.66it/s]Debug: Total Attention Maps: 4
-Low Resolution:  96%|#########6| 49/51 [00:13<00:00,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution:  98%|#########8| 50/51 [00:13<00:00,  3.65it/s]Debug: Total Attention Maps: 4
-Low Resolution: 100%|##########| 51/51 [00:13<00:00,  3.65it/s]Low Resolution: 100%|##########| 51/51 [00:13<00:00,  3.65it/s]
+Low Resolution:  45%|####5     | 23/51 [00:06<00:07,  3.63it/s]Debug: Total Attention Maps: 4
+Low Resolution:  47%|####7     | 24/51 [00:06<00:07,  3.61it/s]Debug: Total Attention Maps: 4
+Low Resolution:  49%|####9     | 25/51 [00:07<00:07,  3.59it/s]Debug: Total Attention Maps: 4
+Low Resolution:  51%|#####     | 26/51 [00:07<00:06,  3.58it/s]Debug: Total Attention Maps: 4
+Low Resolution:  53%|#####2    | 27/51 [00:07<00:06,  3.58it/s]Debug: Total Attention Maps: 4
+Low Resolution:  55%|#####4    | 28/51 [00:07<00:06,  3.57it/s]Debug: Total Attention Maps: 4
+Low Resolution:  57%|#####6    | 29/51 [00:08<00:06,  3.56it/s]Debug: Total Attention Maps: 4
+Low Resolution:  59%|#####8    | 30/51 [00:08<00:05,  3.56it/s]Debug: Total Attention Maps: 4
+Low Resolution:  61%|######    | 31/51 [00:08<00:05,  3.50it/s]Debug: Total Attention Maps: 4
+Low Resolution:  63%|######2   | 32/51 [00:09<00:05,  3.48it/s]Debug: Total Attention Maps: 4
+Low Resolution:  65%|######4   | 33/51 [00:09<00:05,  3.56it/s]Debug: Total Attention Maps: 4
+Low Resolution:  67%|######6   | 34/51 [00:09<00:04,  3.55it/s]Debug: Total Attention Maps: 4
+Low Resolution:  69%|######8   | 35/51 [00:09<00:04,  3.55it/s]Debug: Total Attention Maps: 4
+Low Resolution:  71%|#######   | 36/51 [00:10<00:04,  3.55it/s]Debug: Total Attention Maps: 4
+Low Resolution:  73%|#######2  | 37/51 [00:10<00:03,  3.55it/s]Debug: Total Attention Maps: 4
+Low Resolution:  75%|#######4  | 38/51 [00:10<00:03,  3.55it/s]Debug: Total Attention Maps: 4
+Low Resolution:  76%|#######6  | 39/51 [00:11<00:03,  3.55it/s]Debug: Total Attention Maps: 4
+Low Resolution:  78%|#######8  | 40/51 [00:11<00:03,  3.50it/s]Debug: Total Attention Maps: 4
+Low Resolution:  80%|########  | 41/51 [00:11<00:02,  3.57it/s]Debug: Total Attention Maps: 4
+Low Resolution:  82%|########2 | 42/51 [00:11<00:02,  3.51it/s]Debug: Total Attention Maps: 4
+Low Resolution:  84%|########4 | 43/51 [00:12<00:02,  3.58it/s]Debug: Total Attention Maps: 4
+Low Resolution:  86%|########6 | 44/51 [00:12<00:01,  3.52it/s]Debug: Total Attention Maps: 4
+Low Resolution:  88%|########8 | 45/51 [00:12<00:01,  3.59it/s]Debug: Total Attention Maps: 4
+Low Resolution:  90%|######### | 46/51 [00:13<00:01,  3.57it/s]Debug: Total Attention Maps: 4
+Low Resolution:  92%|#########2| 47/51 [00:13<00:01,  3.57it/s]Debug: Total Attention Maps: 4
+Low Resolution:  94%|#########4| 48/51 [00:13<00:00,  3.56it/s]Debug: Total Attention Maps: 4
+Low Resolution:  96%|#########6| 49/51 [00:13<00:00,  3.51it/s]Debug: Total Attention Maps: 4
+Low Resolution:  98%|#########8| 50/51 [00:14<00:00,  3.53it/s]Debug: Total Attention Maps: 4
+Low Resolution: 100%|##########| 51/51 [00:14<00:00,  3.53it/s]Low Resolution: 100%|##########| 51/51 [00:14<00:00,  3.52it/s]
 Debug: Appended attention_maps. Length is now 1
 Debug: Number of attention maps in the last timestep: 4
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_0_[CLS]_heatmaps.npy
-Saved heatmap for token '[CLS]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_0_[CLS]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_1_moderate_heatmaps.npy
-Saved heatmap for token 'moderate' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_1_moderate_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_2_pleural_heatmaps.npy
-Saved heatmap for token 'pleural' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_2_pleural_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_3_effusion_heatmaps.npy
-Saved heatmap for token 'effusion' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_3_effusion_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_4_in_heatmaps.npy
-Saved heatmap for token 'in' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_4_in_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_5_the_heatmaps.npy
-Saved heatmap for token 'the' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_5_the_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_6_lower_heatmaps.npy
-Saved heatmap for token 'lower' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_6_lower_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_7_right_heatmaps.npy
-Saved heatmap for token 'right' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_7_right_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_8_lobe_heatmaps.npy
-Saved heatmap for token 'lobe' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_8_lobe_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_9_._heatmaps.npy
-Saved heatmap for token '.' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_9_._heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_10_the_heatmaps.npy
-Saved heatmap for token 'the' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_10_the_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_11_left_heatmaps.npy
-Saved heatmap for token 'left' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_11_left_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_12_lung_heatmaps.npy
-Saved heatmap for token 'lung' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_12_lung_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_13_appears_heatmaps.npy
-Saved heatmap for token 'appears' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_13_appears_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_14_normal_heatmaps.npy
-Saved heatmap for token 'normal' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_14_normal_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_15_._heatmaps.npy
-Saved heatmap for token '.' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_15_._heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_16_no_heatmaps.npy
-Saved heatmap for token 'no' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_16_no_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_17_sign_heatmaps.npy
-Saved heatmap for token 'sign' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_17_sign_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_18_of_heatmaps.npy
-Saved heatmap for token 'of' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_18_of_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_19_consolidation_heatmaps.npy
-Saved heatmap for token 'consolidation' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_19_consolidation_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_20_._heatmaps.npy
-Saved heatmap for token '.' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_20_._heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_21_no_heatmaps.npy
-Saved heatmap for token 'no' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_21_no_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_22_sign_heatmaps.npy
-Saved heatmap for token 'sign' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_22_sign_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_23_of_heatmaps.npy
-Saved heatmap for token 'of' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_23_of_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_24_ground_heatmaps.npy
-Saved heatmap for token 'ground' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_24_ground_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_25_glass_heatmaps.npy
-Saved heatmap for token 'glass' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_25_glass_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_26_._heatmaps.npy
-Saved heatmap for token '.' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_26_._heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_27_no_heatmaps.npy
-Saved heatmap for token 'no' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_27_no_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_28_sign_heatmaps.npy
-Saved heatmap for token 'sign' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_28_sign_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_29_of_heatmaps.npy
-Saved heatmap for token 'of' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_29_of_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_30_atelectasis_heatmaps.npy
-Saved heatmap for token 'atelectasis' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_30_atelectasis_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_31_._heatmaps.npy
-Saved heatmap for token '.' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_31_._heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_32_otherwise_heatmaps.npy
-Saved heatmap for token 'otherwise' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_32_otherwise_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_33_appearing_heatmaps.npy
-Saved heatmap for token 'appearing' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_33_appearing_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_34_normal_heatmaps.npy
-Saved heatmap for token 'normal' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_34_normal_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_35_._heatmaps.npy
-Saved heatmap for token '.' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_35_._heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_36_[SEP]_heatmaps.npy
-Saved heatmap for token '[SEP]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_36_[SEP]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_37_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_37_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_38_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_38_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_39_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_39_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_40_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_40_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_41_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_41_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_42_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_42_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_43_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_43_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_44_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_44_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_45_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_45_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_46_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_46_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_47_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_47_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_48_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_48_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_49_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_49_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_50_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_50_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_51_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_51_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_52_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_52_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_53_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_53_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_54_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_54_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_55_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_55_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_56_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_56_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_57_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_57_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_58_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_58_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_59_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_59_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_60_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_60_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_61_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_61_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_62_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_62_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_63_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_63_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_64_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_64_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_65_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_65_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_66_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_66_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_67_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_67_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_68_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_68_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_69_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_69_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_70_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_70_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_71_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_71_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_72_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_72_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_73_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_73_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_74_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_74_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_75_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_75_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_76_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_76_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_77_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_77_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_78_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_78_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_79_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_79_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_80_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_80_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_81_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_81_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_82_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_82_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_83_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_83_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_84_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_84_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_85_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_85_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_86_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_86_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_87_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_87_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_88_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_88_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_89_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_89_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_90_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_90_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_91_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_91_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_92_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_92_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_93_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_93_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_94_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_94_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_95_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_95_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_96_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_96_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_97_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_97_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_98_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_98_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_99_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_99_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_100_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_100_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_101_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_101_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_102_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_102_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_103_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_103_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_104_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_104_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_105_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_105_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_106_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_106_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_107_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_107_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_108_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_108_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_109_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_109_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_110_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_110_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_111_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_111_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_112_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_112_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_113_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_113_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_114_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_114_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_115_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_115_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_116_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_116_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_117_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_117_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_118_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_118_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_119_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_119_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_120_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_120_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_121_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_121_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_122_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_122_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_123_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_123_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_124_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_124_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_125_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_125_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_126_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_126_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_127_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_127_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_128_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_128_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_129_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_129_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_130_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_130_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_131_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_131_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_132_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_132_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_133_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_133_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_134_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_134_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_135_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_135_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_136_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_136_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_137_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_137_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_138_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_138_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_139_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_139_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_140_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_140_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_141_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_141_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_142_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_142_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_143_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_143_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_144_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_144_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_145_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_145_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_146_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_146_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_147_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_147_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_148_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_148_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_149_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_149_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_150_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_150_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_151_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_151_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_152_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_152_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_153_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_153_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_154_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_154_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_155_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_155_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_156_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_156_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_157_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_157_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_158_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_158_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_159_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_159_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_160_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_160_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_161_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_161_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_162_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_162_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_163_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_163_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_164_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_164_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_165_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_165_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_166_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_166_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_167_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_167_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_168_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_168_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_169_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_169_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_170_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_170_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_171_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_171_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_172_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_172_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_173_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_173_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_174_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_174_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_175_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_175_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_176_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_176_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_177_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_177_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_178_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_178_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_179_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_179_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_180_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_180_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_181_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_181_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_182_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_182_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_183_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_183_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_184_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_184_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_185_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_185_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_186_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_186_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_187_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_187_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_188_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_188_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_189_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_189_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_190_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_190_[PAD]_heatmaps.npy
-ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_191_[PAD]_heatmaps.npy
-Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/566768856938097/566768856938097_sample_1_token_191_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_0_[CLS]_heatmaps.npy
+Saved heatmap for token '[CLS]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_0_[CLS]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_1_a_heatmaps.npy
+Saved heatmap for token 'a' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_1_a_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_2_small_heatmaps.npy
+Saved heatmap for token 'small' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_2_small_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_3_area_heatmaps.npy
+Saved heatmap for token 'area' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_3_area_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_4_of_heatmaps.npy
+Saved heatmap for token 'of' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_4_of_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_5_dense_heatmaps.npy
+Saved heatmap for token 'dense' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_5_dense_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_6_consolidation_heatmaps.npy
+Saved heatmap for token 'consolidation' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_6_consolidation_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_7_in_heatmaps.npy
+Saved heatmap for token 'in' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_7_in_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_8_the_heatmaps.npy
+Saved heatmap for token 'the' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_8_the_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_9_left_heatmaps.npy
+Saved heatmap for token 'left' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_9_left_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_10_and_heatmaps.npy
+Saved heatmap for token 'and' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_10_and_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_11_right_heatmaps.npy
+Saved heatmap for token 'right' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_11_right_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_12_lungs_heatmaps.npy
+Saved heatmap for token 'lungs' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_12_lungs_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_13_._heatmaps.npy
+Saved heatmap for token '.' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_13_._heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_14_no_heatmaps.npy
+Saved heatmap for token 'no' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_14_no_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_15_signs_heatmaps.npy
+Saved heatmap for token 'signs' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_15_signs_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_16_of_heatmaps.npy
+Saved heatmap for token 'of' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_16_of_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_17_cardiomegaly_heatmaps.npy
+Saved heatmap for token 'cardiomegaly' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_17_cardiomegaly_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_18_._heatmaps.npy
+Saved heatmap for token '.' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_18_._heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_19_no_heatmaps.npy
+Saved heatmap for token 'no' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_19_no_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_20_signs_heatmaps.npy
+Saved heatmap for token 'signs' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_20_signs_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_21_of_heatmaps.npy
+Saved heatmap for token 'of' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_21_of_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_22_pleural_heatmaps.npy
+Saved heatmap for token 'pleural' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_22_pleural_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_23_effusion_heatmaps.npy
+Saved heatmap for token 'effusion' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_23_effusion_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_24_._heatmaps.npy
+Saved heatmap for token '.' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_24_._heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_25_no_heatmaps.npy
+Saved heatmap for token 'no' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_25_no_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_26_signs_heatmaps.npy
+Saved heatmap for token 'signs' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_26_signs_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_27_of_heatmaps.npy
+Saved heatmap for token 'of' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_27_of_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_28_atelectasis_heatmaps.npy
+Saved heatmap for token 'atelectasis' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_28_atelectasis_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_29_._heatmaps.npy
+Saved heatmap for token '.' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_29_._heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_30_no_heatmaps.npy
+Saved heatmap for token 'no' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_30_no_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_31_signs_heatmaps.npy
+Saved heatmap for token 'signs' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_31_signs_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_32_of_heatmaps.npy
+Saved heatmap for token 'of' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_32_of_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_33_pleural_heatmaps.npy
+Saved heatmap for token 'pleural' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_33_pleural_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_34_thickening_heatmaps.npy
+Saved heatmap for token 'thickening' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_34_thickening_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_35_._heatmaps.npy
+Saved heatmap for token '.' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_35_._heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_36_no_heatmaps.npy
+Saved heatmap for token 'no' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_36_no_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_37_signs_heatmaps.npy
+Saved heatmap for token 'signs' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_37_signs_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_38_of_heatmaps.npy
+Saved heatmap for token 'of' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_38_of_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_39_ground_heatmaps.npy
+Saved heatmap for token 'ground' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_39_ground_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_40_glass_heatmaps.npy
+Saved heatmap for token 'glass' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_40_glass_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_41_._heatmaps.npy
+Saved heatmap for token '.' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_41_._heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_42_[SEP]_heatmaps.npy
+Saved heatmap for token '[SEP]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_42_[SEP]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_43_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_43_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_44_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_44_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_45_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_45_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_46_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_46_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_47_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_47_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_48_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_48_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_49_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_49_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_50_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_50_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_51_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_51_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_52_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_52_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_53_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_53_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_54_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_54_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_55_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_55_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_56_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_56_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_57_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_57_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_58_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_58_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_59_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_59_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_60_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_60_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_61_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_61_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_62_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_62_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_63_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_63_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_64_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_64_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_65_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_65_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_66_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_66_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_67_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_67_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_68_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_68_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_69_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_69_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_70_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_70_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_71_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_71_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_72_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_72_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_73_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_73_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_74_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_74_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_75_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_75_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_76_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_76_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_77_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_77_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_78_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_78_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_79_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_79_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_80_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_80_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_81_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_81_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_82_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_82_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_83_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_83_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_84_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_84_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_85_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_85_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_86_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_86_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_87_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_87_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_88_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_88_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_89_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_89_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_90_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_90_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_91_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_91_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_92_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_92_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_93_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_93_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_94_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_94_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_95_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_95_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_96_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_96_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_97_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_97_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_98_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_98_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_99_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_99_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_100_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_100_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_101_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_101_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_102_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_102_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_103_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_103_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_104_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_104_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_105_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_105_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_106_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_106_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_107_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_107_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_108_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_108_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_109_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_109_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_110_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_110_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_111_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_111_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_112_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_112_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_113_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_113_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_114_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_114_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_115_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_115_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_116_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_116_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_117_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_117_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_118_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_118_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_119_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_119_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_120_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_120_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_121_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_121_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_122_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_122_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_123_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_123_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_124_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_124_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_125_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_125_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_126_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_126_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_127_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_127_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_128_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_128_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_129_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_129_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_130_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_130_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_131_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_131_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_132_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_132_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_133_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_133_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_134_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_134_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_135_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_135_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_136_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_136_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_137_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_137_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_138_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_138_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_139_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_139_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_140_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_140_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_141_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_141_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_142_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_142_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_143_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_143_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_144_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_144_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_145_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_145_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_146_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_146_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_147_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_147_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_148_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_148_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_149_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_149_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_150_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_150_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_151_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_151_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_152_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_152_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_153_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_153_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_154_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_154_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_155_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_155_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_156_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_156_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_157_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_157_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_158_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_158_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_159_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_159_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_160_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_160_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_161_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_161_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_162_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_162_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_163_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_163_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_164_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_164_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_165_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_165_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_166_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_166_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_167_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_167_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_168_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_168_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_169_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_169_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_170_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_170_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_171_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_171_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_172_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_172_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_173_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_173_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_174_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_174_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_175_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_175_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_176_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_176_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_177_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_177_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_178_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_178_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_179_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_179_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_180_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_180_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_181_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_181_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_182_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_182_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_183_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_183_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_184_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_184_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_185_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_185_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_186_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_186_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_187_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_187_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_188_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_188_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_189_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_189_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_190_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_190_[PAD]_heatmaps.npy
+ATTENTION PATH:  /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_191_[PAD]_heatmaps.npy
+Saved heatmap for token '[PAD]' at: /media/volume/gen-ai-volume/MedSyn/results/saliency_maps/678543127898756/678543127898756_sample_386_token_191_[PAD]_heatmaps.npy
 Completed low res.
 Number of parameters: 54307908
 Map Location: cuda
 Model path: /media/volume/gen-ai-volume/MedSyn/models/stage2/1000_ckpt/pytorch_model.bin
-found 1 videos as gif files at /media/volume/gen-ai-volume/MedSyn/results/img_64_standard/566768856938097
+found 1 videos as gif files at /media/volume/gen-ai-volume/MedSyn/results/img_64_standard/678543127898756
 loading model...
 Load accelerator state: /media/volume/gen-ai-volume/MedSyn/models/stage2/1000_ckpt
 training model...
 num_samples: 1
-High Resolution:   0%|          | 0/21 [00:00<?, ?it/s]High Resolution:   5%|4         | 1/21 [00:04<01:34,  4.71s/it]High Resolution:  10%|9         | 2/21 [00:08<01:22,  4.35s/it]High Resolution:  14%|#4        | 3/21 [00:12<01:16,  4.23s/it]High Resolution:  19%|#9        | 4/21 [00:16<01:11,  4.18s/it]High Resolution:  24%|##3       | 5/21 [00:21<01:06,  4.15s/it]High Resolution:  29%|##8       | 6/21 [00:25<01:01,  4.13s/it]High Resolution:  33%|###3      | 7/21 [00:29<00:57,  4.12s/it]
+File already exists: /media/volume/gen-ai-volume/MedSyn/results/img_256_standard/678543127898756_sample_386.nii.gz
+Completed high res.
+1.2.826.0.1.3680043.8.498.96809614139331342945515551081332971008
+/media/volume/gen-ai-volume/MedSyn/results/img_256_standard/678543127898756_sample_386.nii.gz
+Store DICOM files in Folder: /media/volume/gen-ai-volume/MedSyn/results/dicom/678543127898756_sample_386
+Conversion complete. DICOM files are saved in /media/volume/gen-ai-volume/MedSyn/results/dicom/678543127898756_sample_386
+Collecting per-token heatmaps...
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Loaded heatmaps with shape: (64, 8, 8)
+Limiting token overlays to first sentence tokens (<= index 12). 88 -> 25.
+Generating DICOM overlays for 25 tokens (excluding [PAD]).
+Now making pmap for token '[CLS]' (index 0)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_0_cls_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_0_cls_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_0_cls_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x744157dbb460>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_0_cls_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_0_cls_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_0_cls_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_0_cls_output_saliencythresh.dcm
+Now making pmap for token 'a' (index 1)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_a_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_a_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_a_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x74412ccdfa90>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_a_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_a_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_a_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_a_output_saliencythresh.dcm
+Now making pmap for token 'moderate' (index 1)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_moderate_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_moderate_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_moderate_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x744157de60a0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_moderate_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_moderate_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_moderate_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_1_moderate_output_saliencythresh.dcm
+Now making pmap for token 'pleural' (index 2)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_pleural_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_pleural_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_pleural_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7441547bcbb0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_pleural_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_pleural_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_pleural_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_pleural_output_saliencythresh.dcm
+Now making pmap for token 'small' (index 2)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_small_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_small_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_small_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7441541b4df0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_small_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_small_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_small_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_2_small_output_saliencythresh.dcm
+Now making pmap for token 'area' (index 3)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_area_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_area_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_area_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x74412c67cb80>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_area_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_area_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_area_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_area_output_saliencythresh.dcm
+Now making pmap for token 'effusion' (index 3)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_effusion_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_effusion_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_effusion_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x744157b18580>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_effusion_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_effusion_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_effusion_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_3_effusion_output_saliencythresh.dcm
+Now making pmap for token 'of' (index 4)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_of_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_of_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_of_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x74415785efd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_of_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_of_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_of_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_of_output_saliencythresh.dcm
+Now making pmap for token 'with' (index 4)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_with_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_with_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_with_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x744154249b20>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_with_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_with_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_with_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_4_with_output_saliencythresh.dcm
+Now making pmap for token 'a' (index 5)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_a_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_a_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_a_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x74418410ee20>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_a_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_a_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_a_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_a_output_saliencythresh.dcm
+Now making pmap for token 'dense' (index 5)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_dense_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_dense_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_dense_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x744184213dc0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_dense_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_dense_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_dense_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_5_dense_output_saliencythresh.dcm
+Now making pmap for token 'consolidation' (index 6)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_consolidation_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_consolidation_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_consolidation_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x74412c7c0880>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_consolidation_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_consolidation_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_consolidation_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_consolidation_output_saliencythresh.dcm
+Now making pmap for token 'dense' (index 6)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_dense_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_dense_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_dense_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7441543796d0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_dense_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_dense_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_dense_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_6_dense_output_saliencythresh.dcm
+Now making pmap for token 'area' (index 7)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_area_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_area_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_area_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x74412c46ca60>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_area_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_area_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_area_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_area_output_saliencythresh.dcm
+Now making pmap for token 'in' (index 7)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_in_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_in_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_in_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x744157959b20>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_in_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_in_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_in_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_7_in_output_saliencythresh.dcm
+Now making pmap for token 'of' (index 8)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_of_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_of_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_of_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x744157df0040>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_of_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_of_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_of_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_of_output_saliencythresh.dcm
+Now making pmap for token 'the' (index 8)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_the_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_the_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_the_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x74415454eca0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_the_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_the_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_the_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_8_the_output_saliencythresh.dcm
+Now making pmap for token 'consolidation' (index 9)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_consolidation_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_consolidation_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_consolidation_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7441704a3610>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_consolidation_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_consolidation_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_consolidation_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_consolidation_output_saliencythresh.dcm
+Now making pmap for token 'left' (index 9)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_left_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_left_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_left_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x744154633520>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_left_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_left_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_left_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_9_left_output_saliencythresh.dcm
+Now making pmap for token 'and' (index 10)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_and_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_and_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_and_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7441546c7580>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_and_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_and_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_and_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_and_output_saliencythresh.dcm
+Now making pmap for token 'in' (index 10)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_in_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_in_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_in_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x74412ca0c280>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_in_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_in_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_in_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_10_in_output_saliencythresh.dcm
+Now making pmap for token 'right' (index 11)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_right_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_right_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_right_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x74415478fc40>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_right_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_right_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_right_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_right_output_saliencythresh.dcm
+Now making pmap for token 'the' (index 11)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_the_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_the_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_the_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7441841e8b50>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_the_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_the_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_the_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_11_the_output_saliencythresh.dcm
+Now making pmap for token 'left' (index 12)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_left_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_left_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_left_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7441545f8dc0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_left_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_left_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_left_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_left_output_saliencythresh.dcm
+Now making pmap for token 'lungs' (index 12)...
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_lungs_output_pmap.dcm
+Saved PMAP to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_lungs_output_pmap.dcm
+Failed to upload PMAP /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_lungs_output_pmap.dcm to Orthanc: HTTPConnectionPool(host='localhost', port=8042): Max retries exceeded with url: /instances (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x74417114b880>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_lungs_output_saliency.dcm
+Saved saliency map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_lungs_output_saliency.dcm
+Resizing PMAP from (64, 64, 64) to (256, 256, 256)
+Saved PMAP DICOM to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_lungs_output_saliencythresh.dcm
+Saved saliency threshold map to /media/volume/gen-ai-volume/MedSyn/results/dicom_overlays/678543127898756/678543127898756_sample_386_token_12_lungs_output_saliencythresh.dcm
+Uploading Data to Orthanc...
